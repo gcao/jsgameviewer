@@ -1,3 +1,5 @@
+require 'rubygems'
+require 'rake'
 require 'ftools'
 require 'fileutils'
 require 'open-uri'
@@ -70,7 +72,7 @@ task :clean do
   FileUtils.rm_rf DIST_DIR if File.exist? DIST_DIR
 end
 
-COMBINED_JS = DIST_DIR + "js/all.js"
+COMBINED_JS = "js/all.js"
 
 file COMBINED_JS => [:init] do
   dir = File.dirname COMBINED_JS

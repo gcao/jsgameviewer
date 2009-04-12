@@ -1,5 +1,3 @@
-var jq = jQuery.noConflict();
-
 var gv = {
   name: "jsgameviewer",
   version: "1.0a",
