@@ -4,7 +4,7 @@ jsGameViewer.GameController.prototype = {
     this.id = jsGameViewer.getGameId();
     jsGameViewer[this.id] = this;
   
-    this.config = clone(CONFIG);
+    this.config = jsGameViewer.clone(jsGameViewer.CONFIG);
     if (config != null)
       jQuery.extend(this.config, config);
   

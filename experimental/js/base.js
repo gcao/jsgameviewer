@@ -42,7 +42,7 @@ var jsGameViewer = function() {
       var myNewObj = new Object();
 
       for(var i in myObj)
-        myNewObj[i] = clone(myObj[i]);
+        myNewObj[i] = this.clone(myObj[i]);
 
       return myNewObj;
     },
