@@ -26,7 +26,7 @@
 <IfModule mod_expires.c>
   ExpiresActive On
   ExpiresByType image/gif  A86400000
-#  ExpiresByType text/css   A86400000
 </IfModule>
 
 AddType 'text/plain; charset=gb2312' sgf
+AddType 'text/javascript; charset=gb2312' js

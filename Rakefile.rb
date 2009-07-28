@@ -101,4 +101,12 @@ FileList['.htaccess', 'index.php', 'gamewindow.php', 'games/*', 'js/*', 'php/*.p
   task :dist => target
 end
 
+task :convert_weiqi_template_to_js do
+  template = IO.readlines('view/templates/weiqi.html').map{|line| line.strip}.join.gsub!('"', "'")
+  File.open('experimental/js/weiqi_template.js', 'w') do |f|
+    f.print("jsGameViewer.WEIQI_TEMPLATE = \"#{template}\";")
+  end
+end
+task :convert_template => :convert_weiqi_template_to_js
+
 task :default => :dist

@@ -23,8 +23,8 @@ jsGameViewer.GameController.prototype = {
 
   destroy: function(){
     this.destroyView();
-    delete gv[this.id];
-    gv.length--;
+    delete jsGameViewer[this.id];
+    jsGameViewer.length--;
   },
 
   reset: function(){

@@ -18,8 +18,6 @@ jQuery.extend(jsGameViewer.CONFIG, {
 jQuery.extend(jsGameViewer.GameController.prototype, function(){
   var LABELS = ['A','B','C','D','E','F','G','H','J','K','L','M','N','O','P','Q','R','S','T'];
   var BRANCHES = ['A','B','C','D','E','F','G','H','I','J'];
-  var WEIQI_TEMPLATE = null;
-  var DAOQI_TEMPLATE = null;
   
   return {
     destroyView: function(){
@@ -38,31 +36,31 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
       var s = "";
       if (conf.gameType == jsGameViewer.DAOQI){
         conf.gridSize = conf.gridSizeDQ;
-        if (DAOQI_TEMPLATE == null){
+        if (jsGameViewer.DAOQI_TEMPLATE == null){
           jQuery.ajax({
             async: false,
             dataType: "application/xml",
             url: CONFIG.viewDir+"templates/daoqi.html",
             success: function(response){
-              DAOQI_TEMPLATE = response;
+              jsGameViewer.DAOQI_TEMPLATE = response;
             }
           });
         }
-        s = DAOQI_TEMPLATE;
+        s = jsGameViewer.DAOQI_TEMPLATE;
         c.rightPaneHeight = conf.rightPaneHeightDQ;
       } else {
         conf.gridSize = conf.gridSizeWQ;
-        if (WEIQI_TEMPLATE == null){
+        if (jsGameViewer.WEIQI_TEMPLATE == null){
           jQuery.ajax({
             async: false,
             dataType: "application/xml",
             url: jsGameViewer.CONFIG.viewDir+"templates/weiqi.html",
             success: function(response){
-              WEIQI_TEMPLATE = response;
+              jsGameViewer.WEIQI_TEMPLATE = response;
             }
           });
         }
-        s = WEIQI_TEMPLATE;
+        s = jsGameViewer.WEIQI_TEMPLATE;
         c.rightPaneHeight = conf.rightPaneHeight;
       }
       if (c.id != 'GV1')
@@ -72,7 +70,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
       } else {
         jQuery("#"+conf.container).empty().append(s);
       }
-      fdSliderController.construct();
+      // fdSliderController.construct();
       jQuery("#"+c.id+"_boardFascade").mousemove(function(e){
         c.registerKeyListener();
         var arr = c.eventToXY(e);
@@ -190,8 +188,8 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
   
     registerKeyListener: function(){
       var c = this;
-      for(var i=1; i<=gv.length; i++){
-        gv[gv.getId(i)].removeKeyListener();
+      for(var i=1; i<=jsGameViewer.length; i++){
+        jsGameViewer[jsGameViewer.getGameId(i)].removeKeyListener();
       }
       jQuery("#"+this.id+"_bannerbg").css("background-color",c.config.activeBackground);
       document.onkeydown = function(e){
@@ -239,7 +237,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
         if (e.altKey && e.shiftKey){
           switch (keyCode) {
             case 71: // g
-              setTimeout("gv."+c.id+".goToPopup()",100);
+              setTimeout("jsGameViewer."+c.id+".goToPopup()",100);
               break;
             case 77: // m
               c.toggleNumber();
@@ -722,7 +720,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
               title = "&#20998;&#25903;" + branchName + "[Alt Shift " + branchName + "]";
             }
           }
-          var s = "<div class='gvtb-branch gvbutton'><a href='#' title='" + title + "' onclick='gv."+c.id+".goToBranch("+i+");return false;'>"+BRANCHES[i]+"</a></div>";
+          var s = "<div class='gvtb-branch gvbutton'><a href='#' title='" + title + "' onclick='jsGameViewer."+c.id+".goToBranch("+i+");return false;'>"+BRANCHES[i]+"</a></div>";
           jQuery("#"+c.id+"_branches").append(s);
           jQuery("#"+c.id+"_branches").css({height:n*23});
           var child = node.children[i];
