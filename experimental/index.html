@@ -9,14 +9,15 @@
 <script language="JavaScript" type="text/javascript" src="js/model.js"></script>
 <script language="JavaScript" type="text/javascript" src="js/parser.js"></script>
 <script language="JavaScript" type="text/javascript" src="js/controller.js"></script>
-<script language="JavaScript" type="text/javascript" src="js/weiqi_template.js"></script>
+<script language="JavaScript" type="text/javascript" src="js/weiqi_template.js" charset="UTF8"></script>
 <script language="JavaScript" type="text/javascript" src="js/view.js"></script>
 <title>Experimental</title>
 </head>
 <body>
   <div id="gameViewer"></div>
   <script language="JavaScript">
-    new jsGameViewer.GameController().show();
+    new jsGameViewer.GameController().load('/jsgameviewer/games/test2.sgf');
+    // new jsGameViewer.GameController().load('/jsgameviewer/games/danghu10.sgf');
   </script>
 </body>
 </html>

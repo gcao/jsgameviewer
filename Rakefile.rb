@@ -103,6 +103,7 @@ end
 
 task :convert_weiqi_template_to_js do
   template = IO.readlines('view/templates/weiqi.html').map{|line| line.strip}.join.gsub!('"', "'")
+  template.gsub!('gv.', 'jsGameViewer.')
   File.open('experimental/js/weiqi_template.js', 'w') do |f|
     f.print("jsGameViewer.WEIQI_TEMPLATE = \"#{template}\";")
   end

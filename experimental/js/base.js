@@ -1,19 +1,16 @@
 var jsGameViewer = function() {
-  var WEIQI = 0;
-  var DAOQI = 1;
-
 	return {
     name: "jsgameviewer",
     version: "1.0a",
     length: 0,
     
-    WEIQI: WEIQI,
-    DAOQI: DAOQI,
+    WEIQI: 0,
+    DAOQI: 1,
 
     CONFIG: {
       baseDir: "/jsgameviewer/",
       viewDir: "/jsgameviewer/view/",
-      gameType: WEIQI,
+      gameType: this.WEIQI,
       boardSize: 19,
       playerInterval: 5,
       observerInterval: 15,

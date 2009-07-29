@@ -29,4 +29,4 @@
 </IfModule>
 
 AddType 'text/plain; charset=gb2312' sgf
-AddType 'text/javascript; charset=gb2312' js
+AddType 'text/javascript; charset=utf8' js

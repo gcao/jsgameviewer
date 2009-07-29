@@ -156,12 +156,12 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
       var area = c.xyToArea(x,y);
       var left = area[0], top = area[1], width = area[2], height = area[3];
       if (conf.gameType == jsGameViewer.DAOQI) {
-        var cssClass = color == STONE_BLACK? "gvsprite-19-markblack" : "gvsprite-19-markwhite";
+        var cssClass = color == jsGameViewer.model.STONE_BLACK? "gvsprite-19-markblack" : "gvsprite-19-markwhite";
         c.mapToPoints(x,y,function(x1,y1){
           var area = c.xyToArea(x1,y1);
           var left = area[0], top = area[1], width = area[2], height = area[3];
           var s = "<div class='"+cssClass+"' style='position:absolute;left:"+left+"px;top:"+top+"px;";
-          if (c.gameState.board[x][y] == STONE_NONE){
+          if (c.gameState.board[x][y] == jsGameViewer.model.STONE_NONE){
             if (c.isInCentralArea(x1,y1)){
               s += "background-color:"+conf.boardColorDQ+";";
             } else {
@@ -172,9 +172,9 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
           jQuery("#"+c.id+"_prisoners").append(s);
         });
       } else {
-        var cssClass = color == STONE_BLACK? "gvsprite-21-markblack" : "gvsprite-21-markwhite";
+        var cssClass = color == jsGameViewer.model.STONE_BLACK? "gvsprite-21-markblack" : "gvsprite-21-markwhite";
         var s = "<div class='"+cssClass+"' style='position:absolute;left:"+left+"px;top:"+top+"px;";
-        if (c.gameState.board[x][y] == STONE_NONE){
+        if (c.gameState.board[x][y] == jsGameViewer.model.STONE_NONE){
           s += "background-color:"+conf.boardColor+";";
         }
         s += "'></div>";
@@ -276,31 +276,31 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
       var game = c.game;
       if (game == undefined || game == null)
         return c;
-      if (notNull(game.name)){
+      if (jsGameViewer.notNull(game.name)){
         infoNode.append("<div align='center' style='font-weight:bold'>"+jQuery.trim(game.name)+"</div>");
       }
-      if (notNull(game.date)){
+      if (jsGameViewer.notNull(game.date)){
         infoNode.append("<div>&#26102;&#38388;&#65306;"+jQuery.trim(game.date)+"</div>");
       }
-      if (notNull(game.place)){
+      if (jsGameViewer.notNull(game.place)){
         infoNode.append("<div>&#22320;&#28857;&#65306;"+jQuery.trim(game.place)+"</div>");
       }
       var playFirst = "&nbsp;&lt;-&nbsp;&#20808;&#34892;";
       // black player name + rank
       var blackRank = "";
-      if (notNull(game.blackRank))
+      if (jsGameViewer.notNull(game.blackRank))
         blackRank = "&nbsp;("+game.blackRank+")";
       var blackPlayer = "<div>&#40657;&#26041;&#65306;<strong>"+jQuery.trim(game.blackName)+"</strong>"+blackRank;
-      if (game.getFirstPlayer() == STONE_BLACK)
+      if (game.getFirstPlayer() == jsGameViewer.model.STONE_BLACK)
         blackPlayer += playFirst;
       blackPlayer += "</div>";
       infoNode.append(blackPlayer);   
       // white player name + rank
       var whiteRank = "";
-      if (notNull(game.whiteRank))
+      if (jsGameViewer.notNull(game.whiteRank))
         whiteRank = "&nbsp;("+game.whiteRank+")";
       var whitePlayer = "<div>&#30333;&#26041;&#65306;<strong>"+jQuery.trim(game.whiteName)+"</strong>"+whiteRank;
-      if (game.getFirstPlayer() == STONE_WHITE)
+      if (game.getFirstPlayer() == jsGameViewer.model.STONE_WHITE)
         whitePlayer += playFirst;
       whitePlayer += "</div>";
       infoNode.append(whitePlayer);
@@ -330,7 +330,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
       c.setNextPlayer(gameState.getNextPlayer());
       c.setMoveNumber(node.moveNumber);
       c.setPrisoners(gameState.blackPrisoners, gameState.whitePrisoners);
-      if (node.type == NODE_MOVE)
+      if (node.type == jsGameViewer.model.NODE_MOVE)
         c.setMoveMark(node.x, node.y);
       else
         c.removeMoveMark();
@@ -359,7 +359,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
       for(var i=0; i<board.size; i++){
         for(var j=0; j<board.size; j++){
           var color = board[i][j];
-          if (color == STONE_BLACK || color == STONE_WHITE){
+          if (color == jsGameViewer.model.STONE_BLACK || color == jsGameViewer.model.STONE_WHITE){
             var moveNumber = 0;
             if (c.config.showMoveNumber)
               moveNumber = c.gameState.getMoveNumber(i,j);
@@ -375,7 +375,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
       c.setBranches();
       // show move mark
       var node = c.gameState.currentNode;
-      if (node.type == NODE_MOVE)
+      if (node.type == jsGameViewer.model.NODE_MOVE)
         c.setMoveMark(node.x, node.y);
       else
         c.removeMoveMark();
@@ -435,16 +435,16 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
       var c = this;
       var styleClass = "";
       if (c.config.gameType == jsGameViewer.DAOQI){
-        if (color == STONE_BLACK)
+        if (color == jsGameViewer.model.STONE_BLACK)
           styleClass = "gvsprite-19-black";
-        else if (color == STONE_WHITE)
+        else if (color == jsGameViewer.model.STONE_WHITE)
           styleClass = "gvsprite-19-white";
         else
           return null;
       } else {
-        if (color == STONE_BLACK)
+        if (color == jsGameViewer.model.STONE_BLACK)
           styleClass = "gvsprite-21-black";
-        else if (color == STONE_WHITE)
+        else if (color == jsGameViewer.model.STONE_WHITE)
           styleClass = "gvsprite-21-white";
         else
           return null;
@@ -455,7 +455,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
       if (c.config.showMoveNumber && moveNumber > 0){     
         // http://www.jakpsatweb.cz/css/css-vertical-center-solution.html
         var colorS = "white";
-        if (color == STONE_WHITE)
+        if (color == jsGameViewer.model.STONE_WHITE)
           colorS = "black";
         var fontSize = "medium";
         var left = 0;
@@ -539,9 +539,9 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
   
     setNextPlayer: function(color){
       var s = "";
-      if (color == STONE_BLACK)
+      if (color == jsGameViewer.model.STONE_BLACK)
         s += "&#40657;";
-      else if (color == STONE_WHITE)
+      else if (color == jsGameViewer.model.STONE_WHITE)
         s += "&#30333;";
       jQuery("#"+this.id+"_nextPlayer").empty().append(s);
       return this;
@@ -724,7 +724,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
           jQuery("#"+c.id+"_branches").append(s);
           jQuery("#"+c.id+"_branches").css({height:n*23});
           var child = node.children[i];
-          if (child.type == NODE_MOVE){
+          if (child.type == jsGameViewer.model.NODE_MOVE){
             var x = child.x, y = child.y;
             if (conf.gameType == jsGameViewer.DAOQI){
               c.mapToPoints(x,y,function(x,y){
@@ -788,7 +788,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
             if (c.config.showMoveNumber){
               moveNumber = c.gameState.getMoveNumber(i,j);
             }
-            if (color == STONE_BLACK || color == STONE_WHITE){
+            if (color == jsGameViewer.model.STONE_BLACK || color == jsGameViewer.model.STONE_WHITE){
               c.mapToPoints(i,j,function(x,y){
                 s += c.createStone(x,y,color,moveNumber);
               });
@@ -803,7 +803,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
             if (c.config.showMoveNumber){
               moveNumber = c.gameState.getMoveNumber(i,j);
             }
-            if (color == STONE_BLACK || color == STONE_WHITE){
+            if (color == jsGameViewer.model.STONE_BLACK || color == jsGameViewer.model.STONE_WHITE){
               s += c.createStone(i,j,color,moveNumber);
             }
           }
@@ -835,7 +835,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
         var changed = false;
         for(;;){
           var node = gameState.currentNode;
-          if (node.type == NODE_MOVE && node.x == x && node.y == y)
+          if (node.type == jsGameViewer.model.NODE_MOVE && node.x == x && node.y == y)
             break;
           if (!c.back_(points))
             break;
@@ -859,7 +859,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
         var children = gameState.currentNode.children;
         for(var i=0; i<children.length; i++){
           var node = children[i];
-          if (node.type == NODE_MOVE && node.x == x && node.y == y){
+          if (node.type == jsGameViewer.model.NODE_MOVE && node.x == x && node.y == y){
             return c.goToBranch(i);
           }
         }
@@ -1004,7 +1004,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
       gameState.backAll();
       var node = gameState.currentNode;
       jQuery.each(node.points, function(i, point){
-        if (point.color == STONE_BLACK || point.color == STONE_WHITE){
+        if (point.color == jsGameViewer.model.STONE_BLACK || point.color == jsGameViewer.model.STONE_WHITE){
           c.addStone(point.x,point.y,point.color);
         }
       });

@@ -62,16 +62,16 @@ jsGameViewer.GameController.prototype = {
 
   // set game type if DAOQI
   setGameTypeIf: function(gameType){
-    if (this.config.gameType != DAOQI && this.game.type == DAOQI){
-      this.setGameType(DAOQI);
+    if (this.config.gameType != jsGameViewer.DAOQI && this.game.type == jsGameViewer.DAOQI){
+      this.setGameType(jsGameViewer.DAOQI);
     }
     return this;
   },
 
   load: function(url, n){
-    var h = GameHistory[url];
+    var h = jsGameViewer.model.GameHistory[url];
     if (h != undefined && h != null){
-      GameHistory.save(h);
+      jsGameViewer.model.GameHistory.save(h);
       this.game = h.game;
       this.setGameTypeIf(this.game.type).show();
       this.gameState = h;
@@ -91,12 +91,12 @@ jsGameViewer.GameController.prototype = {
           if (c.game && c.game.dataSize && c.game.dataSize == response.length){
             return;
           }
-          c.game = new SGFParser(c.config.gameType).parse(response);
+          c.game = new jsGameViewer.SGFParser(c.config.gameType).parse(response);
           c.game.dataSize = response.length;
           c.setGameTypeIf(c.game.type).show();
           c.game.url = url;
-          c.gameState = new GameState(c.game);
-          GameHistory.save(c.gameState);
+          c.gameState = new jsGameViewer.model.GameState(c.game);
+          jsGameViewer.model.GameHistory.save(c.gameState);
           c.initGame();
           if (n == undefined)
             c.forwardAll();
@@ -123,10 +123,10 @@ jsGameViewer.GameController.prototype = {
       if (this.game && this.game.dataSize && this.game.dataSize == s.length){
         return this;
       }
-      this.game = new SGFParser(this.config.gameType).parse();
+      this.game = new jsGameViewer.SGFParser(this.config.gameType).parse();
       this.game.dataSize = s.length;
       this.setGameTypeIf(this.game.type);
-      this.gameState = new GameState(this.game);
+      this.gameState = new jsGameViewer.model.GameState(this.game);
       this.initGame();
       if (n == undefined)
         this.forwardAll();
@@ -149,12 +149,12 @@ jsGameViewer.GameController.prototype = {
           if (!force && c.game && c.game.dataSize && c.game.dataSize == response.length){
             return;
           }
-          c.game = new SGFParser(c.config.gameType).parse(response);
+          c.game = new jsGameViewer.SGFParser(c.config.gameType).parse(response);
           c.game.dataSize = response.length;
           c.setGameTypeIf(c.game.type).show();
           c.game.url = url;
-          c.gameState = new GameState(c.game);
-          GameHistory.save(c.gameState);
+          c.gameState = new jsGameViewer.model.GameState(c.game);
+          jsGameViewer.model.GameHistory.save(c.gameState);
           c.initGame();
           c.forwardAll();
         } catch(e) {
@@ -170,7 +170,7 @@ jsGameViewer.GameController.prototype = {
   openInWindow: function(){
     var url = this.config.baseDir + "gamewindow.php?";
     var title = "jsgameviewer", width = 722, height = 452;
-    if (this.config.gameType == DAOQI) {
+    if (this.config.gameType == jsGameViewer.DAOQI) {
       url += "type=DAOQI&";
       width = 798;
       height = 528;
