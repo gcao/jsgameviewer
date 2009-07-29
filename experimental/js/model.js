@@ -24,14 +24,14 @@ jsGameViewer.model = function(){
   var MARK_STONE      = 9;
   
   var MoveNumber = jsGameViewer.createClass();
-  MoveNumber.prototype = {
+  jQuery.extend(MoveNumber.prototype, {
     initialize: function(val, depth){
       this.val = val;
       this.depth = 0;
       if (depth != undefined && depth != null)
         this.depth = depth;
     }
-  }
+  });
 
   /* Point class
    * x
@@ -41,7 +41,7 @@ jsGameViewer.model = function(){
    * moveNumber
    */
   var Point = jsGameViewer.createClass();
-  Point.prototype = {
+  jQuery.extend(Point.prototype, {
     initialize: function(x,y,color,moveNumber,deleteFlag){
       this.x = x;
       this.y = y;
@@ -56,7 +56,7 @@ jsGameViewer.model = function(){
       if (deleteFlag)
         this.deleteFlag = true;
     }
-  }
+  });
 
   /* Board class
    * gameType
@@ -64,8 +64,8 @@ jsGameViewer.model = function(){
    * [][] - state: STONE_NONE, STONE_BLACK, STONE_WHITE
    */
   var Board = jsGameViewer.createClass();
-  $.extend(Board, Array);
-  $.extend(Board.prototype, {
+  jQuery.extend(Board, Array);
+  jQuery.extend(Board.prototype, {
     initialize: function(gameType, size){
       this.gameType = gameType;
       this.size = size;
@@ -269,7 +269,7 @@ jsGameViewer.model = function(){
    * y
    */
   var Node = jsGameViewer.createClass();
-  Node.prototype = {
+  jQuery.extend(Node.prototype, {
     initialize: function(parent){
       this.type = NODE_EMPTY;
       this.parent = parent;
@@ -329,7 +329,7 @@ jsGameViewer.model = function(){
       str += ")";
       return str;
     }
-  }
+  });
 
   /* Game class
    * ------------ General game information
@@ -355,7 +355,7 @@ jsGameViewer.model = function(){
    * rootNode
    */
   var Game = jsGameViewer.createClass();
-  Game.prototype = {
+  jQuery.extend(Game.prototype, {
     initialize: function(gameType){
       this.type = gameType;
       this.charset = "";
@@ -451,7 +451,7 @@ jsGameViewer.model = function(){
       var nextPlayerColor = color == STONE_BLACK? STONE_WHITE:STONE_BLACK;
       return nextPlayerColor;
     }
-  }
+  });
 
   /* GameState class
    * ------------ properties that don't change
@@ -475,7 +475,7 @@ jsGameViewer.model = function(){
    * last.whitePrisonerPoints
    */
   var GameState = jsGameViewer.createClass();
-  GameState.prototype = {
+  jQuery.extend(GameState.prototype, {
     initialize: function(game){
       this.game = game;
       this.board = new Board(game.type, game.boardSize);
@@ -681,12 +681,12 @@ jsGameViewer.model = function(){
           // copy state to this.last
           gs.last = new Object();
           gs.last.node = node;
-          gs.last.board = clone(board);
-          gs.last.moveNumbers = clone(this.moveNumbers);
+          gs.last.board = jsGameViewer.clone(board);
+          gs.last.moveNumbers = jsGameViewer.clone(this.moveNumbers);
           gs.last.blackPrisoners = this.blackPrisoners;
-          gs.last.blackPrisonerPoints = clone(this.blackPrisonerPoints);
+          gs.last.blackPrisonerPoints = jsGameViewer.clone(this.blackPrisonerPoints);
           gs.last.whitePrisoners = this.whitePrisoners;
-          gs.last.whitePrisonerPoints = clone(this.whitePrisonerPoints);
+          gs.last.whitePrisonerPoints = jsGameViewer.clone(this.whitePrisonerPoints);
         }
       }
     },
@@ -852,11 +852,11 @@ jsGameViewer.model = function(){
       } else {
         this.currentNode = this.last.node;
         this.board.copyFrom(this.last.board);
-        this.moveNumbers = clone(this.last.moveNumbers);
+        this.moveNumbers = jsGameViewer.clone(this.last.moveNumbers);
         this.blackPrisoners = this.last.blackPrisoners;
-        this.blackPrisonerPoints = clone(this.last.blackPrisonerPoints);
+        this.blackPrisonerPoints = jsGameViewer.clone(this.last.blackPrisonerPoints);
         this.whitePrisoners = this.last.whitePrisoners;
-        this.whitePrisonerPoints = clone(this.last.whitePrisonerPoints);
+        this.whitePrisonerPoints = jsGameViewer.clone(this.last.whitePrisonerPoints);
       }
     },
   
@@ -869,33 +869,35 @@ jsGameViewer.model = function(){
       this.processCurrentNode();
       return true;
     }
-  }
+  });
 
   var GameHistory = new Array();
-  GameHistory.max = 30;
-  GameHistory.save = function(gameState){
-    var id = gameState.game.getId();
-    var matched = null;
-    for(var i=0; i<this.length; i++){
-      if (this[i] == id){
-        matched = i;
-        break;
+  jQuery.extend(GameHistory, {
+    max: 30,
+    save: function(gameState){
+      var id = gameState.game.getId();
+      var matched = null;
+      for(var i=0; i<this.length; i++){
+        if (this[i] == id){
+          matched = i;
+          break;
+        }
       }
+      if (matched != null && matched > 0){
+        for(var i=0; i<matched-1; i++){
+          this[i+1] = this[i];
+        }
+      } else {
+        this.unshift(id); // insert to the beginning  
+        if (this.length > this.max){ // remove last
+          var last = this.pop();
+          delete this[last];
+        }
+      }
+      this[0] = id;
+      this[id] = gameState;
     }
-    if (matched != null && matched > 0){
-      for(var i=0; i<matched-1; i++){
-        this[i+1] = this[i];
-      }
-    } else {
-      this.unshift(id); // insert to the beginning  
-      if (this.length > this.max){ // remove last
-        var last = this.pop();
-        delete this[last];
-      }
-    }
-    this[0] = id;
-    this[id] = gameState;
-  }; 
+  });
   
   return {
     STONE_NONE      : STONE_NONE,

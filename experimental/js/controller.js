@@ -1,5 +1,5 @@
 jsGameViewer.GameController = jsGameViewer.createClass();
-jsGameViewer.GameController.prototype = {
+jQuery.extend(jsGameViewer.GameController.prototype, {
   initialize: function(config){
     this.id = jsGameViewer.getGameId();
     jsGameViewer[this.id] = this;
@@ -84,7 +84,8 @@ jsGameViewer.GameController.prototype = {
       return this;
     }
     var _this = this;
-    jQuery.ajax({url:url,
+    jQuery.ajax({
+      url:url,
       success:function(response){
         try {
           // if game data haven't changed, don't reload the game
@@ -141,7 +142,8 @@ jsGameViewer.GameController.prototype = {
   refresh: function(force){
     var url = this.game.url;
     var _this = this;
-    jQuery.ajax({url:url,
+    jQuery.ajax({
+      url:url,
       ifModified: true,
       success:function(response){
         try {
@@ -180,126 +182,7 @@ jsGameViewer.GameController.prototype = {
     var win = window.open(url, title, "width=" + width + "px,height=" + height + "px,status=yes,location=no,resizable=yes");
   },
 
-  setPlayer: function(player){
-    this.player = player;
-    return this;
-  },
-
-  setPlayerInterval: function(interval){
-    this.config.playerInterval = interval;
-    return this;
-  },
-
-  setObserverInterval: function(interval){
-    this.config.observerInterval = interval;
-    return this;
-  },
-
-  startUpdater: function(){
-    this.stopUpdater();
-    if (this.game && !this.game.isFinished())
-      return this;
-    var _this = this;
-    var updaterFunc = function(){
-      if (!_this.game)
-        return;
-      if (_this.game.isFinished()){
-        _this.stopUpdater();
-        return;
-      }
-      if (_this.isMyTurn())
-        return;
-      _this.refresh();
-    };
-    if (this.player){
-      this.playerUpdater = setInterval(updaterFunc, this.config.playerInterval*1000);
-    }
-    this.observerUpdater = setInterval(updaterFunc, this.config.observerInterval*1000);
-    return this;
-  },
-
-  stopUpdater: function(){
-    if (this.playerUpdater){
-      clearInterval(this.playerUpdater);
-      delete this.playerUpdater;
-    }
-    if (this.observerUpdater){
-      clearInterval(this.observerUpdater);
-      delete this.observerUpdater;
-    }
-    return this;
-  },
-
-  // This is required to keep the forum session alive when integrating with a forum like Discuz!
-  saveSession: function(url, interval){
-    if (!this.sessionSaver){
-      this.sessionSaver = setInterval(function(){
-        jQuery.ajax({url: url});
-      }, interval*1000);
-    }
-    return this;
-  },
-
-  setUsernameElemId: function(elemId){
-    this.usernameElemId = elemId;
-    return this;
-  },
-
-  setUsername: function(username){
-    this.username = username;
-    return this;
-  },
-
-  getUsername: function(){
-    if (this.username){
-      return this.username;
-    } else if (this.usernameElemId){
-      return jQuery.trim(jQuery('#' + this.usernameElemId).text());
-    } else {
-      return null;
-    }
-  },
-
-  isPlayer: function(){
-    if (this.player && this.player.isPlayer){
-      return this.player.isPlayer();
-    } else {
-      return false;
-    }
-  },
-
-  isMyTurn: function(){
-    if (this.player && this.player.isMyTurn){
-      return this.player.isMyTurn();
-    } else {
-      return false;
-    }
-  },
-
-  sendMove: function(){
-    if (this.player && this.player.sendMove){
-      return this.player.sendMove();
-    } else {
-      //alert("This is not a DGS game. \nCurrently the program only supports to play on DGS.");
-      alert("Õâ²»ÊÇDGS¶Ô¾Ö¡£±¾³ÌÐòÄ¿Ç°Ö»Ö§³ÖÔÚDGSÉÏÏÂÆå¡£");
-      return false;
-    }
-  },
-
-  resign: function(){
-    if (this.player && this.player.resign){
-      // var answer = confirm("Are you sure that you would like to resign?");
-      var answer = confirm("ÄãÈ·ÊµÒªÈÏÊäÂð£¿");
-      if (answer)
-        this.player.resign();
-    } else {
-      //alert("This is not a DGS game. Currently the program only supports to play on DGS.");
-      alert("Õâ²»ÊÇDGS¶Ô¾Ö¡£±¾³ÌÐòÄ¿Ç°Ö»Ö§³ÖÔÚDGSÉÏÏÂÆå¡£");
-      return false;
-    }
-  },
-
   getPlaceHolder: function(){
     return "<div id='" + this.id + "' style='display:none'>&nbsp;</div>";
   }
-};
+});
