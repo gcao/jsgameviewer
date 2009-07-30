@@ -89,7 +89,7 @@ end
 
 FileList['.htaccess', 'index.php', 'gamewindow.php', 'games/*', 'js/*', 'php/*.php', 'view/**/*'].exclude('**/_notes').each do |source|
   target = File.join(DIST_DIR + source)
-  puts target
+  # puts target
   file target => source do
     if File.directory? source
       File.makedirs target
@@ -100,6 +100,29 @@ FileList['.htaccess', 'index.php', 'gamewindow.php', 'games/*', 'js/*', 'php/*.p
   end
   task :dist => target
 end
+
+YUI_COMMAND = "java -jar ~/tools/yuicompressor-2.4.2/build/yuicompressor-2.4.2.jar"
+
+task :compress_js do
+  my_files = %w(js/thickbox.js 
+                experimental/js/base.js
+                experimental/js/model.js
+                experimental/js/parser.js
+                experimental/js/controller.js
+                experimental/js/player.js
+                experimental/js/updater.js
+                experimental/js/weiqi_template.js
+                experimental/js/view.js)
+  `cat #{my_files.join(' ')} > /tmp/test.js && #{YUI_COMMAND} /tmp/test.js > experimental/js/compressed.js`
+  
+  `cat js/jquery-1.3.2.min.js experimental/js/combined.js > experimental/js/compressed_all.js`
+end
+
+task :compress_css do
+  `#{YUI_COMMAND} view/default.css > view/compressed.css`
+end
+
+task :compress => %w(compress_js compress_css)
 
 task :convert_weiqi_template_to_js do
   template = IO.readlines('view/templates/weiqi.html').map{|line| line.strip}.join.gsub!('"', "'")
