@@ -7,7 +7,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, {
     this.config = jsGameViewer.clone(jsGameViewer.CONFIG);
     if (config != null)
       jQuery.extend(this.config, config);
-  
+
     this.reset();
   },
 
@@ -29,9 +29,11 @@ jQuery.extend(jsGameViewer.GameController.prototype, {
 
   reset: function(){
     this._initialized = false;
-    if (this.config.container != null) 
-      jQuery("#" + this.config.container).empty().append(this.getPlaceHolder());
-    else {
+    if (this.config.container != null) {
+      var elem = this.config.container;
+      if (elem.constructor == String) elem = jQuery("#" + this.config.container);
+      elem.empty().append(this.getPlaceHolder());
+    } else {
       if (document.getElementById(this.id) != null)
         jQuery("#"+this.id).replaceWith(this.getPlaceHolder());
       else

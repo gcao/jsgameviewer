@@ -68,7 +68,6 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
       } else {
         jQuery("#"+this.config.container).empty().append(s);
       }
-      // fdSliderController.construct();
       var _this = this;
       jQuery("#"+this.id+"_boardFascade").mousemove(function(e){
         _this.registerKeyListener();

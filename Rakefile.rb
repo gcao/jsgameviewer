@@ -112,10 +112,11 @@ task :compress_js do
                 experimental/js/player.js
                 experimental/js/updater.js
                 experimental/js/weiqi_template.js
-                experimental/js/view.js)
+                experimental/js/view.js
+                experimental/js/game_finder.js)
   `cat #{my_files.join(' ')} > /tmp/test.js && #{YUI_COMMAND} /tmp/test.js > experimental/js/compressed.js`
   
-  `cat js/jquery-1.3.2.min.js experimental/js/combined.js > experimental/js/compressed_all.js`
+  `cat js/jquery-1.3.2.min.js experimental/js/compressed.js > experimental/js/compressed_all.js`
 end
 
 task :compress_css do
