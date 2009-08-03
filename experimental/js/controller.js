@@ -2,6 +2,7 @@ jsGameViewer.GameController = jsGameViewer.createClass();
 jQuery.extend(jsGameViewer.GameController.prototype, {
   initialize: function(config){
     this.id = jsGameViewer.getGameId();
+    this.jqId = "#" + this.id;
     jsGameViewer[this.id] = this;
   
     this.config = jsGameViewer.clone(jsGameViewer.CONFIG);
@@ -29,13 +30,21 @@ jQuery.extend(jsGameViewer.GameController.prototype, {
 
   reset: function(){
     this._initialized = false;
+    
     if (this.config.container != null) {
-      var elem = this.config.container;
-      if (elem.constructor == String) elem = jQuery("#" + this.config.container);
-      elem.empty().append(this.getPlaceHolder());
+      var container = jQuery("#" + this.config.container);
+      if (container.get(0).nodeName == 'DIV') {
+        container.empty().append(this.getPlaceHolder());
+      } else {
+        if (jQuery(this.jqId).get(0)) {
+          jQuery(this.jqId).replaceWith(this.getPlaceHolder());
+        } else {
+          container.after(this.getPlaceHolder());
+        }
+      }
     } else {
-      if (document.getElementById(this.id) != null)
-        jQuery("#"+this.id).replaceWith(this.getPlaceHolder());
+      if (jQuery(this.jqId).get(0) != null)
+        jQuery(this.jqId).replaceWith(this.getPlaceHolder());
       else
         document.write(this.getPlaceHolder());
     }

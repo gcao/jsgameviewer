@@ -104,6 +104,8 @@ end
 YUI_COMMAND = "java -jar ~/tools/yuicompressor-2.4.2/build/yuicompressor-2.4.2.jar"
 
 task :compress_js do
+  `#{YUI_COMMAND} experimental/js/loader.js > experimental/build/compressed_loader.js`
+  
   my_files = %w(js/thickbox.js 
                 experimental/js/base.js
                 experimental/js/model.js
@@ -114,9 +116,9 @@ task :compress_js do
                 experimental/js/weiqi_template.js
                 experimental/js/view.js
                 experimental/js/game_finder.js)
-  `cat #{my_files.join(' ')} > /tmp/test.js && #{YUI_COMMAND} /tmp/test.js > experimental/js/compressed.js`
+  `cat #{my_files.join(' ')} > /tmp/test.js && #{YUI_COMMAND} /tmp/test.js > experimental/build/compressed.js`
   
-  `cat js/jquery-1.3.2.min.js experimental/js/compressed.js > experimental/js/compressed_all.js`
+  `cat js/jquery-1.3.2.min.js experimental/build/compressed.js > experimental/build/compressed_all.js`
 end
 
 task :compress_css do
