@@ -1,3 +1,4 @@
+///////////// TODO Change this to adhere to jsgameviewer namespace ////////////
 DGS_GAME_ID_PATTERN = /gid=(\d+)/i;
 
 Object.extend(CONFIG, {

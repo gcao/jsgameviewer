@@ -72,22 +72,11 @@ task :clean do
   FileUtils.rm_rf DIST_DIR if File.exist? DIST_DIR
 end
 
-COMBINED_JS = "js/all.js"
-
-file COMBINED_JS => [:init] do
-  dir = File.dirname COMBINED_JS
-  File.makedirs dir unless File.exist? dir
-  File.open(COMBINED_JS, "w") do |file|
-    file.print open("http://localhost/jsgameviewer/php/main.php").read
-  end
-end
-
 desc "Create distribution"
-task :dist => [COMBINED_JS] do
-  File.makedirs DIST_DIR + "php/cache"
+task :dist do
 end
 
-FileList['.htaccess', 'index.php', 'gamewindow.php', 'games/*', 'js/*', 'php/*.php', 'view/**/*'].exclude('**/_notes').each do |source|
+FileList['.htaccess', 'index.php', 'gamewindow.php', 'build/*', 'games/*', 'js/*', 'php/*.php', 'view/**/*'].exclude('**/_notes').each do |source|
   target = File.join(DIST_DIR + source)
   # puts target
   file target => source do
@@ -101,28 +90,26 @@ FileList['.htaccess', 'index.php', 'gamewindow.php', 'games/*', 'js/*', 'php/*.p
   task :dist => target
 end
 
-YUI_COMMAND = "java -jar ~/tools/yuicompressor-2.4.2/build/yuicompressor-2.4.2.jar"
+YUI_COMMAND = "java -jar lib/yuicompressor-2.4.2.jar"
 
 task :compress_js do
-  `#{YUI_COMMAND} experimental/js/loader.js > experimental/build/compressed_loader.js`
-  
   my_files = %w(js/thickbox.js 
-                experimental/js/base.js
-                experimental/js/model.js
-                experimental/js/parser.js
-                experimental/js/controller.js
-                experimental/js/player.js
-                experimental/js/updater.js
-                experimental/js/weiqi_template.js
-                experimental/js/view.js
-                experimental/js/game_finder.js)
-  `cat #{my_files.join(' ')} > /tmp/test.js && #{YUI_COMMAND} /tmp/test.js > experimental/build/compressed.js`
+                js/base.js
+                js/model.js
+                js/parser.js
+                js/controller.js
+                js/player.js
+                js/updater.js
+                js/weiqi_template.js
+                view/js/view.js
+                js/game_finder.js)
+  `cat #{my_files.join(' ')} > /tmp/test.js && #{YUI_COMMAND} /tmp/test.js > build/compressed.js`
   
-  `cat js/jquery-1.3.2.min.js experimental/build/compressed.js > experimental/build/compressed_all.js`
+  `cat js/jquery-1.3.2.min.js build/compressed.js > build/compressed_all.js`
 end
 
 task :compress_css do
-  `#{YUI_COMMAND} view/default.css > view/compressed.css`
+  `#{YUI_COMMAND} view/default.css > build/compressed.css`
 end
 
 task :compress => %w(compress_js compress_css)
@@ -130,7 +117,7 @@ task :compress => %w(compress_js compress_css)
 task :convert_weiqi_template_to_js do
   template = IO.readlines('view/templates/weiqi.html').map{|line| line.strip}.join.gsub!('"', "'")
   template.gsub!('gv.', 'jsGameViewer.')
-  File.open('experimental/js/weiqi_template.js', 'w') do |f|
+  File.open('js/weiqi_template.js', 'w') do |f|
     f.print("jsGameViewer.WEIQI_TEMPLATE = \"#{template}\";")
   end
 end
