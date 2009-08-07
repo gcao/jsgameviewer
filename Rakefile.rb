@@ -76,7 +76,7 @@ desc "Create distribution"
 task :dist do
 end
 
-FileList['.htaccess', 'index.php', 'gamewindow.php', 'build/*', 'games/*', 'js/*', 'php/*.php', 'view/**/*'].exclude('**/_notes').each do |source|
+FileList['.htaccess', 'index.php', 'gamewindow.html', 'build/*', 'games/*', 'js/*', 'php/*.php', 'view/**/*'].exclude('**/_notes').each do |source|
   target = File.join(DIST_DIR + source)
   # puts target
   file target => source do
