@@ -124,6 +124,23 @@ jQuery.extend(jsGameViewer.GameController.prototype, {
     });
     return this;
   },
+  
+  loadSgf: function(sgf, n){
+    try {
+      this.game = new jsGameViewer.SGFParser(this.config.gameType).parse(sgf);
+      this.game.dataSize = sgf.length;
+      this.setGameTypeIf(this.game.type);
+      this.gameState = new jsGameViewer.model.GameState(this.game);
+      this.initGame();
+      if (n == undefined)
+        this.forwardAll();
+      else
+        this.forwardN(n);
+      return this;
+    } catch(e) {
+      throw "GameController.loadSgf('" + sgf + "'): " + e;
+    }
+  },
 
   loadInline: function(divId, n){
     try {
@@ -135,7 +152,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, {
       if (this.game && this.game.dataSize && this.game.dataSize == s.length){
         return this;
       }
-      this.game = new jsGameViewer.SGFParser(this.config.gameType).parse();
+      this.game = new jsGameViewer.SGFParser(this.config.gameType).parse(s);
       this.game.dataSize = s.length;
       this.setGameTypeIf(this.game.type);
       this.gameState = new jsGameViewer.model.GameState(this.game);

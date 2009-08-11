@@ -1,3 +1,11 @@
+.gvreset{
+margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent;text-decoration:none;
+}
+
+a.gvreset{
+color:blue;
+}
+
 .toggleopacity img{
 filter:progid:DXImageTransform.Microsoft.Alpha(opacity=70);
 -moz-opacity:0.70;
@@ -33,7 +41,7 @@ font-size:larger;font-weight:bold;vertical-align:middle;
 }
 
 .gameviewer{
-position:relative;left:0px;top:0px;width:720px;height:450px;border:1px solid black;background:#EECD7A;
+clear:both;position:relative;left:0px;top:0px;width:720px;height:450px;border:1px solid black;background:#EECD7A;
 }
 
 .gameviewerdq{

@@ -62,11 +62,71 @@ jsgvLoader = {
         }
       }
     });
-  }
-};
-
-window.onload = function(){
-  if (document.getElementsByClassName('jsgv').length > 0) {
-    jsgvLoader.load();
+  },
+  
+  loadNowCss: function(){
+    if (document.getElementsByClassName('jsgv').length > 0) {
+      jsgvLoader.load();
+    }
+  },
+  
+  loadNowSgf: function(){
+    var GAME_START = "SGF[[";
+    var GAME_END = "]]SGF";
+    
+    function splitStrings(input) {
+      var result = [];
+      
+      var i = input.indexOf(GAME_START);
+      while(i >= 0){
+        result[result.length] = input.substr(0, i);
+        result[result.length] = input.substr(i, i + GAME_START.length - 1);
+        input = input.substr(i + GAME_START.length);
+        console.log(input);
+        var j = input.indexOf(GAME_END);
+        if (j >= 0) {
+          result[result.length] = input.substr(0, j);
+          result[result.length] = input.substr(j, j + GAME_END.length - 1);
+          input = input.substr(j + GAME_END.length);
+        } else {
+          throw "No matching " + GAME_END + " is found.";
+        }
+      }
+      return result;
+    }
+  
+    function processElem(elem){
+      var parts = splitStrings(elem.innerHTML);
+      if (parts.length > 0) {
+        var newHTML = "";
+        var sgf = false;
+        for(var i = 0; i < parts.length; i++){
+          if (parts[i] == GAME_START) {
+            sgf = true;
+            newHTML += "<div class='jsgv' style='display:none'>";
+          } else if (parts[i] == GAME_END) {
+            sgf = false;
+            newHTML += "</div>";
+          } else if (sgf) {
+            newHTML += parts[i].replace(/<[^>]*>/g, "");
+          } else {
+            newHTML += parts[i];
+          }
+        }
+        elem.innerHTML = newHTML;
+      }
+    }
+    
+    return function(elem){
+      processElem(elem);
+    }
+  }(),
+  
+  loadOnloadCss: function(){
+    window.onload = function(){
+      if (document.getElementsByClassName('jsgv').length > 0) {
+        jsgvLoader.load();
+      }
+    };
   }
 };

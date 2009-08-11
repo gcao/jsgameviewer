@@ -90,30 +90,6 @@ FileList['.htaccess', 'gamewindow.html', 'index.html', 'build/*', 'examples/*', 
   task :dist => target
 end
 
-YUI_COMMAND = "java -jar lib/yuicompressor-2.4.2.jar"
-
-task :compress_js do
-  my_files = %w(js/thickbox.js 
-                js/base.js
-                js/model.js
-                js/parser.js
-                js/controller.js
-                js/player.js
-                js/updater.js
-                js/weiqi_template.js
-                view/js/view.js
-                js/game_finder.js)
-  `cat #{my_files.join(' ')} > /tmp/test.js && #{YUI_COMMAND} /tmp/test.js > build/compressed.js`
-  
-  `cat js/jquery-1.3.2.min.js build/compressed.js > build/compressed_all.js`
-end
-
-task :compress_css do
-  `#{YUI_COMMAND} view/default.css > build/compressed.css`
-end
-
-task :compress => %w(compress_js compress_css)
-
 task :convert_weiqi_template_to_js do
   template = IO.readlines('view/templates/weiqi.html').map{|line| line.strip}.join.gsub!('"', "'")
   template.gsub!('gv.', 'jsGameViewer.')
@@ -122,5 +98,29 @@ task :convert_weiqi_template_to_js do
   end
 end
 task :convert_template => :convert_weiqi_template_to_js
+
+YUI_COMMAND = "java -jar lib/yuicompressor-2.4.2.jar"
+
+task :compress_js => [:convert_template] do
+  my_files = %w(js/thickbox.js 
+                js/base.js
+                js/model.js
+                js/parser.js
+                js/controller.js
+                js/player.js
+                js/updater.js
+                js/weiqi_template.js
+                view/js/view.js)
+  `cat #{my_files.join(' ')} > /tmp/test.js && #{YUI_COMMAND} /tmp/test.js > build/compressed.js`
+  
+  `cat js/jquery-1.3.2.min.js build/compressed.js > build/compressed_all.js`
+end
+
+task :compress_css do
+  `#{YUI_COMMAND} view/default.css > build/compressed.css`
+  `sed -i '' s,/jsgameviewer,http://localhost/jsgameviewer,g build/compressed.css`
+end
+
+task :compress => %w(compress_js compress_css)
 
 task :default => :dist
