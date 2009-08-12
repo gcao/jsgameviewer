@@ -1,0 +1,1 @@
+jsgvLoader.loadOnloadSgf();
