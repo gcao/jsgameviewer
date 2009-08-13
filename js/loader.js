@@ -27,6 +27,8 @@ jsgvLoader = function(){
   }
 
   function processElem(elem){
+    if (!elem) 
+      elem = document.body;
     var parts = splitStrings(elem.innerHTML);
     if (parts.length > 0) {
       var newHTML = "";
@@ -34,7 +36,7 @@ jsgvLoader = function(){
       for(var i = 0; i < parts.length; i++){
         if (parts[i] == GAME_START) {
           sgf = true;
-          newHTML += "<div class='jsgv' style='display:none'>";
+          newHTML += "<div class='jsgv jsgv-inline'>";
         } else if (parts[i] == GAME_END) {
           sgf = false;
           newHTML += "</div>";
@@ -45,23 +47,24 @@ jsgvLoader = function(){
         }
       }
       elem.innerHTML = newHTML;
+      return true;
     }
   }
-
-  function addOnloadHandler(func) {  
-    var oldonload = window.onload;  
-    if (typeof window.onload != ‘function’) {  
-      window.onload = func;
-    } else { 
-      window.onload = function() {  
-        if (oldonload)
-          oldonload();  
-        func();  
-      }  
-    }
-  }
-
+  
   return {
+    addOnloadHandler: function(func) {  
+      var oldonload = window.onload;  
+      if (typeof window.onload != 'function') {  
+        window.onload = func;
+      } else { 
+        window.onload = function() {  
+          if (oldonload)
+            oldonload();  
+          func();  
+        }  
+      }
+    },
+  
     load: function(callback){
       var BASE_URL = 'http://localhost/jsgameviewer/';
       var STYLESHEET = BASE_URL + "build/compressed.css"
@@ -82,6 +85,7 @@ jsgvLoader = function(){
     loadJavascript: function(url, callback){
       var script = document.createElement("script")
       script.type = "text/javascript";
+      script.src = url;
       if (callback) {
         if (script.readyState){  
           // IE
@@ -96,58 +100,49 @@ jsgvLoader = function(){
           script.onload = function(){callback();};
         }
       }
-      script.src = url;
       document.documentElement.lastChild.appendChild(script);
     },
   
-    gameFinder: function(){
+    loadGames: function(){
       jQuery(".jsgv").each(function(){
-        var idFunc = function(elem) {
-          var id = jQuery(elem).attr('id');
-          if (!id) {
-            id = 'gv' + Math.floor(Math.random()*100000);
-            jQuery(elem).attr('id', id);
-          }
-          return id;
-        };
-    
+        var _this = jQuery(this);
+        var id = _this.attr('id');
+        if (!id) {
+          id = 'gv' + Math.floor(Math.random()*100000);
+          _this.attr('id', id);
+        }
+
         if (this.nodeName == 'A') {
-          var url = jQuery(this).attr('href');
-          new jsGameViewer.GameController({'container':idFunc(this)}).load(url);
+          var url = _this.attr('href');
+          new jsGameViewer.GameController({'container':id}).load(url);
         } else {
-          var gameController = new jsGameViewer.GameController({'container':idFunc(this)});
-          var url = jQuery(this).attr('jsgv-url');
-          if (url) {
-            gameController.load(url);
+          if (_this.hasClass('jsgv-inline')) {
+            _this.removeClass('jsgv-inline');
+            var sgf = _this.text();
+            var gameController = new jsGameViewer.GameController({'container':id});
+            gameController.loadSgf(sgf);
           } else {
-            gameController.show();
+            var gameController = new jsGameViewer.GameController({'container':id});
+            var url = _this.attr('jsgv-url');
+            if (url) {
+              gameController.load(url);
+            } else {
+              gameController.show();
+            }
           }
         }
       });
     },
   
-    loadNowCss: function(){
+    loadCss: function(){
       if (document.getElementsByClassName('jsgv').length > 0) {
-        jsgvLoader.load(this.gameFinder);
+        this.load(this.loadGames);
       }
     },
     
-    loadNowSgf: function(elem){
-      processElem(elem);
-    },
-  
-    loadOnloadCss: function(){
-      addOnloadHandler(function(){
-        if (document.getElementsByClassName('jsgv').length > 0) {
-          jsgvLoader.load(this.gameFinder);
-        }
-      });
-    },
-    
-    loadOnloadSgf: function(){
-      addOnloadHandler(function(){
-        jsgvLoader.processElem(document.body);
-      });
+    loadSgf: function(elem){
+      if (processElem(elem))
+        this.load(this.loadGames);
     }
   };
 }();

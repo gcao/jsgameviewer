@@ -127,6 +127,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, {
   
   loadSgf: function(sgf, n){
     try {
+      this.show();
       this.game = new jsGameViewer.SGFParser(this.config.gameType).parse(sgf);
       this.game.dataSize = sgf.length;
       this.setGameTypeIf(this.game.type);
@@ -147,20 +148,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, {
       if (jQuery("#"+divId).length == 0){
         return this;
       }
-      var s = jQuery.trim(jQuery("#"+divId).text());
-      // if game data haven't changed, don't reload the game
-      if (this.game && this.game.dataSize && this.game.dataSize == s.length){
-        return this;
-      }
-      this.game = new jsGameViewer.SGFParser(this.config.gameType).parse(s);
-      this.game.dataSize = s.length;
-      this.setGameTypeIf(this.game.type);
-      this.gameState = new jsGameViewer.model.GameState(this.game);
-      this.initGame();
-      if (n == undefined)
-        this.forwardAll();
-      else
-        this.forwardN(n);
+      loadSgf(jQuery("#"+divId).text(), n);
       return this;
     } catch(e) {
       throw "GameController.loadInline('" + divId + "'): " + e;
