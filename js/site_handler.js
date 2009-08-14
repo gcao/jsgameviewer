@@ -27,8 +27,8 @@ function localhostHandler(){
   if (location.host == 'localhost') {
     if (location.pathname == '/jsgameviewer/examples/load_sgf.html') {
       jsgvLoader.loadSgf();
+      return true;
     }
-    return true;
   }
 }
 
