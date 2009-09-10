@@ -38,7 +38,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
           jQuery.ajax({
             async: false,
             dataType: "application/xml",
-            url: CONFIG.viewDir+"templates/daoqi.html",
+            url: jsGameViewer.CONFIG.viewDir+"templates/daoqi.html",
             success: function(response){
               jsGameViewer.DAOQI_TEMPLATE = response;
             }
@@ -72,6 +72,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
       var _this = this;
       jQuery(this.jqId+"_boardFascade").mousemove(function(e){
         _this.registerKeyListener();
+        // console.log(e);
         var arr = _this.eventToXY(e);
         jQuery(_this.jqId+"_pointLabel").empty().append(_this.xyToLabel(arr[0],arr[1]));
       }).mouseout(function(e){
@@ -579,30 +580,30 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
           var color = this.gameState.board[x][y];
           var styleClass = "";
           switch(mark[2]){
-            case MARK_CROSS:
+            case jsGameViewer.model.MARK_CROSS:
               styleClass = "gvsprite-19-markcross";
               break;
-            case MARK_TRIANGLE:
+            case jsGameViewer.model.MARK_TRIANGLE:
               styleClass = "gvsprite-19-marktriangle";
               break;
-            case MARK_SQUARE:
+            case jsGameViewer.model.MARK_SQUARE:
               styleClass = "gvsprite-19-marksquare";
               break;
-            case MARK_CIRCLE:
+            case jsGameViewer.model.MARK_CIRCLE:
               styleClass = "gvsprite-19-markcircle";
               break;
-            case MARK_TERR_BLACK:
+            case jsGameViewer.model.MARK_TERR_BLACK:
               styleClass = "gvsprite-19-markblack";
               break;
-            case MARK_TERR_WHITE:
+            case jsGameViewer.model.MARK_TERR_WHITE:
               styleClass = "gvsprite-19-markwhite";
               break;
-            case MARK_TEXT:
+            case jsGameViewer.model.MARK_TEXT:
               this.mapToPoints(x,y,function(x,y){
                 var area = _this.xyToArea(x,y);
                 var left = area[0], top = area[1], width = area[2], height = area[3];
                 var s = "<div style='position:absolute;left:"+left+"px;top:"+top+"px;width:"+width+"px;height:"+height+"px;text-align:center;vertical-align:middle;color:red;font-family:Nina;font-weight:bolder;font-size:14px;";
-                if (color == STONE_NONE){
+                if (color == jsGameViewer.model.STONE_NONE){
                   if (_this.isInCentralArea(x,y)){
                     s += "background-color:"+_this.config.boardColorDQ+";";
                   } else {
@@ -618,7 +619,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
             var area = _this.xyToArea(x,y);
             var left = area[0], top = area[1], width = area[2], height = area[3];
             var s = "<div class='"+styleClass+"' style='position:absolute;left:"+left+"px;top:"+top+"px;";
-            if (color == STONE_NONE){
+            if (color == jsGameViewer.model.STONE_NONE){
               if (_this.isInCentralArea(x,y)){
                 s += "background-color:"+_this.config.boardColorDQ+";";
               } else {
@@ -638,27 +639,27 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
           var left = area[0], top = area[1], width = area[2], height = area[3];
           var styleClass = "";
           switch(mark[2]){
-            case MARK_CROSS:
+            case jsGameViewer.model.MARK_CROSS:
               styleClass = "gvsprite-21-markcross";
               break;
-            case MARK_TRIANGLE:
+            case jsGameViewer.model.MARK_TRIANGLE:
               styleClass = "gvsprite-21-marktriangle";
               break;
-            case MARK_SQUARE:
+            case jsGameViewer.model.MARK_SQUARE:
               styleClass = "gvsprite-21-marksquare";
               break;
-            case MARK_CIRCLE:
+            case jsGameViewer.model.MARK_CIRCLE:
               styleClass = "gvsprite-21-markcircle";
               break;
-            case MARK_TERR_BLACK:
+            case jsGameViewer.model.MARK_TERR_BLACK:
               styleClass = "gvsprite-21-markblack";
               break;
-            case MARK_TERR_WHITE:
+            case jsGameViewer.model.MARK_TERR_WHITE:
               styleClass = "gvsprite-21-markwhite";
               break;
-            case MARK_TEXT:
+            case jsGameViewer.model.MARK_TEXT:
               var s = "<div style='position:absolute;left:"+left+"px;top:"+top+"px;width:"+width+"px;height:"+height+"px;text-align:center;vertical-align:middle;color:red;font-family:Nina;font-weight:bolder;font-size:15px;";
-              if (color == STONE_NONE){
+              if (color == jsGameViewer.model.STONE_NONE){
                 s += "background-color:"+this.config.boardColor+";";
               }
               s += "'>"+mark[3]+"</div>";
@@ -666,7 +667,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
               continue;
           }
           var s = "<div class='"+styleClass+"' style='position:absolute;left:"+left+"px;top:"+top+"px;";
-          if (color == STONE_NONE){
+          if (color == jsGameViewer.model.STONE_NONE){
             s += "background-color:"+this.config.boardColor+";";
           }
           s += "'></div>";
@@ -1193,13 +1194,11 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
     },
   
     eventToXY: function(e){
-      e = e || window.event;
-      if (e.layerX == undefined)
-        e.layerX = e.offsetX;
-      if (e.layerY == undefined)
-        e.layerY = e.offsetY;
-      var x = parseInt(e.layerX/this.config.gridSize);
-      var y = parseInt(e.layerY/this.config.gridSize);
+      e = e.originalEvent || window.event;
+      layerX = e.layerX || e.offsetX || e.clientX;
+      layerY = e.layerY || e.offsetY || e.clientY;
+      var x = parseInt(layerX/this.config.gridSize);
+      var y = parseInt(layerY/this.config.gridSize);
       if (this.config.gameType == jsGameViewer.DAOQI){
         x = (x+this.config.boardSize-this.config.x0)%this.config.boardSize;
         y = (y+this.config.boardSize-this.config.y0)%this.config.boardSize;
