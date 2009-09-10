@@ -28,6 +28,9 @@ function localhostHandler(){
     if (location.pathname == '/jsgameviewer/examples/load_sgf.html') {
       jsgvLoader.loadSgf();
       return true;
+    } else if (location.pathname.match(/uploads/)) {
+      jsgvLoader.loadGames();
+      return true;
     }
   }
 }
