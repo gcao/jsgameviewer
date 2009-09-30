@@ -1,3 +1,7 @@
+# sudo port install ImageMagick
+# sudo gem install rmagick
+# sudo gem install imagesize
+
 require 'rubygems'
 require 'rake'
 require 'ftools'
@@ -34,10 +38,10 @@ end
 
 desc "Create stones"
 task :stones do
-  redraw_stone(BLACK,grid)
-  redraw_stone(BLACK,daoqigrid)
-  redraw_stone(WHITE,grid)
-  redraw_stone(WHITE,daoqigrid)
+  redraw_stone_and_dead_stone(BLACK,grid)
+  redraw_stone_and_dead_stone(BLACK,daoqigrid)
+  redraw_stone_and_dead_stone(WHITE,grid)
+  redraw_stone_and_dead_stone(WHITE,daoqigrid)
 end
 
 desc "Create marks"
