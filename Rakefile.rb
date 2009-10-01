@@ -97,10 +97,26 @@ end
 desc "Convert HAML templates to localized HTML files"
 task :haml2html do
   gem "haml"
-  %x(haml -r translations/en_us.rb view/templates/weiqi.haml > view/templates/weiqi.html)
-  %x(haml -r translations/zh_cn.rb view/templates/weiqi.haml > view/templates/weiqi_zh_cn.html)
-  %x(haml -r translations/en_us.rb view/templates/daoqi.haml > view/templates/daoqi.html)
-  %x(haml -r translations/zh_cn.rb view/templates/daoqi.haml > view/templates/daoqi_zh_cn.html)
+  %x(haml -r lib/translate.rb -r lib/en_us.rb view/templates/weiqi.haml > view/templates/weiqi.html)
+  %x(haml -r lib/translate.rb -r lib/zh_cn.rb view/templates/weiqi.haml > view/templates/weiqi_zh_cn.html)
+  %x(haml -r lib/translate.rb -r lib/en_us.rb view/templates/daoqi.haml > view/templates/daoqi.html)
+  %x(haml -r lib/translate.rb -r lib/zh_cn.rb view/templates/daoqi.haml > view/templates/daoqi_zh_cn.html)
+end
+
+def create_js_translation_for locale
+  load "lib/#{locale}.rb"
+  File.open("js/#{locale}.js", "w") do |f|
+    f.print "var jsgvTranslations = new Hash();\n"
+    javascript_keys.each do |key|
+      f.print "jsgvTranslations['#{key}'] = '#{t(key)}';\n"
+    end
+  end
+end
+
+desc "Create translation files for Javascript"
+task :localize_js do
+  create_js_translation_for "en_us"
+  create_js_translation_for "zh_cn"
 end
 
 task :convert_weiqi_template_to_js do
