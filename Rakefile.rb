@@ -94,6 +94,15 @@ FileList['.htaccess', 'gamewindow.html', 'index.html', 'build/*', 'examples/*', 
   task :dist => target
 end
 
+desc "Convert HAML templates to localized HTML files"
+task :haml2html do
+  gem "haml"
+  %x(haml -r translations/en_us.rb view/templates/weiqi.haml > view/templates/weiqi.html)
+  %x(haml -r translations/zh_cn.rb view/templates/weiqi.haml > view/templates/weiqi_zh_cn.html)
+  %x(haml -r translations/en_us.rb view/templates/daoqi.haml > view/templates/daoqi.html)
+  %x(haml -r translations/zh_cn.rb view/templates/daoqi.haml > view/templates/daoqi_zh_cn.html)
+end
+
 task :convert_weiqi_template_to_js do
   template = IO.readlines('view/templates/weiqi.html').map{|line| line.strip}.join.gsub!('"', "'")
   template.gsub!('gv.', 'jsGameViewer.')

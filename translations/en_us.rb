@@ -1,0 +1,25 @@
+def t(key) 
+  {
+    "whose_turn"             => "Next",
+    "jump_to"                => "Jump to",
+    "jump_to_xx"             => "Jump to XX",
+    "move_number_before"     => "",
+    "move_number_after"      => "",
+    "resign"                 => "Resign",
+    "black_dead"             => "B dead",
+    "white_dead"             => "W dead",
+    "open_in_new_window"     => "Open in new window",
+    "refresh"                => "Refresh game/board",
+    "show_hide_move_number"  => "Show/hide move number",
+    "home"                   => "Back to beginning",
+    "prev_comment_or_branch" => "Previous comment or branch",
+    "fast_back"              => "Fast back",
+    "back"                   => "Back",
+    "forward"                => "Forward",
+    "fast_forward"           => "Fast forward",
+    "next_comment_or_branch" => "Next comment or branch",
+    "end"                    => "Forward to end",
+    "submit"                 => "OK",
+    "cancel"                 => "Cancel",
+  }[key]
+end

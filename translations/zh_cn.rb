@@ -1,0 +1,25 @@
+def t(key) 
+  {
+    "whose_turn"             => "下一手",
+    "jump_to"                => "跳到第",
+    "jump_to_xx"             => "跳到第XX手",
+    "move_number_before"     => "第",
+    "move_number_after"      => "手",
+    "resign"                 => "认输",
+    "black_dead"             => "黑被提",
+    "white_dead"             => "白被提",
+    "open_in_new_window"     => "在新窗口打开",
+    "refresh"                => "刷新棋谱内容",
+    "show_hide_move_number"  => "显示/隐藏手数",
+    "home"                   => "到棋局开始",
+    "prev_comment_or_branch" => "上一评论或分支",
+    "fast_back"              => "快退",
+    "back"                   => "上一手",
+    "forward"                => "下一手",
+    "fast_forward"           => "快进",
+    "next_comment_or_branch" => "下一评论或分支",
+    "end"                    => "到棋局结束",
+    "submit"                 => "执行",
+    "cancel"                 => "取消",
+  }[key]
+end
