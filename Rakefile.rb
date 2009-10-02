@@ -23,7 +23,7 @@ end
 desc "Create distribution"
 task :dist
 
-FileList['.htaccess', 'gamewindow.html', 'index.html', 'build/*', 'examples/*', 'js/*', 'php/*.php', 'view/**/*'
+FileList['.htaccess', 'index.html', 'build/*', 'examples/*', 'js/*', 'php/*.php', 'view/**/*'
   ].exclude('**/_notes', '**/*.rb', '**/*.haml', '**/*.sass').each do |source|
   target = File.join(DIST_DIR + source)
   # puts target
@@ -55,7 +55,7 @@ task :template2js => :haml2html do
   template2js "daoqi", "en_us"
   template2js "daoqi", "zh_cn"
 end
-task :dist => :haml2html
+task :dist => :template2js
 
 desc "Convert SASS to stylesheet"
 task :sass2css => :sprites do

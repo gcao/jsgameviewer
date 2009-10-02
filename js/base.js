@@ -6,10 +6,15 @@ var jsGameViewer = function() {
     
     WEIQI: 0,
     DAOQI: 1,
+    
+    EN_US: "en_us",
+    ZH_CN: "zh_cn",
+    LOCALES: [this.EN_US, this.ZH_CN],
 
     CONFIG: {
       baseDir: "/jsgameviewer/",
       viewDir: "/jsgameviewer/view/",
+      locale: this.EN_US,
       gameType: this.WEIQI,
       boardSize: 19,
       playerInterval: 5,

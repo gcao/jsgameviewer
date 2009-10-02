@@ -25,6 +25,11 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
     destroyView: function(){
       jQuery(this.jqId).remove();
     },
+    
+    getTemplateLocation: function(){
+      var templateName = this.config.gameType == jsGameViewer.DAOQI ? "daoqi" : "weiqi";
+      this.CONFIG.viewDir+"templates/"+templateName+this.config.locale+".html";
+    },
 
     /* initialize view
      */
@@ -40,7 +45,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
           jQuery.ajax({
             async: false,
             dataType: "application/xml",
-            url: jsGameViewer.CONFIG.viewDir+jsGameViewer.CONFIG.daoqiTemplate,
+            url: this.getTemplateLocation(),
             success: function(response){
               jsGameViewer.DAOQI_TEMPLATE = response;
             }
@@ -54,7 +59,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
           jQuery.ajax({
             async: false,
             dataType: "application/xml",
-            url: jsGameViewer.CONFIG.viewDir+jsGameViewer.CONFIG.weiqiTemplate,
+            url: this.getTemplateLocation(),
             success: function(response){
               jsGameViewer.WEIQI_TEMPLATE = response;
             }

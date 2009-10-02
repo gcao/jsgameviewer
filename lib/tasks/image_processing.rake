@@ -28,8 +28,10 @@ end
 
 desc "Create stones"
 task :stones do
+  redraw_stone_and_dead_stone(BLACK,14)
   redraw_stone_and_dead_stone(BLACK,grid)
   redraw_stone_and_dead_stone(BLACK,daoqigrid)
+  redraw_stone_and_dead_stone(WHITE,14)
   redraw_stone_and_dead_stone(WHITE,grid)
   redraw_stone_and_dead_stone(WHITE,daoqigrid)
 end

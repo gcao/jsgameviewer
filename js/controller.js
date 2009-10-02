@@ -21,6 +21,17 @@ jQuery.extend(jsGameViewer.GameController.prototype, {
   initialized: function(){
     return this._inialized == true;
   },
+  
+  changeLocale: function(new_locale){
+    // TODO: ADD TO VIEW AND TEST
+    if (!jsGameViewer.LOCALES.include(new_locale)){
+      alert("jsGameViewer WARNING: Invalid locale '" + new_locale + "'");
+      return;
+    }
+    this.CONFIG['locale'] = new_locale;
+    this.reset();
+    this.show();
+  },
 
   destroy: function(){
     this.destroyView();
