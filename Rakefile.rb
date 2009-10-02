@@ -24,7 +24,7 @@ desc "Create distribution"
 task :dist
 
 FileList['.htaccess', 'index.html', 'build/*', 'examples/*', 'js/*', 'php/*.php', 'view/**/*'
-  ].exclude('**/_notes', '**/*.rb', '**/*.haml', '**/*.sass').each do |source|
+  ].exclude('**/_notes', '**/*.rb', '**/*.haml', '**/sass','**/*.sass').each do |source|
   target = File.join(DIST_DIR + source)
   # puts target
   file target => source do
