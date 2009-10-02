@@ -186,7 +186,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, {
   },
 
   openInWindow: function(){
-    var url = this.config.baseDir + "gamewindow.php?";
+    var url = this.config.baseDir + "/php/game_window.php?";
     var title = "jsgameviewer", width = 722, height = 452;
     if (this.config.gameType == jsGameViewer.DAOQI) {
       url += "type=DAOQI&";

@@ -50,10 +50,10 @@ end
 desc "Convert localized templates to javascript for cross site support"
 task :template2js => :haml2html do
   require 'template2js'
-  template2js "view/templates/weiqi_en_us.html", "view/templates/weiqi_en_us.js", "WEIQI_TEMPLATE_en_us"
-  template2js "view/templates/weiqi_zh_cn.html", "view/templates/weiqi_zh_cn.js", "WEIQI_TEMPLATE_zh_cn"
-  template2js "view/templates/daoqi_en_us.html", "view/templates/daoqi_en_us.js", "DAOQI_TEMPLATE_en_us"
-  template2js "view/templates/daoqi_zh_cn.html", "view/templates/daoqi_zh_cn.js", "DAOQI_TEMPLATE_zh_cn"
+  template2js "weiqi", "en_us"
+  template2js "weiqi", "zh_cn"
+  template2js "daoqi", "en_us"
+  template2js "daoqi", "zh_cn"
 end
 task :dist => :haml2html
 
