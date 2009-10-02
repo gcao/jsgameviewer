@@ -2,76 +2,17 @@
 # sudo gem install rmagick
 # sudo gem install imagesize
 
+$: << File.dirname(__FILE__) + "/lib"
+
 require 'rubygems'
 require 'rake'
 require 'ftools'
 require 'fileutils'
 require 'open-uri'
-require 'lib/sprites'
-require 'lib/utils'
-require 'lib/translate'
-include Utils
 
-grid = 21
-size = 19
-label_color = '#555555'
-label_font = 'Nina'
-label_font_size = 15
+require 'translate'
 
-# DAOQI only configurations
-daoqigrid = 19
-vbw = 3 # virtual board width
-daoqilabel_font_size = 13
-
-task :init
-
-desc "Create Weiqi board"
-task :board do
-  draw_board(grid, size, label_color, label_font, label_font_size)
-end
-
-desc "Create Daoqi board"
-task :daoqiboard do
-  draw_daoqiboard(daoqigrid, daoqisize)
-  draw_vlable(daoqigrid, size, vbw, label_color, label_font, daoqilabel_font_size)
-  draw_vlable(daoqigrid, size, vbw, label_color, label_font, daoqilabel_font_size)
-end
-
-desc "Create stones"
-task :stones do
-  redraw_stone_and_dead_stone(BLACK,grid)
-  redraw_stone_and_dead_stone(BLACK,daoqigrid)
-  redraw_stone_and_dead_stone(WHITE,grid)
-  redraw_stone_and_dead_stone(WHITE,daoqigrid)
-end
-
-desc "Create marks"
-task :marks do
-  #draw_mark(MARK_MOVE,grid)
-  #draw_mark(MARK_MOVE,daoqigrid)
-  draw_mark(MARK_CROSS,grid)
-  draw_mark(MARK_CROSS,daoqigrid)
-  draw_mark(MARK_TRIANGLE,grid)
-  draw_mark(MARK_TRIANGLE,daoqigrid)
-  draw_mark(MARK_SQUARE,grid)
-  draw_mark(MARK_SQUARE,daoqigrid)
-  draw_mark(MARK_CIRCLE,grid)
-  draw_mark(MARK_CIRCLE,daoqigrid)
-  draw_mark(MARK_BLACK_TERRITORY,grid)
-  draw_mark(MARK_BLACK_TERRITORY,daoqigrid)
-  draw_mark(MARK_WHITE_TERRITORY,grid)
-  draw_mark(MARK_WHITE_TERRITORY,daoqigrid)
-end
-
-desc "Create all images"
-task :images => [:board, :daoqiboard, :vlabel, :hlabel, :stones, :marks]
-
-desc "Create CSS Sprite classes and image"
-task :sprites do
-  to_sprites 'view/images'
-  # Current directory is probably changed in above code
-  Dir.chdir File.dirname(__FILE__)
-end
+load File.dirname(__FILE__) + '/lib/tasks/image_processing.rake'
 
 DIST_DIR = "dist/jsgameviewer/"
 
@@ -100,15 +41,24 @@ end
 desc "Convert HAML templates to localized HTML files"
 task :haml2html do
   gem "haml"
-  `haml -r lib/en_us.rb view/templates/weiqi.haml > view/templates/weiqi.html`
+  `haml -r lib/en_us.rb view/templates/weiqi.haml > view/templates/weiqi_en_us.html`
   `haml -r lib/zh_cn.rb view/templates/weiqi.haml > view/templates/weiqi_zh_cn.html`
-  `haml -r lib/en_us.rb view/templates/daoqi.haml > view/templates/daoqi.html`
+  `haml -r lib/en_us.rb view/templates/daoqi.haml > view/templates/daoqi_en_us.html`
   `haml -r lib/zh_cn.rb view/templates/daoqi.haml > view/templates/daoqi_zh_cn.html`
+end
+
+desc "Convert localized templates to javascript for cross site support"
+task :template2js => :haml2html do
+  require 'template2js'
+  template2js "view/templates/weiqi_en_us.html", "view/templates/weiqi_en_us.js", "WEIQI_TEMPLATE_en_us"
+  template2js "view/templates/weiqi_zh_cn.html", "view/templates/weiqi_zh_cn.js", "WEIQI_TEMPLATE_zh_cn"
+  template2js "view/templates/daoqi_en_us.html", "view/templates/daoqi_en_us.js", "DAOQI_TEMPLATE_en_us"
+  template2js "view/templates/daoqi_zh_cn.html", "view/templates/daoqi_zh_cn.js", "DAOQI_TEMPLATE_zh_cn"
 end
 task :dist => :haml2html
 
 desc "Convert SASS to stylesheet"
-task :sass2css => [:sprites] do
+task :sass2css => :sprites do
   gem "haml"
   `sass view/sass/main.sass > view/default.css`
   `sass view/sass/thickbox.sass >> view/default.css`
@@ -123,27 +73,16 @@ task :localize_js do
 end
 task :dist => :localize_js
 
-task :convert_weiqi_template_to_js do
-  template = IO.readlines('view/templates/weiqi.html').map{|line| line.strip}.join
-  template.gsub!('"', "'")
-  template.gsub!('gv.', 'jsGameViewer.')
-  template.gsub!('/jsgameviewer', 'http://localhost/jsgameviewer')
-  File.open('js/weiqi_template.js', 'w') do |f|
-    f.print("jsGameViewer.WEIQI_TEMPLATE = \"#{template}\";")
-  end
-end
-task :convert_template => :convert_weiqi_template_to_js
-
 YUI_COMMAND = "java -jar lib/yuicompressor-2.4.2.jar"
-task :compress_js => [:convert_template] do
-  my_files = %w(js/thickbox.js 
+task :compress_js do
+  my_files = %w(js/en_us.js 
+                js/thickbox.js
                 js/base.js
                 js/model.js
                 js/parser.js
                 js/controller.js
                 js/player.js
                 js/updater.js
-                js/weiqi_template.js
                 view/js/view.js)
                 
   `cat #{my_files.join(' ')} > /tmp/test.js && #{YUI_COMMAND} /tmp/test.js > build/compressed.js`

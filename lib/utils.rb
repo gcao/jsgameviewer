@@ -1,7 +1,7 @@
-  require 'RMagick'
-  include Magick
+require 'RMagick'
+include Magick
 
-  module Utils
+module Utils
 
   HLABELS = ['A','B','C','D','E','F','G','H','J','K','L','M','N','O','P','Q','R','S','T']
   BLACK = 0

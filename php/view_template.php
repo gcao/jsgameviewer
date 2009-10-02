@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>Daoqi Template</title>
+<title><?php print $_GET['template'] ?></title>
 <link rel="stylesheet" href="../view/default.css"/>
 </head>
 <body>

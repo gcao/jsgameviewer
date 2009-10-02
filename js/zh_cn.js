@@ -1,6 +1,6 @@
 // DO NOT MODIFY THIS FILE - IT IS AUTO GENERATED BASED ON jsgameviewer/translations/zh_cn.yml
 window.jsgv_zh_cn = {
-  'move_number_after': '手',
+  'move_number_after': '',
   'back': '上一手',
   'white': '白方',
   'result': '结果',
@@ -29,7 +29,7 @@ window.jsgv_zh_cn = {
   'next_comment_or_branch': '下一评论或变化图',
   'play_first': '先行',
   'show_hide_move_number': '显示/隐藏手数',
-  'move_number_before': '第',
+  'move_number_before': '',
   'resign': '认输',
   'open_in_new_window': '在新窗口打开',
   'home': '到棋局开始',

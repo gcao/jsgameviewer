@@ -12,7 +12,9 @@ jQuery.extend(jsGameViewer.CONFIG, {
   vbw:3,
   boardSizeDQ:25,
   rightPaneHeight:446,
-  rightPaneHeightDQ:522
+  rightPaneHeightDQ:522,
+  weiqiTemplate:"templates/weiqi_en_us.html",
+  daoqiTemplate:"templates/daoqi_en_us.html"
 });
 
 jQuery.extend(jsGameViewer.GameController.prototype, function(){
@@ -38,7 +40,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
           jQuery.ajax({
             async: false,
             dataType: "application/xml",
-            url: jsGameViewer.CONFIG.viewDir+"templates/daoqi.html",
+            url: jsGameViewer.CONFIG.viewDir+jsGameViewer.CONFIG.daoqiTemplate,
             success: function(response){
               jsGameViewer.DAOQI_TEMPLATE = response;
             }
@@ -52,7 +54,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
           jQuery.ajax({
             async: false,
             dataType: "application/xml",
-            url: jsGameViewer.CONFIG.viewDir+"templates/weiqi.html",
+            url: jsGameViewer.CONFIG.viewDir+jsGameViewer.CONFIG.weiqiTemplate,
             success: function(response){
               jsGameViewer.WEIQI_TEMPLATE = response;
             }

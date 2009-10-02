@@ -1,8 +1,8 @@
 whose_turn              : 下一手
 jump_to                 : 跳到第
 jump_to_xx              : 跳到第XX手
-move_number_before      : 第
-move_number_after       : 手
+move_number_before      :
+move_number_after       :
 resign                  : 认输
 black_dead              : 黑被提
 white_dead              : 白被提
