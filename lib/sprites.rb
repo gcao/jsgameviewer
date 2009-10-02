@@ -21,30 +21,22 @@ def to_sprites(dir)
     img = Image.ping(file)
     w = img[0].columns
     h = img[0].rows
-    sprites += ".#{css_prefix}#{file[0..file.index('.')-1].gsub('/','-')}{width: #{w}px; height: #{h}px; background: url(#{sprite_img}) 0 -#{y}px;}\n"
+    sprites += <<-SASS
+.#{css_prefix}#{file[0..file.index('.')-1].gsub('/','-')}
+  width: #{w}px
+  height: #{h}px
+  background: url(#{sprite_img}) 0 -#{y}px
+
+    SASS
     cmd += "-page +0+#{y} #{file} "
     y += h + dy
   end
   cmd += "-background none -mosaic -bordercolor none sprites.gif"
   system(cmd)
 
-  css_filename = "../default.css"
-  css_file = File.open(css_filename + ".new", "w")
-  is_sprite = false
-  IO.foreach css_filename do |line|
-    if line =~ /SPRITES BEGIN/
-      css_file.print line
-      is_sprite = true
-    elsif line =~ /SPRITES END/
-      css_file.print sprites
-      is_sprite = false
-    end
-    next if is_sprite
-    css_file.print line
+  File.open("../sass/sprites.sass", "w") do |f|
+    f.print sprites
   end
-  css_file.close
-  File.delete css_filename
-  File.rename css_file.path, css_filename
 end
 
 if __FILE__ == $0

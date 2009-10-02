@@ -69,6 +69,8 @@ task :images => [:board, :daoqiboard, :vlabel, :hlabel, :stones, :marks]
 desc "Create CSS Sprite classes and image"
 task :sprites do
   to_sprites 'view/images'
+  # Current directory is probably changed in above code
+  Dir.chdir File.dirname(__FILE__)
 end
 
 DIST_DIR = "dist/jsgameviewer/"
@@ -80,7 +82,8 @@ end
 desc "Create distribution"
 task :dist
 
-FileList['.htaccess', 'gamewindow.html', 'index.html', 'build/*', 'examples/*', 'js/*', 'php/*.php', 'view/**/*'].exclude('**/_notes').each do |source|
+FileList['.htaccess', 'gamewindow.html', 'index.html', 'build/*', 'examples/*', 'js/*', 'php/*.php', 'view/**/*'
+  ].exclude('**/_notes', '**/*.rb', '**/*.haml', '**/*.sass').each do |source|
   target = File.join(DIST_DIR + source)
   # puts target
   file target => source do
@@ -103,6 +106,15 @@ task :haml2html do
   `haml -r lib/zh_cn.rb view/templates/daoqi.haml > view/templates/daoqi_zh_cn.html`
 end
 task :dist => :haml2html
+
+desc "Convert SASS to stylesheet"
+task :sass2css => [:sprites] do
+  gem "haml"
+  `sass view/sass/main.sass > view/default.css`
+  `sass view/sass/thickbox.sass >> view/default.css`
+  `sass view/sass/sprites.sass >> view/default.css`
+end
+task :dist => :sass2css
 
 desc "Create translation files for Javascript"
 task :localize_js do
