@@ -9,6 +9,7 @@ require 'fileutils'
 require 'open-uri'
 require 'lib/sprites'
 require 'lib/utils'
+require 'lib/translate'
 include Utils
 
 grid = 21
@@ -77,8 +78,7 @@ task :clean do
 end
 
 desc "Create distribution"
-task :dist do
-end
+task :dist
 
 FileList['.htaccess', 'gamewindow.html', 'index.html', 'build/*', 'examples/*', 'js/*', 'php/*.php', 'view/**/*'].exclude('**/_notes').each do |source|
   target = File.join(DIST_DIR + source)
@@ -97,30 +97,23 @@ end
 desc "Convert HAML templates to localized HTML files"
 task :haml2html do
   gem "haml"
-  %x(haml -r lib/translate.rb -r lib/en_us.rb view/templates/weiqi.haml > view/templates/weiqi.html)
-  %x(haml -r lib/translate.rb -r lib/zh_cn.rb view/templates/weiqi.haml > view/templates/weiqi_zh_cn.html)
-  %x(haml -r lib/translate.rb -r lib/en_us.rb view/templates/daoqi.haml > view/templates/daoqi.html)
-  %x(haml -r lib/translate.rb -r lib/zh_cn.rb view/templates/daoqi.haml > view/templates/daoqi_zh_cn.html)
+  `haml -r lib/en_us.rb view/templates/weiqi.haml > view/templates/weiqi.html`
+  `haml -r lib/zh_cn.rb view/templates/weiqi.haml > view/templates/weiqi_zh_cn.html`
+  `haml -r lib/en_us.rb view/templates/daoqi.haml > view/templates/daoqi.html`
+  `haml -r lib/zh_cn.rb view/templates/daoqi.haml > view/templates/daoqi_zh_cn.html`
 end
-
-def create_js_translation_for locale
-  load "lib/#{locale}.rb"
-  File.open("js/#{locale}.js", "w") do |f|
-    f.print "var jsgvTranslations = new Hash();\n"
-    javascript_keys.each do |key|
-      f.print "jsgvTranslations['#{key}'] = '#{t(key)}';\n"
-    end
-  end
-end
+task :dist => :haml2html
 
 desc "Create translation files for Javascript"
 task :localize_js do
-  create_js_translation_for "en_us"
-  create_js_translation_for "zh_cn"
+  create_js_translation_for "en_us", "js/en_us.js"
+  create_js_translation_for "zh_cn", "js/zh_cn.js"
 end
+task :dist => :localize_js
 
 task :convert_weiqi_template_to_js do
-  template = IO.readlines('view/templates/weiqi.html').map{|line| line.strip}.join.gsub!('"', "'")
+  template = IO.readlines('view/templates/weiqi.html').map{|line| line.strip}.join
+  template.gsub!('"', "'")
   template.gsub!('gv.', 'jsGameViewer.')
   template.gsub!('/jsgameviewer', 'http://localhost/jsgameviewer')
   File.open('js/weiqi_template.js', 'w') do |f|
@@ -130,7 +123,6 @@ end
 task :convert_template => :convert_weiqi_template_to_js
 
 YUI_COMMAND = "java -jar lib/yuicompressor-2.4.2.jar"
-
 task :compress_js => [:convert_template] do
   my_files = %w(js/thickbox.js 
                 js/base.js
@@ -141,6 +133,7 @@ task :compress_js => [:convert_template] do
                 js/updater.js
                 js/weiqi_template.js
                 view/js/view.js)
+                
   `cat #{my_files.join(' ')} > /tmp/test.js && #{YUI_COMMAND} /tmp/test.js > build/compressed.js`
   
   `cat js/jquery-1.3.2.min.js build/compressed.js > build/compressed_all.js`
@@ -150,7 +143,7 @@ task :compress_css do
   `#{YUI_COMMAND} view/default.css > build/compressed.css`
   `sed -i '' s,/jsgameviewer,http://localhost/jsgameviewer,g build/compressed.css`
 end
-
 task :compress => %w(compress_js compress_css)
+task :dist => :compress
 
 task :default => :dist

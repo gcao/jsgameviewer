@@ -278,17 +278,17 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
         infoNode.append("<div align='center' style='font-weight:bold'>"+jQuery.trim(game.name)+"</div>");
       }
       if (jsGameViewer.notNull(game.date)){
-        infoNode.append("<div>&#26102;&#38388;&#65306;"+jQuery.trim(game.date)+"</div>");
+        infoNode.append("<div>"+jsgvTranslations['time']+": "+jQuery.trim(game.date)+"</div>");
       }
       if (jsGameViewer.notNull(game.place)){
-        infoNode.append("<div>&#22320;&#28857;&#65306;"+jQuery.trim(game.place)+"</div>");
+        infoNode.append("<div>"+jsgvTranslations['place']+": "+jQuery.trim(game.place)+"</div>");
       }
-      var playFirst = "&nbsp;&lt;-&nbsp;&#20808;&#34892;";
+      var playFirst = "&nbsp;&#8592; "+jsgvTranslations['play_first'];
       // black player name + rank
       var blackRank = "";
       if (jsGameViewer.notNull(game.blackRank))
         blackRank = "&nbsp;("+game.blackRank+")";
-      var blackPlayer = "<div>&#40657;&#26041;&#65306;<strong>"+jQuery.trim(game.blackName)+"</strong>"+blackRank;
+      var blackPlayer = "<div>"+jsgvTranslations['black']+": <strong>"+jQuery.trim(game.blackName)+"</strong>"+blackRank;
       if (game.getFirstPlayer() == jsGameViewer.model.STONE_BLACK)
         blackPlayer += playFirst;
       blackPlayer += "</div>";
@@ -297,22 +297,19 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
       var whiteRank = "";
       if (jsGameViewer.notNull(game.whiteRank))
         whiteRank = "&nbsp;("+game.whiteRank+")";
-      var whitePlayer = "<div>&#30333;&#26041;&#65306;<strong>"+jQuery.trim(game.whiteName)+"</strong>"+whiteRank;
+      var whitePlayer = "<div>"+jsgvTranslations['white']+": <strong>"+jQuery.trim(game.whiteName)+"</strong>"+whiteRank;
       if (game.getFirstPlayer() == jsGameViewer.model.STONE_WHITE)
         whitePlayer += playFirst;
       whitePlayer += "</div>";
       infoNode.append(whitePlayer);
       if (game.handicap > 0){
-        infoNode.append("<div>&#35753;&#23376;&#65306;"+game.handicap+"</div>");
+        infoNode.append("<div>"+jsgvTranslations['handicap']+": "+game.handicap+"</div>");
       } else {
-        infoNode.append("<div>&#35268;&#21017;&#65306;"+jQuery.trim(game.rule)+"</div>");
-        if (game.rule == "Chinese")
-          infoNode.append("<div>&#36148;&#23376;&#65306;"+game.komi+"</div>");
-        else
-          infoNode.append("<div>&#36148;&#30446;&#65306;"+game.komi+"</div>");
+        infoNode.append("<div>"+jsgvTranslations['rule']+": "+jQuery.trim(game.rule)+"</div>");
+        infoNode.append("<div>"+jsgvTranslations['komi']+": "+game.komi+"</div>");
       }
-      infoNode.append("<div>&#25163;&#25968;&#65306;"+game.getMoves()+"</div>");
-      infoNode.append("<div>&#32467;&#26524;&#65306;"+jQuery.trim(game.result)+"</div>");
+      infoNode.append("<div>"+jsgvTranslations['moves']+": "+game.getMoves()+"</div>");
+      infoNode.append("<div>"+jsgvTranslations['result']+": "+jQuery.trim(game.result)+"</div>");
       return this;
     },
   
@@ -530,9 +527,9 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
     setNextPlayer: function(color){
       var s = "";
       if (color == jsGameViewer.model.STONE_BLACK)
-        s += "&#40657;";
+        s = jsgvTranslations['b'];
       else if (color == jsGameViewer.model.STONE_WHITE)
-        s += "&#30333;";
+        s = jsgvTranslations['w'];
       jQuery(this.jqId+"_nextPlayer").empty().append(s);
       return this;
     },
@@ -698,11 +695,11 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
         for(var i=0; i<node.children.length; i++){
           var title = "";
           if (i == 0){
-            title = "&#20998;&#25903;A = &#23454;&#25112; [Alt Shift &#8594;][Alt Shift A]";
+            title = jsgvTranslations['branch']+" A = "+jsgvTranslations['trunk']+" [Alt Shift &#8594;][Alt Shift A]";
           } else {
             if (i < BRANCHES.length){
               var branchName = BRANCHES[i];
-              title = "&#20998;&#25903;" + branchName + "[Alt Shift " + branchName + "]";
+              title = jsgvTranslations['branch']+" "+branchName + " [Alt Shift " + branchName + "]";
             }
           }
           var s = "<div class='gvtb-branch gvbutton'><a href='#' title='" + title + "' onclick='jsGameViewer."+this.id+".goToBranch("+i+");return false;'>"+BRANCHES[i]+"</a></div>";
@@ -743,8 +740,8 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
       if (!comment){
         comment = "<strong>";
         if (node.depth > 1)
-          comment += "&#20998;&#25903;";
-        comment += "&#31532;"+node.moveNumber+"&#25163;&#35780;&#35770;</strong>";
+          comment += jsgvTranslations['branch_tag'];
+        comment += jsgvTranslations['comment_for'].replace(/MOVE/,node.moveNumber)+":</strong>";
         if (node.comment != undefined && node.comment != null)
           comment += "<br/>"+node.comment.replace(/\n/g, "<br/>\n");
       }
