@@ -67,12 +67,12 @@ jQuery.extend(jsGameViewer.GameController.prototype, {
   show: function(){
     if (!this.initialized())
       this.init();
-    jQuery("#" + this.id).show();
+    jQuery(this.jqId).show();
     return this;
   },
 
   hide: function(){
-    jQuery("#" + this.id).hide();
+    jQuery(this.jqId).hide();
     return this;
   },
 
@@ -94,7 +94,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, {
 
   load: function(url, n){
     var h = jsGameViewer.model.GameHistory[url];
-    if (h != undefined && h != null){
+    if (h){
       jsGameViewer.model.GameHistory.save(h);
       this.game = h.game;
       this.setGameTypeIf(this.game.type).show();
