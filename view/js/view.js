@@ -28,7 +28,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
     
     getTemplateLocation: function(){
       var templateName = this.config.gameType == jsGameViewer.DAOQI ? "daoqi" : "weiqi";
-      this.CONFIG.viewDir+"templates/"+templateName+this.config.locale+".html";
+      this.config.viewDir+"templates/"+templateName+this.config.locale+".html";
     },
 
     /* initialize view
@@ -532,12 +532,12 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
     },
   
     setNextPlayer: function(color){
-      var s = "";
+      var imgSrc = "";
       if (color == jsGameViewer.model.STONE_BLACK)
-        s = jsgvTranslations['b'];
+        imgSrc = this.config.viewDir+"/images/15/black.gif";
       else if (color == jsGameViewer.model.STONE_WHITE)
-        s = jsgvTranslations['w'];
-      jQuery(this.jqId+"_nextPlayer").empty().append(s);
+        imgSrc = this.config.viewDir+"/images/15/white.gif";
+      jQuery(this.jqId+"_nextPlayer").attr('src', imgSrc);
       return this;
     },
   

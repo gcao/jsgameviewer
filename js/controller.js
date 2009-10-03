@@ -24,11 +24,13 @@ jQuery.extend(jsGameViewer.GameController.prototype, {
   
   changeLocale: function(new_locale){
     // TODO: ADD TO VIEW AND TEST
-    if (!jsGameViewer.LOCALES.include(new_locale)){
+    if (!jsGameViewer.LOCALES.indexOf(new_locale) < 0){
       alert("jsGameViewer WARNING: Invalid locale '" + new_locale + "'");
       return;
     }
-    this.CONFIG['locale'] = new_locale;
+    this.config.locale = new_locale;
+    jsGameViewer.WEIQI_TEMPLATE = null;
+    jsGameViewer.DAOQI_TEMPLATE = null;
     this.reset();
     this.show();
   },

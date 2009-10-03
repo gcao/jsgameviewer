@@ -59,3 +59,4 @@ var jsGameViewer = function() {
     }
 	};
 }();
+var jsgv = jsGameViewer;

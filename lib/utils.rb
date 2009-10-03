@@ -178,7 +178,7 @@ module Utils
 
     # draw cross in red
     gc.stroke 'red'
-    gc.stroke_width 1
+    gc.stroke_width 2
     gc.line 0,0,size,size
     gc.line 0,size,size,0
     

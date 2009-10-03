@@ -42,7 +42,7 @@
         </div>
       </div>
       <div class='gvopen-window-outerdq'>
-        <a href='#' onclick='gv.GV1.openInWindow();return false;' title='Open in new window [Alt Shift W]'>
+        <a href='#' onclick='jsGameViewer.GV1.openInWindow();return false;' title='Open in new window [Alt Shift W]'>
           <img border='0px' class='gvsprite-newwindow' src='/jsgameviewer/view/images/default.gif' />
         </a>
       </div>
@@ -65,52 +65,52 @@
   </div>
   <div class='gvtoolbardq' id='GV1_toolbar'>
     <div class='gvtb-item' id='GV1_refresh'>
-      <a class='toggleopacity' href='#' onclick='gv.GV1.refresh();return false;' title='Refresh game/board [Alt Shift R]'>
+      <a class='toggleopacity' href='#' onclick='jsGameViewer.GV1.refresh();return false;' title='Refresh game/board [Alt Shift R]'>
         <img border='0px' class='gvsprite-refresh' id='GV1_refreshImg' src='/jsgameviewer/view/images/default.gif' />
       </a>
     </div>
     <div class='gvtb-item' id='GV1_toggleNumber'>
-      <a class='toggleopacity' href='#' onclick='gv.GV1.toggleNumber();return false;' title='Show/hide move number [Alt Shift M]'>
+      <a class='toggleopacity' href='#' onclick='jsGameViewer.GV1.toggleNumber();return false;' title='Show/hide move number [Alt Shift M]'>
         <img border='0px' class='gvsprite-shownumber' id='GV1_toggleNumberImg' src='/jsgameviewer/view/images/default.gif' />
       </a>
     </div>
     <div class='gvtb-item' id='GV1_backAll'>
-      <a class='toggleopacity' href='#' onclick='gv.GV1.backAll();return false;' title='Back to beginning [Ctrl Alt &#8592;]'>
+      <a class='toggleopacity' href='#' onclick='jsGameViewer.GV1.backAll();return false;' title='Back to beginning [Ctrl Alt &#8592;]'>
         <img border='0px' class='gvsprite-backall' src='/jsgameviewer/view/images/default.gif' />
       </a>
     </div>
     <div class='gvtb-item' id='GV1_backC'>
-      <a class='toggleopacity' href='#' onclick='gv.GV1.backToComment();return false;' title='Previous comment or variation [Alt Shift &#8592;]'>
+      <a class='toggleopacity' href='#' onclick='jsGameViewer.GV1.backToComment();return false;' title='Previous comment or variation [Alt Shift &#8592;]'>
         <img border='0px' class='gvsprite-backc' src='/jsgameviewer/view/images/default.gif' />
       </a>
     </div>
     <div class='gvtb-item' id='GV1_backN'>
-      <a class='toggleopacity' href='#' onclick='gv.GV1.backN();return false;' title='Fast back [Ctrl &#8592;]'>
+      <a class='toggleopacity' href='#' onclick='jsGameViewer.GV1.backN();return false;' title='Fast back [Ctrl &#8592;]'>
         <img border='0px' class='gvsprite-backn' src='/jsgameviewer/view/images/default.gif' />
       </a>
     </div>
     <div class='gvtb-item' id='GV1_back'>
-      <a class='toggleopacity' href='#' onclick='gv.GV1.back();return false;' title='Back [&#8592;]'>
+      <a class='toggleopacity' href='#' onclick='jsGameViewer.GV1.back();return false;' title='Back [&#8592;]'>
         <img border='0px' class='gvsprite-back' src='/jsgameviewer/view/images/default.gif' />
       </a>
     </div>
     <div class='gvtb-item' id='GV1_forward'>
-      <a class='toggleopacity' href='#' onclick='gv.GV1.forward();return false;' title='Forward [&#8594;]'>
+      <a class='toggleopacity' href='#' onclick='jsGameViewer.GV1.forward();return false;' title='Forward [&#8594;]'>
         <img border='0px' class='gvsprite-forward' src='/jsgameviewer/view/images/default.gif' />
       </a>
     </div>
     <div class='gvtb-item' id='GV1_forwardN'>
-      <a class='toggleopacity' href='#' onclick='gv.GV1.forwardN();return false;' title='Fast forward [Ctrl &#8594;]'>
+      <a class='toggleopacity' href='#' onclick='jsGameViewer.GV1.forwardN();return false;' title='Fast forward [Ctrl &#8594;]'>
         <img border='0px' class='gvsprite-forwardn' src='/jsgameviewer/view/images/default.gif' />
       </a>
     </div>
     <div class='gvtb-item' id='GV1_forwardC'>
-      <a class='toggleopacity' href='#' onclick='gv.GV1.forwardToComment();return false;' title='Next comment or variation [Alt Shift &#8594;]'>
+      <a class='toggleopacity' href='#' onclick='jsGameViewer.GV1.forwardToComment();return false;' title='Next comment or variation [Alt Shift &#8594;]'>
         <img border='0px' class='gvsprite-forwardc' src='/jsgameviewer/view/images/default.gif' />
       </a>
     </div>
     <div class='gvtb-item' id='GV1_forwardAll'>
-      <a class='toggleopacity' href='#' onclick='gv.GV1.forwardAll();return false;' title='Forward to end [Ctrl Alt &#8594;]'>
+      <a class='toggleopacity' href='#' onclick='jsGameViewer.GV1.forwardAll();return false;' title='Forward to end [Ctrl Alt &#8594;]'>
         <img border='0px' class='gvsprite-forwardall' src='/jsgameviewer/view/images/default.gif' />
       </a>
     </div>
@@ -124,12 +124,12 @@
   <div id='GV1_goTo' style='display:none;'>
     <form action='#' name='GV1_goToForm' onsubmit='return false;'>
       Jump to
-      <input id='GV1_goToInput' name='goToInput' onKeyDown='gv.GV1.goToKeyDown(this,event);' size='5' style='text-align:center' type='text' />
+      <input id='GV1_goToInput' name='goToInput' onKeyDown='jsGameViewer.GV1.goToKeyDown(this,event);' size='5' style='text-align:center' type='text' />
       
       &nbsp;&nbsp;&nbsp;&nbsp;
-      <input onclick='gv.GV1.goToOkHandler();' type='submit' value='OK' />
+      <input onclick='jsGameViewer.GV1.goToOkHandler();' type='submit' value='OK' />
       &nbsp;&nbsp;
-      <input onclick='tb_remove();gv.GV1.postThickBoxFix();' type='submit' value='Cancel' />
+      <input onclick='tb_remove();jsGameViewer.GV1.postThickBoxFix();' type='submit' value='Cancel' />
     </form>
   </div>
 </div>

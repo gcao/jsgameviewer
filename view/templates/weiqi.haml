@@ -3,7 +3,7 @@
     #GV1_bannerbg.gvreset.gvbanner-overlay
       =t('whose_turn')
       \&nbsp;
-      %img#GV1_nextPlayer.gvreset{ :src => "/jsgameviewer/view/images/default.gif", :border => "0px" }
+      %img#GV1_nextPlayer.gvreset.nextPlayerImg{ :src => "/jsgameviewer/view/images/default.gif", :border => "0px" }
     #GV1_moveOuter.gvreset.gvmove-outer.gvbutton
       %a.gvreset.thickbox{ :href => "#TB_inline?test=0&width=250&height=56&inlineId=GV1_goTo&focus=GV1_goToInput&modal=true&test1=0", :title => t('jump_to_xx') + " [Alt Shift G]" }
         =t('move_number_before')
@@ -21,14 +21,15 @@
         .gvreset.gvblack-prisoners-outer
           %span#GV1_blackPrisonersOuter.gvreset.gvbutton
             %a{ :href => "#", :onclick => "return false;" }
-              %img#GV1_blackPrisonersImg.gvreset{ :src => "/jsgameviewer/view/images/15/black_dead.gif", :border => "0px" }
+              %img.gvreset.prisonersImg{ :src => "/jsgameviewer/view/images/15/black_dead.gif", :border => "0px" }
+              \&nbsp;
               %span#GV1_blackPrisoners.gvreset.gvcontrol-text
                 0
         .gvreset.gvwhite-prisoners-outer
           %span#GV1_whitePrisonersOuter.gvreset.gvbutton
             %a{ :href => "#", :onclick => "return false;" }
-              %img#GV1_whitePrisonersImg.gvreset{ :src => "/jsgameviewer/view/images/15/white_dead.gif", :border => "0px" }
-              =t('white_dead')
+              %img.gvreset.prisonersImg{ :src => "/jsgameviewer/view/images/15/white_dead.gif", :border => "0px" }
+              \&nbsp;
               %span#GV1_whitePrisoners.gvreset.gvcontrol-text
                 0
       .gvreset.gvopen-window-outer
