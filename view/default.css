@@ -18,16 +18,6 @@ a.gvreset {
   filter: progid:DXImageTransform.Microsoft.Alpha(opacity=100);
   -moz-opacity: 1; }
 
-.gvbanner-left {
-  display: inline; }
-
-.localization {
-  z-index: 99;
-  text-decoration: none; }
-
-.nextPlayerImg .prisonersImg {
-  vertical-align: top; }
-
 .gvbutton {
   position: absolute;
   left: 0px;
@@ -102,6 +92,22 @@ a.gvreset {
   top: 0px;
   width: 100%;
   height: 100%; }
+
+.gvbanner-left {
+  display: inline;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  padding: 1px 0px;
+  z-index: 100; }
+
+.nextPlayerImg {
+  position: relative;
+  top: 2px; }
+
+.prisonersImg {
+  position: relative;
+  top: 2px; }
 
 .gvresign {
   display: none;

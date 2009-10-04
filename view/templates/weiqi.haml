@@ -1,15 +1,14 @@
 #GV1.gvreset.gameviewer
   #GV1_banner.gvreset.gvbanner
     #GV1_bannerbg.gvreset.gvbanner-overlay
-      .gvreset.gvbanner-left
-        .gvreset.localization
-          %a{:href=>"#", :onclick=>"jsGameViewer.GV1.changeLocale('zh_cn');return false;"}中文
-          |
-          %a{:href=>"#", :onclick=>"jsGameViewer.GV1.changeLocale('en_us');return false;"}EN
-        &nbsp;&nbsp;
-        =t('whose_turn')
-        \&nbsp;
-        %img#GV1_nextPlayer.gvreset.nextPlayerImg{ :src => "/jsgameviewer/view/images/default.gif", :border => "0px" }
+    .gvreset.gvbanner-left
+      %a.gvreset.localization{:href=>"#", :onclick=>"jsGameViewer.GV1.changeLocale('zh_cn');return false;"}中文
+      |
+      %a.gvreset.localization{:href=>"#", :onclick=>"jsGameViewer.GV1.changeLocale('en_us');return false;"}EN
+      &nbsp;&nbsp;
+      =t('whose_turn')
+      \&nbsp;
+      %img#GV1_nextPlayer.gvreset.nextPlayerImg{ :src => "/jsgameviewer/view/images/default.gif", :border => "0px" }
     #GV1_moveOuter.gvreset.gvmove-outer.gvbutton
       %a.gvreset.thickbox{ :href => "#TB_inline?test=0&width=250&height=56&inlineId=GV1_goTo&focus=GV1_goToInput&modal=true&test1=0", :title => t('jump_to_xx') + " [Alt Shift G]" }
         =t('move_number_before')
