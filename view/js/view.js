@@ -531,10 +531,10 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
   
     setNextPlayer: function(color){
       var imgSrc = "";
-      if (color == jsGameViewer.model.STONE_BLACK)
-        imgSrc = this.config.viewDir+"/images/15/black.gif";
-      else if (color == jsGameViewer.model.STONE_WHITE)
+      if (color == jsGameViewer.model.STONE_WHITE)
         imgSrc = this.config.viewDir+"/images/15/white.gif";
+      else
+        imgSrc = this.config.viewDir+"/images/15/black.gif";
       jQuery(this.jqId+"_nextPlayer").attr('src', imgSrc);
       return this;
     },

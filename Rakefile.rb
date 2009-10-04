@@ -75,7 +75,8 @@ task :dist => :localize_js
 
 YUI_COMMAND = "java -jar lib/yuicompressor-2.4.2.jar"
 task :compress_js do
-  my_files = %w(js/en_us.js 
+  my_files = %w(js/en_us.js
+                js/zh_cn.js
                 js/thickbox.js
                 js/base.js
                 js/model.js
@@ -86,8 +87,6 @@ task :compress_js do
                 view/js/view.js)
                 
   `cat #{my_files.join(' ')} > /tmp/test.js && #{YUI_COMMAND} /tmp/test.js > build/compressed.js`
-  
-  `cat js/jquery-1.3.2.min.js build/compressed.js > build/compressed_all.js`
 end
 
 task :compress_css do

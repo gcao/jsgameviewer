@@ -68,8 +68,9 @@ jsgvLoader = function(){
     load: function(callback){
       var BASE_URL = 'http://localhost/jsgameviewer/';
       var STYLESHEET = BASE_URL + "build/compressed.css"
-      var JAVASCRIPT = BASE_URL + "build/compressed_all.js"
+      var JAVASCRIPT = BASE_URL + "build/compressed.js"
       this.loadStylesheet(STYLESHEET);
+      this.loadJavascript('http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js');
       this.loadJavascript(JAVASCRIPT, callback);
     },
   
@@ -146,3 +147,27 @@ jsgvLoader = function(){
     }
   };
 }();
+
+jsgvLoader.siteHandlers = [];
+  
+jsgvLoader.addSiteHandler = function(handler){
+  this.siteHandlers[handler.length] = handler;
+}
+
+jsgvLoader.handleThis = function(){
+  var handled = false;
+  for (var i = 0; i < jsgvLoader.siteHandlers.length; i++){
+    if (jsgvLoader.siteHandlers[i]()) {
+      handled = true;
+      break;
+    }
+  }
+  if (!handled) {
+    function defaultSiteHandler(){
+      jsgvLoader.loadCss();
+    }
+    defaultSiteHandler();
+  }
+}
+
+jsgvLoader.addOnloadHandler(jsgvLoader.handleThis);
