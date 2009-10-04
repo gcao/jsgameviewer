@@ -23,16 +23,23 @@ jQuery.extend(jsGameViewer.GameController.prototype, {
   },
   
   changeLocale: function(new_locale){
-    // TODO: ADD TO VIEW AND TEST
+    if (this.config.locale == new_locale)
+      return this;
     if (!jsGameViewer.LOCALES.indexOf(new_locale) < 0){
       alert("jsGameViewer WARNING: Invalid locale '" + new_locale + "'");
-      return;
+      return this;
     }
     this.config.locale = new_locale;
+    window.jsgvTranslations = window["jsgv_" + new_locale];
     jsGameViewer.WEIQI_TEMPLATE = null;
     jsGameViewer.DAOQI_TEMPLATE = null;
     this.reset();
     this.show();
+    if (this.gameState){
+      this.gameState.backAll();
+      this.initGame();
+    }
+    return this;
   },
 
   destroy: function(){

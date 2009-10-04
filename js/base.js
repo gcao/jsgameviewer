@@ -1,3 +1,5 @@
+var jsgvTranslations = jsgv_en_us;
+
 var jsGameViewer = function() {
 	return {
     name: "jsgameviewer",
@@ -9,13 +11,13 @@ var jsGameViewer = function() {
     
     EN_US: "en_us",
     ZH_CN: "zh_cn",
-    LOCALES: [this.EN_US, this.ZH_CN],
+    LOCALES: ["en_us", "zh_cn"],
 
     CONFIG: {
       baseDir: "/jsgameviewer/",
       viewDir: "/jsgameviewer/view/",
-      locale: this.EN_US,
-      gameType: this.WEIQI,
+      locale: "en_us",
+      gameType: 0,
       boardSize: 19,
       playerInterval: 5,
       observerInterval: 15,

@@ -38,4 +38,3 @@ window.jsgv_en_us = {
   'move_number_before': '',
   'rule': 'Rule',
   'jump_to_xx': 'Jump to XX'};
-if (!window.jsgvTranslations) window.jsgvTranslations = window.jsgv_en_us;

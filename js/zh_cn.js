@@ -38,4 +38,3 @@ window.jsgv_zh_cn = {
   'branch_tag': '<变化>',
   'jump_to_xx': '跳到第XX手',
   'rule': '规则'};
-window.jsgvTranslations = window.jsgv_zh_cn;
