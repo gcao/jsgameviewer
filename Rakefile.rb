@@ -61,8 +61,6 @@ desc "Convert SASS to stylesheet"
 task :sass2css => :sprites do
   gem "haml"
   `sass view/sass/main.sass > view/default.css`
-  `sass view/sass/thickbox.sass >> view/default.css`
-  `sass view/sass/sprites.sass >> view/default.css`
 end
 task :dist => :sass2css
 

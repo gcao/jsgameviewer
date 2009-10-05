@@ -339,6 +339,7 @@ a.gvreset {
 .gvcomment {
   margin: 8px 1px 3px;
   overflow: auto; }
+
 #TB_window {
   font: 12px Arial, Helvetica, sans-serif;
   color: #333333; }
@@ -471,6 +472,7 @@ a.gvreset {
   margin-bottom: -1px;
   margin-top: 1px;
   _margin-bottom: 1px; }
+
 .gvsprite-15-black {
   width: 15px;
   height: 15px;
