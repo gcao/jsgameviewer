@@ -11,35 +11,121 @@
 !header_left = 0px
 !header_height = 22px
 
+!toolbar_l_margin = 2px
+!toolbar_r_margin = !toolbar_l_margin
+!toolbar_top = !header_t_margin + !header_height + !header_b_margin
+!toolbar_width = 35px
+
+!right_pane_top = 0px
+!right_pane_width = 300px
+
 !weiqi_board_grid = 21px
 !weiqi_board_size = 19
-!weiqi_board_top = !header_t_margin + !header_height + !header_b_margin
+!weiqi_board_top = !toolbar_top
 !weiqi_board_left = 0px
 !weiqi_board_width = 425px
 !weiqi_board_height = 420px
 
-!weiqi_control_area_top = 0
-!weiqi_control_area_left = !weiqi_board_width - (!weiqi_board_grid * !weiqi_board_size)
+!weiqi_fascade_top = 0
+!weiqi_fascade_width = !weiqi_board_grid * !weiqi_board_size
+!weiqi_fascade_height = !weiqi_fascade_width
+!weiqi_fascade_left = !weiqi_board_width - !weiqi_fascade_width
 
-!toolbar_l_margin = 2px
-!toolbar_r_margin = !toolbar_l_margin
-!toolbar_top = !weiqi_board_top
-!toolbar_left = !weiqi_board_width + !toolbar_l_margin
-!toolbar_width = 35px
+!weiqi_left_pane_width = !weiqi_board_width + !toolbar_l_margin + !toolbar_width + !toolbar_r_margin
+!weiqi_left_pane_height = !header_t_margin + !header_height + !header_b_margin + !weiqi_board_height
 
-!left_pane_width = !weiqi_board_width + !toolbar_l_margin + !toolbar_width + !toolbar_r_margin
-!left_pane_height = !header_t_margin + !header_height + !header_b_margin + !weiqi_board_height
+!weiqi_header_width = !weiqi_left_pane_width - !header_l_margin - !header_r_margin
 
-!header_width = !left_pane_width - !header_l_margin - !header_r_margin
+!weiqi_width = !viewer_l_padding + !weiqi_left_pane_width + !right_pane_width + !viewer_r_padding
+!weiqi_height = !viewer_t_padding + !weiqi_left_pane_height + !viewer_b_padding
 
-!info_width = 300px
-!info_height = 500px
+!weiqi_toolbar_left = !weiqi_board_width + !toolbar_l_margin
+!weiqi_toolbar_height = !weiqi_height - !viewer_t_padding - !header_t_margin - !header_height - !header_b_margin - !viewer_b_padding
 
-!weiqi_body_height = !info_height
-@if !info_height < !left_pane_height
-  !weiqi_body_height = !left_pane_height
+!weiqi_right_pane_left = !weiqi_width - !right_pane_width
+!weiqi_right_pane_height = !weiqi_height - !viewer_t_padding - !viewer_b_padding
 
-!weiqi_height = !viewer_t_padding + !weiqi_body_height + !viewer_b_padding
-!weiqi_width = !viewer_l_padding + !weiqi_body_height + !viewer_r_padding
+!point_label_height = 20px
+!point_label_width = !toolbar_width
+!point_label_top = !weiqi_height - !point_label_height
+!point_label_left = !weiqi_toolbar_left
 
-!toolbar_height = !weiqi_height - !viewer_t_padding - !header_t_margin - !header_height - !header_b_margin - !viewer_b_padding
+.weiqi_area
+  position: relative
+  padding= !viewer_t_padding !viewer_r_padding !viewer_b_padding !viewer_l_padding
+  top: 0px
+  left: 0px
+  width= !weiqi_width
+  height= !weiqi_height
+
+.weiqi_header_area
+  position: absolute
+  margin= !header_t_margin !header_r_margin !header_b_margin !header_l_margin
+  top= !header_left
+  left= !header_top
+  width= !weiqi_header_width
+  height= !header_height
+  
+.weiqi_header_left
+  display: inline
+  position: absolute
+  float: left
+  top: 0px
+  left: 0px
+  width: 100%
+  height: 100%
+
+.weiqi_header_center
+  display: inline
+  position: absolute
+  float: center
+  top: 0px
+  left= !weiqi_fascade_left
+  width= !weiqi_fascade_width
+  height: 100%
+  
+.weiqi_header_right
+  display: inline
+  position: absolute
+  float: right
+  top: 0px
+  left: 0px
+  width: 100%
+  height: 100%
+  
+.weiqi_board_area
+  position: absolute
+  top= !weiqi_board_top
+  left= !weiqi_board_left
+  width= !weiqi_board_width
+  height= !weiqi_board_height
+
+.weiqi_fascade_area
+  position: absolute
+  top= !weiqi_fascade_top
+  left= !weiqi_fascade_left
+  width= !weiqi_fascade_width
+  height= !weiqi_fascade_height
+  
+.weiqi_toolbar_area
+  position: absolute
+  margin-left= !toolbar_l_margin
+  margin-right= !toolbar_r_margin
+  top= !toolbar_top
+  left= !weiqi_toolbar_left
+  width= !toolbar_width
+  height= !weiqi_toolbar_height
+  
+.weiqi_right_pane_area
+  position: absolute
+  top= !right_pane_top
+  left= !weiqi_right_pane_left
+  width= !right_pane_width
+  height= !weiqi_right_pane_height
+  
+.weiqi_point_label_area
+  position: absolute
+  top= !point_label_top
+  left= !point_label_left
+  width= !point_label_width
+  height= !point_label_height

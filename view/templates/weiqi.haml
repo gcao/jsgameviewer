@@ -1,7 +1,6 @@
-#GV1.gvreset.gameviewer
-  #GV1_banner.gvreset.gvbanner
-    #GV1_bannerbg.gvreset.gvbanner-overlay
-    .gvreset.gvbanner-left
+#GV1.gvreset.gameviewer.weiqi_area
+  #GV1_banner.gvreset.weiqi_header_area
+    .gvreset.weiqi_header_left
       %a.gvreset.localization{:href=>"#", :onclick=>"jsGameViewer.GV1.changeLocale('zh_cn');return false;"}中文
       |
       %a.gvreset.localization{:href=>"#", :onclick=>"jsGameViewer.GV1.changeLocale('en_us');return false;"}EN
@@ -9,40 +8,37 @@
       =t('whose_turn')
       \&nbsp;
       %img#GV1_nextPlayer.gvreset.nextPlayerImg{ :src => "/jsgameviewer/view/images/default.gif", :border => "0px" }
-    #GV1_moveOuter.gvreset.gvmove-outer.gvbutton
-      %a.gvreset.thickbox{ :href => "#TB_inline?test=0&width=250&height=56&inlineId=GV1_goTo&focus=GV1_goToInput&modal=true&test1=0", :title => t('jump_to_xx') + " [Alt Shift G]" }
-        =t('move_number_before')
-        \&nbsp;
-        %span#GV1_curMove.gvreset.gvcontrol-text
-          0
-        \&nbsp;
-        =t('move_number_after')
-    #GV1_resign.gvreset.gvresign
-      %span.gvreset.gvbutton
-        %a{ :href => "#", :onclick => "jsGameViewer.GV1.resign();return false;" }
-          =t('resign')
-    .gvreset.gvbanner-overlay
-      .gvreset.gvprisoners-outer
-        .gvreset.gvblack-prisoners-outer
-          %span#GV1_blackPrisonersOuter.gvreset.gvbutton
-            %a{ :href => "#", :onclick => "return false;" }
-              %img.gvreset.prisonersImg{ :src => "/jsgameviewer/view/images/15/black_dead.gif", :border => "0px" }
-              \&nbsp;
-              %span#GV1_blackPrisoners.gvreset.gvcontrol-text
-                0
-        .gvreset.gvwhite-prisoners-outer
-          %span#GV1_whitePrisonersOuter.gvreset.gvbutton
-            %a{ :href => "#", :onclick => "return false;" }
-              %img.gvreset.prisonersImg{ :src => "/jsgameviewer/view/images/15/white_dead.gif", :border => "0px" }
-              \&nbsp;
-              %span#GV1_whitePrisoners.gvreset.gvcontrol-text
-                0
-      .gvreset.gvopen-window-outer
+    .gvreset.weiqi_header_center
+      #GV1_moveOuter.gvmove-outer.gvbutton
+        %a.gvreset.thickbox{ :href => "#TB_inline?test=0&width=250&height=56&inlineId=GV1_goTo&focus=GV1_goToInput&modal=true&test1=0", :title => t('jump_to_xx') + " [Alt Shift G]" }
+          =t('move_number_before')
+          \&nbsp;
+          %span#GV1_curMove.gvreset.gvcontrol-text
+            0
+          \&nbsp;
+          =t('move_number_after')
+    .gvreset.weiqi_header_right
+      #GV1_resign.gvreset.gvresign
+        %span.gvreset.gvbutton
+          %a{ :href => "#", :onclick => "jsGameViewer.GV1.resign();return false;" }
+            =t('resign')
+        %span#GV1_blackPrisonersOuter.gvreset.gvbutton
+          %a{ :href => "#", :onclick => "return false;" }
+            %img.gvreset.prisonersImg{ :src => "/jsgameviewer/view/images/15/black_dead.gif", :border => "0px" }
+            \&nbsp;
+            %span#GV1_blackPrisoners.gvreset.gvcontrol-text
+              0
+        %span#GV1_whitePrisonersOuter.gvreset.gvbutton
+          %a{ :href => "#", :onclick => "return false;" }
+            %img.gvreset.prisonersImg{ :src => "/jsgameviewer/view/images/15/white_dead.gif", :border => "0px" }
+            \&nbsp;
+            %span#GV1_whitePrisoners.gvreset.gvcontrol-text
+              0
         %a{:title=>t('open_in_new_window') + " [Alt Shift W]", :href=>"#", :onclick=>"jsGameViewer.GV1.openInWindow();return false;"}
           %img.gvreset.gvsprite-newwindow{ :src => "/jsgameviewer/view/images/default.gif", :border => "0px" }
 
-  #GV1_boardOuter.gvreset.gvboard-outer.gvsprite-21-board
-    #GV1_board.gvreset.gvboard
+  #GV1_boardOuter.gvreset.weiqi_board_area.gvsprite-21-board
+    #GV1_board.gvreset.weiqi_fascade_area
       #GV1_boardPoints.gvreset.gvboard-overlay
       #GV1_boardMarks.gvreset.gvboard-overlay
       #GV1_boardBranches.gvreset.gvboard-overlay
@@ -50,6 +46,7 @@
       #GV1_prisoners.gvreset.gvboard-overlay
       #GV1_boardFascade.gvreset.gvboard-overlay.gvboard-fascade
         %img.gvreset.gvsprite-21-blankboard{ :src => "/jsgameviewer/view/images/default.gif" }
+
   #GV1_toolbar.gvreset.gvtoolbar
     #GV1_refresh.gvreset.gvtb-item
       %a.gvreset.toggleopacity{ :href => "#", :title => t('refresh') + " [Alt Shift R]", :onclick => "jsGameViewer.GV1.refresh(true);return false;" }
