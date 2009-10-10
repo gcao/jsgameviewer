@@ -1,5 +1,3 @@
-var jsgvTranslations = jsgv_en_us;
-
 var jsGameViewer = function() {
 	return {
     name: "jsgameviewer",
@@ -16,7 +14,7 @@ var jsGameViewer = function() {
     CONFIG: {
       baseDir: "/jsgameviewer/",
       viewDir: "/jsgameviewer/view/",
-      locale: "en_us",
+      locale: jsgvTranslations.locale,
       gameType: 0,
       boardSize: 19,
       playerInterval: 5,

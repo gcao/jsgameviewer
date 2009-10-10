@@ -29,6 +29,7 @@ window.jsgv_en_us = {
   'play_first': 'Play first',
   'next_comment_or_branch': 'Next comment or variation',
   'show_hide_move_number': 'Show/hide move number',
+  'locale': 'en_us',
   'branch_tag': '<Variation>',
   'comment_for': 'Comment for MOVE',
   'place': 'Place',
@@ -38,3 +39,4 @@ window.jsgv_en_us = {
   'move_number_before': '',
   'rule': 'Rule',
   'jump_to_xx': 'Jump to XX'};
+if (window.jsgvTranslations == undefined) window.jsgvTranslations = jsgv_en_us;

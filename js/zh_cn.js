@@ -28,6 +28,7 @@ window.jsgv_zh_cn = {
   'fast_forward': '快进',
   'next_comment_or_branch': '下一评论或变化图',
   'play_first': '先行',
+  'locale': 'zh_cn',
   'show_hide_move_number': '显示/隐藏手数',
   'move_number_before': '',
   'resign': '认输',
@@ -38,3 +39,4 @@ window.jsgv_zh_cn = {
   'branch_tag': '<变化>',
   'jump_to_xx': '跳到第XX手',
   'rule': '规则'};
+if (window.jsgvTranslations == undefined) window.jsgvTranslations = jsgv_zh_cn;

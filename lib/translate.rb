@@ -17,5 +17,6 @@ def create_js_translation_for locale, to_file
     end
     f.print s.chop.chop # remove ",\n" 
     f.print "};\n"
+    f.print "if (window.jsgvTranslations == undefined) window.jsgvTranslations = jsgv_#{locale};"
   end
 end
