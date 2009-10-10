@@ -149,12 +149,14 @@ jsgvLoader = function(){
 }();
 
 jsgvLoader.siteHandlers = [];
-  
+jsgvLoader.defaultSiteHandler = function(){
+  jsgvLoader.loadCss();
+}
 jsgvLoader.addSiteHandler = function(handler){
-  this.siteHandlers[handler.length] = handler;
+  this.siteHandlers[this.siteHandlers.length] = handler;
 }
 
-jsgvLoader.handleThis = function(){
+jsgvLoader.addOnloadHandler(function(){
   var handled = false;
   for (var i = 0; i < jsgvLoader.siteHandlers.length; i++){
     if (jsgvLoader.siteHandlers[i]()) {
@@ -163,11 +165,6 @@ jsgvLoader.handleThis = function(){
     }
   }
   if (!handled) {
-    function defaultSiteHandler(){
-      jsgvLoader.loadCss();
-    }
-    defaultSiteHandler();
+    jsgvLoader.defaultSiteHandler();
   }
-}
-
-jsgvLoader.addOnloadHandler(jsgvLoader.handleThis);
+});
