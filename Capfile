@@ -1,3 +1,4 @@
+# Look here for cleanup/refactoring ideas: http://github.com/leehambley/railsless-deploy/
 load 'deploy' if respond_to?(:namespace) # cap2 differentiator
 
 set :application, "jsgameviewer"
