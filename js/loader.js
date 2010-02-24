@@ -136,6 +136,35 @@ jsgvLoader = function(){
     },
   
     loadCss: function(){
+      if (document.getElementsByClassName == undefined) {
+        // Borrowed from http://muffinresearch.co.uk/archives/2006/04/29/getelementsbyclassname-deluxe-edition/
+        document.getElementsByClassName = function(strClass, strTag, objContElm) {
+          strTag = strTag || "*";
+          objContElm = objContElm || document;
+          var objColl = objContElm.getElementsByTagName(strTag);
+          if (!objColl.length &&  strTag == "*" &&  objContElm.all) objColl = objContElm.all;
+          var arr = new Array();
+          var delim = strClass.indexOf('|') != -1  ? '|' : ' ';
+          var arrClass = strClass.split(delim);
+          for (var i = 0, j = objColl.length; i < j; i++) {
+            var arrObjClass = objColl[i].className.split(' ');
+            if (delim == ' ' && arrClass.length > arrObjClass.length) continue;
+            var c = 0;
+            comparisonLoop:
+            for (var k = 0, l = arrObjClass.length; k < l; k++) {
+              for (var m = 0, n = arrClass.length; m < n; m++) {
+                if (arrClass[m] == arrObjClass[k]) c++;
+                if (( delim == '|' && c == 1) || (delim == ' ' && c == arrClass.length)) {
+                  arr.push(objColl[i]);
+                  break comparisonLoop;
+                }
+              }
+            }
+          }
+          return arr;
+        }
+      }
+
       if (document.getElementsByClassName('jsgv').length > 0) {
         this.load(this.loadGames);
       }
