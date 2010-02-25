@@ -135,7 +135,6 @@ jQuery.extend(jsGameViewer.GameController.prototype, {
           else
             _this.forwardN(n);
         } catch(e) {
-          //alert(jsGameViewer.getStackTrace(e));
           throw "GameController.load('" + url + "')->success: " + e;
         }
       },

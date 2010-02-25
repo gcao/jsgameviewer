@@ -1,8 +1,8 @@
-Object.extend(CONFIG, {
+jQuery.extend(jsGameViewer.CONFIG, {
   gocoolUrlPrefix: "/app/"
 });
 
-Object.extend(GameController.prototype, {
+jQuery.extend(jsGameViewer.GameController.prototype, {
   loadGocoolGame: function(id, n){
     this.gocoolId = id;
     var conf = this.config;
@@ -15,8 +15,8 @@ Object.extend(GameController.prototype, {
   }
 });
 
-var GocoolPlayer = Class.create();
-Object.extend(GocoolPlayer.prototype, {
+var GocoolPlayer = jsGameViewer.createClass();
+jQuery.extend(GocoolPlayer.prototype, {
   initialize: function(gameController){
     this.gameController = gameController;
   },
@@ -29,7 +29,7 @@ Object.extend(GocoolPlayer.prototype, {
     return true;
   },
 
-  sendMove: function(moveNumber, x, y){
+  sendMove: function(){
     var c = this.gameController;
     var node = c.gameState.currentNode;
     var parentNode = node.parent;
@@ -46,17 +46,19 @@ Object.extend(GocoolPlayer.prototype, {
     url += "&move=" + moveNumber;
     url += "&x=" + x;
     url += "&y=" + y;
-    jq.ajax({url: url,
+    jQuery.ajax({url: url,
       success:function(response){
         if (response.charAt(0) == '0'){ // success
           // TODO: move to next game
           c.refresh();
         } else { // failure
-          alert(response);
+          alert(jsgvTranslations["error_thrown"] + "\n" + response);
+          c.remove();
         }
       },
       error: function(XMLHttpRequest, textStatus, errorThrown){
         alert(jsgvTranslations["error_thrown"] + "\n" + textStatus + " " + errorThrown);
+        c.remove();
       }
     });
     return true;
@@ -74,21 +76,17 @@ Object.extend(GocoolPlayer.prototype, {
     }
     var moveNumber = node.moveNumber;
     var url = c.config.gocoolUrlPrefix + "games/" + gocoolId + "/resign";
-    jq.ajax({url: url,
+    jQuery.ajax({url: url,
       success:function(response){
         if (response.charAt(0) == '0'){ // success
           // TODO: move to next game
           c.refresh();
         } else { // failure
-          c.setComment(response);
-          //alert("Operation failed!");
-          alert("操作失败！请参见棋盘右边的原始错误信息。");
+          alert(jsgvTranslations["error_thrown"] + "\n" + response);
         }
       },
       error: function(XMLHttpRequest, textStatus, errorThrown){
-        c.setComment(textStatus + " " + errorThrown);
-        //alert("Operation failed!");
-        alert("操作失败！请参见棋盘右边的原始错误信息。");
+        alert(jsgvTranslations["error_thrown"] + "\n" + textStatus + " " + errorThrown);
       }
     });
     return true;

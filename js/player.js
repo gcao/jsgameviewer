@@ -75,11 +75,9 @@ jQuery.extend(jsGameViewer.GameController.prototype, {
 
   origPlay: jsGameViewer.GameController.prototype.play,
 
-  play: function() {
-    if (this.player && this.player.sendMove){
+  play: function(x, y){
+    if (this.origPlay(x, y) && this.player && this.player.sendMove){
       return this.player.sendMove();
-    } else {
-      return this.origPlay();
     }
   }
 });

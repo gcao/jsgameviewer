@@ -84,23 +84,23 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
         jQuery(_this.jqId+"_pointLabel").empty();
       }).mousedown(function(e){
         var arr = _this.eventToXY(e);
-        _this.fromX = arr[0];
-        _this.fromY = arr[1];
-        // console.log("fromX: " + this.fromX + ", fromY: " + this.fromY);
-        // TODO: DAOQI drag and drop
-        _this.play(arr[0],arr[1]);
-        //if (e.ctrlKey && e.shiftKey){
-        //  _this.sendMove_(arr[0], arr[1]);
-        //} else if (e.ctrlKey || _this.config.gameType == jsGameViewer.WEIQI){
-        //  _this.play(arr[0],arr[1]);
-        //} else if (_this.config.gameType == jsGameViewer.DAOQI){
-        //  this.style.cursor = 'move';
-        //}
+        if (_this.config.gameType == jsGameViewer.DAOQI && e.ctrlKey){
+          _this.fromX = arr[0];
+          _this.fromY = arr[1];
+          this.style.cursor = 'move';
+          jsgv.debug("fromX: " + fromX + ", fromY: " + fromY);
+        } else {
+          _this.play(arr[0],arr[1]);
+        }
       }).mouseup(function(e){
+        if (!(_this.config.gameType == jsGameViewer.DAOQI && e.ctrlKey)){
+          return;
+        }
         this.style.cursor = 'auto';
         var arr = _this.eventToXY(e);
         var toX = arr[0], toY = arr[1];
-        // console.log("toX: " + toX + ", toY: " + toY);
+        jsgv.debug("fromX: " + this.fromX + ", fromY: " + this.fromY);
+        jsgv.debug("toX: " + toX + ", toY: " + toY);
         if (_this.fromX == undefined || _this.fromX == NaN || _this.fromY == undefined || _this.fromY == NaN)
           return;
         if (_this.fromX != toX || _this.fromY != toY) {
