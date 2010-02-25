@@ -37,3 +37,4 @@ comment_for             : 第MOVE手评论
 branch                  : 变化
 trunk                   : 实战
 branch_tag              : <变化>
+error_thrown            : 操作错误

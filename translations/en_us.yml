@@ -37,3 +37,4 @@ comment_for             : Comment for MOVE
 branch                  : Variation
 trunk                   : Game move
 branch_tag              : <Variation>
+error_thrown            : Error

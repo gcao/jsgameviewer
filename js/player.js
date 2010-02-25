@@ -71,5 +71,15 @@ jQuery.extend(jsGameViewer.GameController.prototype, {
       alert("Õâ²»ÊÇDGS¶Ô¾Ö¡£±¾³ÌÐòÄ¿Ç°Ö»Ö§³ÖÔÚDGSÉÏÏÂÆå¡£");
       return false;
     }
+  },
+
+  origPlay: jsGameViewer.GameController.prototype.play,
+
+  play: function() {
+    if (this.player && this.player.sendMove){
+      return this.player.sendMove();
+    } else {
+      return this.origPlay();
+    }
   }
 });

@@ -21,7 +21,15 @@ Object.extend(GocoolPlayer.prototype, {
     this.gameController = gameController;
   },
 
-  sendMove: function(color, moveNumber, x, y){
+  isPlayer: function(){
+    return true;
+  },
+
+  isMyTurn: function(){
+    return true;
+  },
+
+  sendMove: function(moveNumber, x, y){
     var c = this.gameController;
     var node = c.gameState.currentNode;
     var parentNode = node.parent;
@@ -29,49 +37,26 @@ Object.extend(GocoolPlayer.prototype, {
       // node contains the first try move.
     } else {
       //alert("This is not the first TRY move.");
-      alert("这不是你试下的第一步！");
+      alert(jsgvTranslations["not_first_move"]);
       return false;
     }
-    var prevX = null, prevY = null;
-    if (parentNode){
-      prevX = parentNode.x;
-      prevY = parentNode.y;
-    }
-    var color = node.color;
     var moveNumber = node.moveNumber;
     var x = node.x, y = node.y;
-    var gid = this.getGameId(c.game.url);
-    if (!gid || gid.length == 0){
-      //alert("DGS game ID not found!");
-      alert("未知DGS对局号（在对局URL中未找到gid=###，###为对局号）");
-      return false;
-    }
     var url = c.config.gocoolUrlPrefix + "games/" + c.gocoolId + "/play";
-    url += "&color=" + (color==STONE_BLACK?"B":"W");
     url += "&move=" + moveNumber;
     url += "&x=" + x;
     url += "&y=" + y;
-    var xyToSgf = function(x,y){
-      if (x && x >= 0 && y && y >= 0){
-        return String.fromCharCode('a'.charCodeAt(0)+x, 'a'.charCodeAt(0)+y);
-      }
-      return null;
-    }
     jq.ajax({url: url,
       success:function(response){
         if (response.charAt(0) == '0'){ // success
           // TODO: move to next game
           c.refresh();
         } else { // failure
-          c.setComment(response);
-          //alert("Operation failed!");
-          alert("操作失败！请参见棋盘右边的原始错误信息。");
+          alert(response);
         }
       },
       error: function(XMLHttpRequest, textStatus, errorThrown){
-        c.setComment(textStatus + " " + errorThrown);
-        //alert("Operation failed!");
-        alert("操作失败！请参见棋盘右边的原始错误信息。");
+        alert(jsgvTranslations["error_thrown"] + "\n" + textStatus + " " + errorThrown);
       }
     });
     return true;

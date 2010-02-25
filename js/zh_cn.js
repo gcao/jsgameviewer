@@ -37,6 +37,7 @@ window.jsgv_zh_cn = {
   'place': '地点',
   'comment_for': '第MOVE手评论',
   'branch_tag': '<变化>',
+  'error_thrown': '操作错误',
   'jump_to_xx': '跳到第XX手',
   'rule': '规则'};
 if (window.jsgvTranslations == undefined) window.jsgvTranslations = jsgv_zh_cn;

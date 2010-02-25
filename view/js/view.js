@@ -87,13 +87,15 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
         _this.fromX = arr[0];
         _this.fromY = arr[1];
         // console.log("fromX: " + this.fromX + ", fromY: " + this.fromY);
-        if (e.ctrlKey && e.shiftKey){
-          _this.sendMove_(arr[0], arr[1]);
-        } else if (e.ctrlKey || _this.config.gameType == jsGameViewer.WEIQI){
-          _this.play(arr[0],arr[1]);
-        } else if (_this.config.gameType == jsGameViewer.DAOQI){
-          this.style.cursor = 'move';
-        }
+        // TODO: DAOQI drag and drop
+        _this.play(arr[0],arr[1]);
+        //if (e.ctrlKey && e.shiftKey){
+        //  _this.sendMove_(arr[0], arr[1]);
+        //} else if (e.ctrlKey || _this.config.gameType == jsGameViewer.WEIQI){
+        //  _this.play(arr[0],arr[1]);
+        //} else if (_this.config.gameType == jsGameViewer.DAOQI){
+        //  this.style.cursor = 'move';
+        //}
       }).mouseup(function(e){
         this.style.cursor = 'auto';
         var arr = _this.eventToXY(e);
@@ -799,10 +801,10 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
       return this;
     },
   
-    sendMove_: function(x,y){
-      this.play(x,y);
-      return this.sendMove();
-    },
+    //sendMove_: function(x,y){
+    //  this.play(x,y);
+    //  return this.sendMove();
+    //},
   
     play: function(x,y){
       if (this.gameState == null)

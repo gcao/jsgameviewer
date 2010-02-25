@@ -30,6 +30,7 @@ window.jsgv_en_us = {
   'next_comment_or_branch': 'Next comment or variation',
   'show_hide_move_number': 'Show/hide move number',
   'locale': 'en_us',
+  'error_thrown': 'Error',
   'branch_tag': '<Variation>',
   'comment_for': 'Comment for MOVE',
   'place': 'Place',
