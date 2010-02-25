@@ -272,11 +272,11 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
   
     setGameInfo: function(){
       // show/hide resign button
-      //if (this.isMyTurn()){
-      //  jQuery(this.jqId + "_resign").show();
-      //} else {
-      //  jQuery(this.jqId + "_resign").hide();
-      //}
+      if (this.isMyTurn()){
+        jQuery(this.jqId + "_resign").show();
+      } else {
+        jQuery(this.jqId + "_resign").hide();
+      }
       var infoNode = jQuery(this.jqId + "_info").empty();
       var game = this.game;
       if (game == undefined || game == null)

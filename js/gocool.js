@@ -57,7 +57,7 @@ jQuery.extend(GocoolPlayer.prototype, {
         }
       },
       error: function(XMLHttpRequest, textStatus, errorThrown){
-        alert(jsgvTranslations["error_thrown"] + "\n" + textStatus + " " + errorThrown);
+        jsgv.showAjaxError(textStatus, errorThrown);
         c.remove();
       }
     });
@@ -66,15 +66,6 @@ jQuery.extend(GocoolPlayer.prototype, {
 
   resign: function(){
     var c = this.gameController;
-    var node = c.gameState.rootNode;
-    while(node.hasChildren()){
-      var n = node.children[0];
-      if (n.temp)
-        break;
-      else
-        node = n;
-    }
-    var moveNumber = node.moveNumber;
     var url = c.config.gocoolUrlPrefix + "games/" + gocoolId + "/resign";
     jQuery.ajax({url: url,
       success:function(response){
@@ -86,7 +77,7 @@ jQuery.extend(GocoolPlayer.prototype, {
         }
       },
       error: function(XMLHttpRequest, textStatus, errorThrown){
-        alert(jsgvTranslations["error_thrown"] + "\n" + textStatus + " " + errorThrown);
+        jsgv.showAjaxError(textStatus, errorThrown);
       }
     });
     return true;

@@ -112,8 +112,8 @@ a.gvreset {
 .gvresign {
   display: none;
   position: absolute;
-  left: 90px;
-  top: 2px; }
+  left: 255px;
+  top: -1px; }
 
 .gvmove-outer {
   position: absolute;
@@ -132,7 +132,7 @@ a.gvreset {
 .gvprisoners-outer {
   position: absolute;
   left: 270px;
-  top: 0px;
+  top: -2px;
   width: 176px; }
 
 .gvblack-prisoners-outer {

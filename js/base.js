@@ -62,6 +62,13 @@ var jsGameViewer = function() {
 
     getId: function(x, y){
       return x+"-"+y;
+    },
+
+    showAjaxError: function(textStatus, errorThrown) {
+      var mesg = jsgvTranslations["error_thrown"] + "\n";
+      if (textStatus != undefined) mesg += textStatus + " ";
+      if (errorThrown != undefined) mesg += errorThrown;
+      alert(mesg);
     }
 	};
 }();
