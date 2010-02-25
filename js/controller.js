@@ -223,3 +223,6 @@ jQuery.extend(jsGameViewer.GameController.prototype, {
     return "<div id='" + this.id + "' style='display:none'>&nbsp;</div>";
   }
 });
+
+// Added for backward compatibility
+var GameController = jsGameViewer.GameController;
