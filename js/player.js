@@ -54,21 +54,15 @@ jQuery.extend(jsGameViewer.GameController.prototype, {
     if (this.player && this.player.sendMove){
       return this.player.sendMove();
     } else {
-      //alert("This is not a DGS game. \nCurrently the program only supports to play on DGS.");
-      alert("Õâ²»ÊÇDGS¶Ô¾Ö¡£±¾³ÌÐòÄ¿Ç°Ö»Ö§³ÖÔÚDGSÉÏÏÂÆå¡£");
       return false;
     }
   },
 
   resign: function(){
     if (this.player && this.player.resign){
-      // var answer = confirm("Are you sure that you would like to resign?");
-      var answer = confirm("ÄãÈ·ÊµÒªÈÏÊäÂð£¿");
-      if (answer)
+      if (confirm(jsgvTranslations["confirm_resign"]))
         this.player.resign();
     } else {
-      //alert("This is not a DGS game. Currently the program only supports to play on DGS.");
-      alert("Õâ²»ÊÇDGS¶Ô¾Ö¡£±¾³ÌÐòÄ¿Ç°Ö»Ö§³ÖÔÚDGSÉÏÏÂÆå¡£");
       return false;
     }
   },

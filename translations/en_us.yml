@@ -38,3 +38,4 @@ branch                  : Variation
 trunk                   : Game move
 branch_tag              : <Variation>
 error_thrown            : Error
+confirm_resign          : Are you sure you want to resign?

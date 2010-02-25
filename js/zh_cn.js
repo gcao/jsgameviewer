@@ -30,6 +30,7 @@ window.jsgv_zh_cn = {
   'play_first': '先行',
   'locale': 'zh_cn',
   'show_hide_move_number': '显示/隐藏手数',
+  'confirm_resign': '你确定要认输吗？',
   'move_number_before': '',
   'resign': '认输',
   'open_in_new_window': '在新窗口打开',

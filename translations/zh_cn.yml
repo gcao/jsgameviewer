@@ -38,3 +38,4 @@ branch                  : 变化
 trunk                   : 实战
 branch_tag              : <变化>
 error_thrown            : 操作错误
+confirm_resign          : 你确定要认输吗？

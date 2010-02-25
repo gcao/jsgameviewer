@@ -28,6 +28,7 @@ window.jsgv_en_us = {
   'black_dead': 'B dead',
   'play_first': 'Play first',
   'next_comment_or_branch': 'Next comment or variation',
+  'confirm_resign': 'Are you sure you want to resign?',
   'show_hide_move_number': 'Show/hide move number',
   'locale': 'en_us',
   'error_thrown': 'Error',

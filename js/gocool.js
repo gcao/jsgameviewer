@@ -66,7 +66,7 @@ jQuery.extend(GocoolPlayer.prototype, {
 
   resign: function(){
     var c = this.gameController;
-    var url = c.config.gocoolUrlPrefix + "games/" + gocoolId + "/resign";
+    var url = c.config.gocoolUrlPrefix + "games/" + c.gocoolId + "/resign";
     jQuery.ajax({url: url,
       success:function(response){
         if (response.charAt(0) == '0'){ // success
