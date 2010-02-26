@@ -180,13 +180,15 @@ jQuery.extend(jsGameViewer.GameController.prototype, {
     var _this = this;
     jQuery.ajax({
       url:url,
-      ifModified: true,
+      //ifModified: true,
       success:function(response){
         try {
+          jsgv.debug('refresh 1');
           // if game data haven't changed, don't reload the game
-          if (!force && _this.game && _thi.game.dataSize && _this.game.dataSize == response.length){
+          if (!force && _this.game && _this.game.dataSize && _this.game.dataSize == response.length){
             return;
           }
+          jsgv.debug('refresh 2');
           _this.game = new jsGameViewer.SGFParser(_this.config.gameType).parse(response);
           _this.game.dataSize = response.length;
           _this.setGameTypeIf(_this.game.type).show();

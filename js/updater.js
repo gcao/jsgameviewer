@@ -9,7 +9,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, {
     return this;
   },
 
-  startUpdater: function(){
+  startUpdater: function(force){
     this.stopUpdater();
     if (this.game && !this.game.isFinished())
       return this;
@@ -21,14 +21,15 @@ jQuery.extend(jsGameViewer.GameController.prototype, {
         _this.stopUpdater();
         return;
       }
-      if (_this.isMyTurn())
+      if (!force && _this.isMyTurn())
         return;
       _this.refresh();
     };
     if (this.player){
       this.playerUpdater = setInterval(updaterFunc, this.config.playerInterval*1000);
+    } else {
+      this.observerUpdater = setInterval(updaterFunc, this.config.observerInterval*1000);
     }
-    this.observerUpdater = setInterval(updaterFunc, this.config.observerInterval*1000);
     return this;
   },
 
