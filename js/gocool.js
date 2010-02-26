@@ -43,7 +43,7 @@ jQuery.extend(GocoolPlayer.prototype, {
     var moveNumber = node.moveNumber;
     var x = node.x, y = node.y;
     var url = c.config.gocoolUrlPrefix + "games/" + c.gocoolId + "/play";
-    url += "&move=" + moveNumber;
+    url += "?move=" + moveNumber;
     url += "&x=" + x;
     url += "&y=" + y;
     jQuery.ajax({url: url,

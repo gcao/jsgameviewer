@@ -73,8 +73,8 @@ task :dist => :localize_js
 
 YUI_COMMAND = "java -jar lib/yuicompressor-2.4.2.jar"
 task :compress_js do
-  my_files = %w(js/en_us.js
-                js/zh_cn.js
+  my_files = %w(js/zh_cn.js
+                js/en_us.js
                 js/thickbox.js
                 js/base.js
                 js/model.js
@@ -82,14 +82,16 @@ task :compress_js do
                 js/controller.js
                 js/player.js
                 js/updater.js
-                view/js/view.js)
-                
-  `cat #{my_files.join(' ')} > /tmp/test.js && #{YUI_COMMAND} /tmp/test.js > build/compressed.js`
+                view/js/view.js
+                js/player.js
+                js/gocool.js)
+
+  `cat #{my_files.join(' ')} > /tmp/test.js && #{YUI_COMMAND} /tmp/test.js > js/all.js`
 end
 
 task :compress_css do
-  `#{YUI_COMMAND} view/default.css > build/compressed.css`
-  `sed -i '' s,/jsgameviewer,http://localhost/jsgameviewer,g build/compressed.css`
+  #`#{YUI_COMMAND} view/default.css > build/compressed.css`
+  #`sed -i '' s,/jsgameviewer,http://localhost/jsgameviewer,g build/compressed.css`
 end
 task :compress => %w(compress_js compress_css)
 task :dist => :compress

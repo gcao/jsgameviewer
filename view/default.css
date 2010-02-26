@@ -113,7 +113,7 @@ a.gvreset {
   display: none;
   position: absolute;
   left: 255px;
-  top: 0px;
+  top: -1px;
   z-index: 200; }
 
 .gvmove-outer {
