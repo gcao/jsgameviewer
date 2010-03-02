@@ -80,7 +80,6 @@ task :compress_js do
                 js/model.js
                 js/parser.js
                 js/controller.js
-                js/player.js
                 js/updater.js
                 view/js/view.js
                 js/player.js
