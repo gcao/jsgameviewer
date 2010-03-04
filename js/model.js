@@ -252,6 +252,7 @@ jsGameViewer.model = function(){
    * children - child nodes
    * moveNumber - move number
    * depth - 0:trunk, 1:branch on trunk, 2: branch on branch,...
+   * name
    * comment
    * points - setup points + current move + removed prisoners (null if type is NODE_EMPTY or NODE_PASS) 
    * marks - [x, y, markType, markText]

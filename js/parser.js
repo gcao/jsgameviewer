@@ -26,6 +26,7 @@ jsGameViewer.SGFParser.prototype = function(){
   var PROPERTY_EDIT_ERASE = 4;
   var PROPERTY_COMMENT    = 5;
   var PROPERTY_EDIT_MARK  = 6;
+  var PROPERTY_NAME       = 7;
 
   var MARK_NONE           = 0;
   var MARK_CROSS          = 1;
@@ -404,6 +405,10 @@ jsGameViewer.SGFParser.prototype = function(){
 							prop = PROPERTY_COMMENT;
 							pos = tmppos;
 						}
+						else if (input.charAt(pos) == 'N' && input.charAt(tmppos = nextNonSpace(input, pos + 1)) == '[') {
+							prop = PROPERTY_NAME;
+							pos = tmppos;
+						}
 						else if (input.charAt(pos) == 'T' && input.charAt(pos + 1) == 'B' &&
 								input.charAt(tmppos = nextNonSpace(input, pos + 2)) == '[') {
 							prop = PROPERTY_EDIT_MARK;
@@ -502,6 +507,15 @@ jsGameViewer.SGFParser.prototype = function(){
 										throw createErrorMsg(input, inputLength);
 								}
 	
+								pos++;
+								break; //}}}
+
+							case PROPERTY_NAME:
+							  currentNode.name = "";
+
+                while (input.charAt(++pos) != ']')
+                  currentNode.name += input.charAt(pos);
+
 								pos++;
 								break; //}}}
 
