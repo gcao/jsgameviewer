@@ -147,6 +147,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, {
   
   loadSgf: function(sgf, n){
     try {
+      sgf = jQuery.trim(sgf);
       this.show();
       this.game = new jsGameViewer.SGFParser(this.config.gameType).parse(sgf);
       this.game.dataSize = sgf.length;
@@ -183,6 +184,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, {
       //ifModified: true,
       success:function(response){
         try {
+          response = jQuery.trim(response);
           jsgv.debug('refresh 1');
           // if game data haven't changed, don't reload the game
           if (!force && _this.game && _this.game.dataSize && _this.game.dataSize == response.length){

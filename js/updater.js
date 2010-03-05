@@ -11,7 +11,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, {
 
   startUpdater: function(force){
     this.stopUpdater();
-    if (this.game && !this.game.isFinished())
+    if (this.game && this.game.isFinished())
       return this;
     var _this = this;
     var updaterFunc = function(){
@@ -25,22 +25,17 @@ jQuery.extend(jsGameViewer.GameController.prototype, {
         return;
       _this.refresh();
     };
-    if (this.player){
-      this.playerUpdater = setInterval(updaterFunc, this.config.playerInterval*1000);
-    } else {
-      this.observerUpdater = setInterval(updaterFunc, this.config.observerInterval*1000);
-    }
+    var interval = this.config.observerInterval;
+    if (this.player) interval = this.config.playerInterval;
+
+    this.updater = setInterval(updaterFunc, interval*1000);
     return this;
   },
 
   stopUpdater: function(){
-    if (this.playerUpdater){
-      clearInterval(this.playerUpdater);
-      delete this.playerUpdater;
-    }
-    if (this.observerUpdater){
-      clearInterval(this.observerUpdater);
-      delete this.observerUpdater;
+    if (this.updater){
+      clearInterval(this.updater);
+      delete this.updater;
     }
     return this;
   }
