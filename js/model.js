@@ -298,6 +298,14 @@ jsGameViewer.model = function(){
         return this.children[0];
       return null;
     },
+
+    childThatMatches: function(x, y){
+      for(var i=0; i<this.children.length; i++){
+        var node = this.children[i];
+        if (node.x == x && node.y == y) return i;
+      }
+      return null;
+    },
   
     isOnBranch: function(){
       return this.depth > 1;
@@ -501,6 +509,16 @@ jsGameViewer.model = function(){
   
     isOnBranch: function(){
       return this.currentNode.isOnBranch();
+    },
+
+    getXYs: function(){
+      var node = this.currentNode;
+      var xys = [];
+      while (node) {
+        if (node.type == NODE_MOVE) xys.unshift([node.x, node.y]);
+        node = node.parent;
+      }
+      return xys;
     },
 
     getNextPlayer: function(){

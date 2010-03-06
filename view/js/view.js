@@ -1158,6 +1158,19 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
       }
       return this;
     },
+
+    goToXYs: function(xyArr){
+      this.backAll();
+      for(var i=0; i<xyArr.length; i++){
+        var x = xyArr[i][0], y = xyArr[i][1];
+        var branch = this.gameState.currentNode.childThatMatches(x, y);
+        if (branch != null)
+          this.goToBranch(branch);
+        else
+          break;
+      }
+      return this;
+    },
   
     setToggleNumberImg: function(){
       if (this.config.showMoveNumber){
