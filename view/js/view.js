@@ -272,7 +272,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
   
     setGameInfo: function(){
       // show/hide resign button
-      if (this.isMyTurn()){
+      if (this.isMyTurn() && !this.game.isFinished()){
         jQuery(this.jqId + "_resign").show();
       } else {
         jQuery(this.jqId + "_resign").hide();
