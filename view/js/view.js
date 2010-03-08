@@ -84,28 +84,33 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
         jQuery(_this.jqId+"_pointLabel").empty();
       }).mousedown(function(e){
         var arr = _this.eventToXY(e);
-        if (_this.config.gameType == jsGameViewer.DAOQI && e.ctrlKey){
+        if (_this.config.gameType == jsGameViewer.DAOQI){
           _this.fromX = arr[0];
           _this.fromY = arr[1];
           this.style.cursor = 'move';
-          jsgv.debug("fromX: " + fromX + ", fromY: " + fromY);
+          //jsgv.debug("fromX: " + _this.fromX + ", fromY: " + _this.fromY);
         } else {
           _this.play(arr[0],arr[1]);
         }
+        return false;
       }).mouseup(function(e){
-        if (!(_this.config.gameType == jsGameViewer.DAOQI && e.ctrlKey)){
-          return;
+        // See http://jsbin.com/ajidi source code on how IE can be supported
+        if (!(_this.config.gameType == jsGameViewer.DAOQI)){
+          return false;
         }
         this.style.cursor = 'auto';
         var arr = _this.eventToXY(e);
         var toX = arr[0], toY = arr[1];
-        jsgv.debug("fromX: " + this.fromX + ", fromY: " + this.fromY);
+        jsgv.debug("fromX: " + _this.fromX + ", fromY: " + _this.fromY);
         jsgv.debug("toX: " + toX + ", toY: " + toY);
         if (_this.fromX == undefined || _this.fromX == NaN || _this.fromY == undefined || _this.fromY == NaN)
           return;
         if (_this.fromX != toX || _this.fromY != toY) {
           _this.moveBoard(toX-_this.fromX, toY-_this.fromY);
+        } else {
+          _this.play(toX, toY);
         }
+        return false;
       });
       this.setToggleNumberImg();
       jQuery(this.jqId+"_goToInput").keydown(function(){

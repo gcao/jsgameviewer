@@ -8,7 +8,19 @@ $longName = $name . $version;
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=gb2312">
 <link rel="stylesheet" href="/jsgameviewer/view/default.css"/>
-<script language="JavaScript" type="text/javascript" src="/jsgameviewer/php/main.php"></script>
+
+<script src="/jsgameviewer/js/zh_cn.js" type="text/javascript"></script>
+<script src="/jsgameviewer/js/en_us.js" type="text/javascript"></script>
+<script src="/jsgameviewer/js/jquery-1.3.2.min.js" type="text/javascript"></script>
+<script src="/jsgameviewer/js/thickbox.js" type="text/javascript"></script>
+<script src="/jsgameviewer/js/base.js" type="text/javascript"></script>
+<script src="/jsgameviewer/js/model.js" type="text/javascript"></script>
+<script src="/jsgameviewer/js/parser.js" type="text/javascript"></script>
+<script src="/jsgameviewer/js/controller.js" type="text/javascript"></script>
+<script src="/jsgameviewer/view/js/view.js" type="text/javascript"></script>
+<script src="/jsgameviewer/js/updater.js" type="text/javascript"></script>
+<script src="/jsgameviewer/js/player.js" type="text/javascript"></script>
+<script src="/jsgameviewer/js/gocool.js" type="text/javascript"></script>
 <title><?php echo $longName?></title>
 <style type="text/css">
 <!--
@@ -51,9 +63,9 @@ body {
 <?php 
 $container = "gvcontainer1";
 $scripts = array(
-  "new GameController().show();",
-//	"new GameController().setGameType(DAOQI).load('/jsgameviewer/games/testmarks.sgf');",
-	"new GameController({container:'gvcontainer1'}).load('/jsgameviewer/games/test4.sgf');",
+//  "new GameController().show();",
+	"new GameController().setGameType(jsGameViewer.DAOQI).load('/jsgameviewer/examples/games/testmarks.sgf');",
+//	"new GameController({container:'gvcontainer1'}).load('/jsgameviewer/examples/games/test4.sgf');",
 //	"new GameController().load('/jsgameviewer/php/proxy.php?charset=gb2312&url=http://weiqi.spbrts.tom.com/qipu/200712/20cn-ming-f-3sgf.htm').setObserverInterval(20).startUpdater().saveSession('/jsgameviewer/index.php',10);",
 //	"new GameController().createDGSPlayer().setUsername('appoolloo').loadDGSGame(388918).setPlayerInterval(8).startUpdater();"
 );
