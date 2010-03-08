@@ -75,43 +75,57 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
       //   jQuery("#"+this.config.container).empty().append(s);
       // }
       var _this = this;
-      jQuery(this.jqId+"_boardFascade").mousemove(function(e){
+
+      var mouseMove = function(e){
         _this.registerKeyListener();
-        // console.log(e);
         var arr = _this.eventToXY(e);
+        _this.toX = arr[0];
+        _this.toY = arr[1];
         jQuery(_this.jqId+"_pointLabel").empty().append(_this.xyToLabel(arr[0],arr[1]));
-      }).mouseout(function(e){
+        return false;
+      };
+      var mouseOut = function(e){
         jQuery(_this.jqId+"_pointLabel").empty();
-      }).mousedown(function(e){
+        return false;
+      };
+      var mouseDown = function(e){
+        jsgv.debug('mouseDown');
         var arr = _this.eventToXY(e);
         if (_this.config.gameType == jsGameViewer.DAOQI){
-          _this.fromX = arr[0];
-          _this.fromY = arr[1];
-          this.style.cursor = 'move';
-          //jsgv.debug("fromX: " + _this.fromX + ", fromY: " + _this.fromY);
+          _this.fromX = _this.toX = arr[0];
+          _this.fromY = _this.toY = arr[1];
+          jQuery().css('cursor', 'move');
+          jsgv.debug("fromX: " + _this.fromX + ", fromY: " + _this.fromY);
         } else {
           _this.play(arr[0],arr[1]);
         }
+        jQuery().mousemove(mouseMove).mouseout(mouseOut).mouseup(mouseUp);
         return false;
-      }).mouseup(function(e){
+      };
+      var mouseUp = function(e){
+        jsgv.debug('mouseUp');
         // See http://jsbin.com/ajidi source code on how IE can be supported
         if (!(_this.config.gameType == jsGameViewer.DAOQI)){
           return false;
         }
-        this.style.cursor = 'auto';
-        var arr = _this.eventToXY(e);
-        var toX = arr[0], toY = arr[1];
+        jQuery().css('cursor', 'auto');
         jsgv.debug("fromX: " + _this.fromX + ", fromY: " + _this.fromY);
-        jsgv.debug("toX: " + toX + ", toY: " + toY);
+        jsgv.debug("toX: " + _this.toX + ", toY: " + _this.toY);
         if (_this.fromX == undefined || _this.fromX == NaN || _this.fromY == undefined || _this.fromY == NaN)
           return;
-        if (_this.fromX != toX || _this.fromY != toY) {
-          _this.moveBoard(toX-_this.fromX, toY-_this.fromY);
+        if (_this.fromX != _this.toX || _this.fromY != _this.toY) {
+          _this.moveBoard(_this.toX - _this.fromX, _this.toY - _this.fromY);
         } else {
-          _this.play(toX, toY);
+          _this.play(_this.toX, _this.toY);
         }
+
+        jQuery().unbind();
+        jQuery().mousedown(mouseDown);
         return false;
-      });
+      };
+
+      jQuery(this.jqId+"_boardFascade").mousemove(mouseMove).mousedown(mouseDown);
+
       this.setToggleNumberImg();
       jQuery(this.jqId+"_goToInput").keydown(function(){
         if(e.keyCode==13){
