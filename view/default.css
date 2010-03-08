@@ -109,12 +109,17 @@ a.gvreset {
   position: relative;
   top: 2px; }
 
-.gvresign {
+.gvresign, .gvresigndq {
   display: none;
   position: absolute;
-  left: 255px;
   top: -1px;
   z-index: 200; }
+
+.gvresign {
+  left: 255px; }
+
+.gvresigndq {
+  left: 331px; }
 
 .gvmove-outer {
   position: absolute;
