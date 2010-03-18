@@ -97,7 +97,7 @@ jsGameViewer.model = function(){
     },
   
     reset: function(){
-      for(i=0; i<this.size; i++) {
+      for(var i=0; i<this.size; i++) {
         this[i] = new Array(this.size);
         for(j=0; j<this.size; j++)
           this[i][j] = 0;
@@ -381,7 +381,6 @@ jsGameViewer.model = function(){
       this.place = "";
       this.result = "";
       this._moves = 0;
-      this._firstPlayer = STONE_NONE;
       this.rootNode = new Node(null);
     },
   
@@ -402,15 +401,19 @@ jsGameViewer.model = function(){
     },
   
     getFirstPlayer: function(){
-      if (this._firstPlayer == STONE_NONE){
-        var node = this.rootNode;
-        while(this._firstPlayer == STONE_NONE && node.hasChildren()){
-          node = node.children[0];
-          if(node.type == NODE_MOVE || node.type == NODE_PASS)
-            this._firstPlayer = node.color;
+      if (!this.firstPlayer){
+        if (this.handicap > 1)
+          this.firstPlayer = STONE_WHITE;
+        else {
+          var node = this.rootNode;
+          while(this.firstPlayer == STONE_NONE && node.hasChildren()){
+            node = node.children[0];
+            if(node.type == NODE_MOVE || node.type == NODE_PASS)
+              this.firstPlayer = node.color;
+          }
         }
       }
-      return this._firstPlayer;
+      return this.firstPlayer;
     },
   
     getId: function(){
@@ -439,26 +442,6 @@ jsGameViewer.model = function(){
       if (this.place)
         title += "   " + this.place;
       return title;
-    },
-  
-    getNextPlayer: function(){
-      var color = STONE_NONE;
-      var node = this.rootNode;
-      while(node.hasChildren()){
-        if (node.color == STONE_BLACK || node.color == STONE_WHITE){
-          color = node.color;
-        }
-        var child = node.children[0];
-        if (child.temp){
-          break;
-        }
-        node = child;
-      }
-      if (node.color == STONE_BLACK || node.color == STONE_WHITE){
-        color = node.color;
-      }
-      var nextPlayerColor = color == STONE_BLACK? STONE_WHITE:STONE_BLACK;
-      return nextPlayerColor;
     }
   });
 
@@ -522,6 +505,8 @@ jsGameViewer.model = function(){
     },
 
     getNextPlayer: function(){
+      if (this.currentNode == this.rootNode) return this.game.getFirstPlayer();
+
       var node = this.currentNode;
       var color = node.color;
       while(color != STONE_BLACK && color != STONE_WHITE && !node.isRoot()){
