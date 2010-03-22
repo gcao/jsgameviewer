@@ -89,7 +89,6 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
         return false;
       };
       var mouseDown = function(e){
-        jsgv.debug('mouseDown');
         var arr = _this.eventToXY(e);
         if (_this.config.gameType == jsGameViewer.DAOQI){
           _this.fromX = _this.toX = arr[0];
@@ -103,7 +102,6 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
         return false;
       };
       var mouseUp = function(e){
-        jsgv.debug('mouseUp');
         // See http://jsbin.com/ajidi source code on how IE can be supported
         if (!(_this.config.gameType == jsGameViewer.DAOQI)){
           return false;
@@ -819,11 +817,6 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
         jQuery(this.jqId+"_boardPoints").append(s);
       return this;
     },
-  
-    //sendMove_: function(x,y){
-    //  this.play(x,y);
-    //  return this.sendMove();
-    //},
   
     play: function(x,y){
       if (this.gameState == null)

@@ -41,7 +41,7 @@
 //  isMyTurn: function(){
 //    var c = this.gameController;
 //    var username = c.getUsername();
-//    var nextPlayerColor = c.game.getNextPlayer();
+//    var nextPlayerColor = c.gameState.getNextPlayer();
 //    return (nextPlayerColor == STONE_BLACK && username == this.parseUsername(c.game.blackName)) ||
 //           (nextPlayerColor == STONE_WHITE && username == this.parseUsername(c.game.whiteName));
 //  },
