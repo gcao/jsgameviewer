@@ -99,15 +99,19 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
         } else {
           _this.play(arr[0],arr[1]);
         }
-        //jQuery().mousemove(mouseMove).mouseout(mouseOut).mouseup(mouseUp);
+        jQuery().mousemove(mouseMove).mouseout(mouseOut).mouseup(mouseUp);
         return false;
       };
       var mouseUp = function(e){
         jsgv.debug('mouseUp');
-        // See http://jsbin.com/ajidi source code on how IE can be supported
-        if (!(_this.config.gameType == jsGameViewer.DAOQI)){
+        // See http://stackoverflow.com/questions/1909760/how-to-get-mouseup-to-fire-once-mousemove-complete-javascript-jquery
+        // Then see http://jsbin.com/ajidi source code on how IE can be supported
+        jQuery().unbind();
+        jQuery().mousedown(mouseDown);
+
+        if (!(_this.config.gameType == jsGameViewer.DAOQI))
           return false;
-        }
+
         jQuery().css('cursor', 'auto');
         jsgv.debug("fromX: " + _this.fromX + ", fromY: " + _this.fromY);
         jsgv.debug("toX: " + _this.toX + ", toY: " + _this.toY);
@@ -118,13 +122,10 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
         } else {
           _this.play(_this.toX, _this.toY);
         }
-
-        //jQuery().unbind();
-        //jQuery().mousedown(mouseDown);
         return false;
       };
 
-      jQuery(this.jqId+"_boardFascade").mousemove(mouseMove).mousedown(mouseDown).mouseup(mouseUp).mouseout(mouseOut);
+      jQuery(this.jqId+"_boardFascade").mousemove(mouseMove).mousedown(mouseDown);
 
       this.setToggleNumberImg();
       jQuery(this.jqId+"_goToInput").keydown(function(){
