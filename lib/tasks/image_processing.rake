@@ -11,7 +11,7 @@ label_font_size      = 15
 
 # DAOQI only configurations
 daoqigrid            = 19
-vbw                  = 3 # virtual board width
+vbw                  = 4 # virtual board width
 daoqilabel_font_size = 13
 
 desc "Create Weiqi board"

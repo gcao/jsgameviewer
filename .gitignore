@@ -1,3 +1,4 @@
 dist
 php/cache/*
 .sass-cache
+.bundle
