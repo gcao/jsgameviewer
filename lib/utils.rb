@@ -97,8 +97,8 @@ module Utils
     3.times do |i|
       3.times do |j|
         r = 2
-        x1 = x+(i*6+6)*grid
-        y1 = y+(j*6+6)*grid
+        x1 = x+(i*6+7)*grid
+        y1 = y+(j*6+7)*grid
         gc.circle(x1, y1, x1+r, y1)
       end
     end
