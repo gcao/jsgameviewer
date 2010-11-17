@@ -9,7 +9,7 @@ jQuery.extend(jsGameViewer.CONFIG, {
   gridSizeWQ:21,
   gridSizeDQ:19,
   boardColorDQ:"#CCAB69",
-  vbw:3,
+  vbw:4,
   boardSizeDQ:25,
   rightPaneHeight:446,
   rightPaneHeightDQ:522

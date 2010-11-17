@@ -70,9 +70,8 @@ module Utils
     save_to_file gc, width, height, "./view/images/#{grid.to_s}/board.gif"
   end
 
-  def draw_daoqiboard(grid, size)
-    width = grid*size
-    height = grid*size
+  def draw_daoqiboard(grid, size, vbw)
+    width = height = grid*(size + 2*vbw)
 
     # outer border
     gc = Draw.new
@@ -82,12 +81,12 @@ module Utils
     gc.stroke_width 1
     x = grid/2
     y = grid/2
-    w = h = (size-1)*grid
+    w = h = (size-1 + 2*vbw)*grid
     gc.rectangle(x,y,x+w,y+h)
 
     # inner grid
     gc.stroke_width 1
-    (size-2).times do |i|
+    (size + 2*vbw - 2).times do |i|
       offset = (i+1)*grid
       gc.line(x+offset, y, x+offset, y+h)
       gc.line(x, y+offset, x+w, y+offset)
@@ -121,7 +120,7 @@ module Utils
     (2*size).times do |i|
       x = vlabelwidth - 3
       y = (i+1)*grid - grid/2
-      label = (daoqisize-i%size-6).to_s
+      label = (daoqisize-i%size-8).to_s
       gc.text(x,y,label)
     end
     

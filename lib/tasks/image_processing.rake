@@ -3,14 +3,15 @@ require 'sprites'
 
 include Utils
 
-grid                 = 21
-size                 = 19
+grid                 = 21   # distance between points on board
+size                 = 19   # board size
 label_color          = '#555555'
 label_font           = 'Nina'
 label_font_size      = 15
 
 # DAOQI only configurations
 daoqigrid            = 19
+daoqisize           = 19
 vbw                  = 4 # virtual board width
 daoqilabel_font_size = 13
 
@@ -21,9 +22,9 @@ end
 
 desc "Create Daoqi board"
 task :daoqiboard do
-  draw_daoqiboard(daoqigrid, daoqisize)
-  draw_vlable(daoqigrid, size, vbw, label_color, label_font, daoqilabel_font_size)
-  draw_vlable(daoqigrid, size, vbw, label_color, label_font, daoqilabel_font_size)
+  draw_daoqiboard(daoqigrid, daoqisize, vbw)
+  draw_hlabel(daoqigrid, size, vbw, label_color, label_font, daoqilabel_font_size)
+  draw_vlabel(daoqigrid, size, vbw, label_color, label_font, daoqilabel_font_size)
 end
 
 desc "Create stones"
@@ -55,7 +56,7 @@ task :marks do
 end
 
 desc "Create all images"
-task :images => [:board, :daoqiboard, :vlabel, :hlabel, :stones, :marks]
+task :images => [:board, :daoqiboard, :stones, :marks]
 
 desc "Create CSS Sprite classes and image"
 task :sprites do
