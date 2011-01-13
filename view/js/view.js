@@ -10,9 +10,9 @@ jQuery.extend(jsGameViewer.CONFIG, {
   gridSizeDQ:19,
   boardColorDQ:"#CCAB69",
   vbw:4,
-  boardSizeDQ:25,
+  boardSizeDQ:27,
   rightPaneHeight:446,
-  rightPaneHeightDQ:522
+  rightPaneHeightDQ:560
 });
 
 jQuery.extend(jsGameViewer.GameController.prototype, function(){
