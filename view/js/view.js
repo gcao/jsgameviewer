@@ -1,5 +1,5 @@
 // Default view configuration
-jQuery.extend(jsGameViewer.CONFIG, {
+jq4gv.extend(jsGameViewer.CONFIG, {
   gridSize:21,
   fastMode:10,
   showMoveNumber:false,
@@ -15,15 +15,15 @@ jQuery.extend(jsGameViewer.CONFIG, {
   rightPaneHeightDQ:560
 });
 
-jQuery.extend(jsGameViewer.GameController.prototype, function(){
+jq4gv.extend(jsGameViewer.GameController.prototype, function(){
   var LABELS = ['A','B','C','D','E','F','G','H','J','K','L','M','N','O','P','Q','R','S','T'];
   var BRANCHES = ['A','B','C','D','E','F','G','H','I','J'];
-  
+
   return {
     destroyView: function(){
-      jQuery(this.jqId).remove();
+      jq4gv(this.jqId).remove();
     },
-    
+
     getTemplateLocation: function(){
       var templateName = this.config.gameType == jsGameViewer.DAOQI ? "daoqi" : "weiqi";
       return this.config.viewDir+"templates/"+templateName+"_"+this.config.locale+".html";
@@ -40,7 +40,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
       if (this.config.gameType == jsGameViewer.DAOQI){
         this.config.gridSize = this.config.gridSizeDQ;
         if (jsGameViewer.DAOQI_TEMPLATE == null){
-          jQuery.ajax({
+          jq4gv.ajax({
             async: false,
             dataType: "application/xml",
             url: this.getTemplateLocation(),
@@ -54,7 +54,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
       } else {
         this.config.gridSize = this.config.gridSizeWQ;
         if (jsGameViewer.WEIQI_TEMPLATE == null){
-          jQuery.ajax({
+          jq4gv.ajax({
             async: false,
             dataType: "application/xml",
             url: this.getTemplateLocation(),
@@ -68,11 +68,11 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
       }
       if (this.id != 'GV1')
         s = s.replace(/GV1/g, this.id);
-      jQuery(this.jqId).replaceWith(s);
+      jq4gv(this.jqId).replaceWith(s);
       // if (this.config.container == null) {
-      //   jQuery(this.jqId).replaceWith(s);
+      //   jq4gv(this.jqId).replaceWith(s);
       // } else {
-      //   jQuery("#"+this.config.container).empty().append(s);
+      //   jq4gv("#"+this.config.container).empty().append(s);
       // }
       var _this = this;
 
@@ -81,11 +81,11 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
         var arr = _this.eventToXY(e);
         _this.toX = arr[0];
         _this.toY = arr[1];
-        jQuery(_this.jqId+"_pointLabel").empty().append(_this.xyToLabel(arr[0],arr[1]));
+        jq4gv(_this.jqId+"_pointLabel").empty().append(_this.xyToLabel(arr[0],arr[1]));
         return false;
       };
       var mouseOut = function(e){
-        jQuery(_this.jqId+"_pointLabel").empty();
+        jq4gv(_this.jqId+"_pointLabel").empty();
         return false;
       };
       var mouseDown = function(e){
@@ -93,23 +93,23 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
         if (_this.config.gameType == jsGameViewer.DAOQI){
           _this.fromX = _this.toX = arr[0];
           _this.fromY = _this.toY = arr[1];
-          jQuery(this).css('cursor', 'move');
+          jq4gv(this).css('cursor', 'move');
           jsgv.debug("fromX: " + _this.fromX + ", fromY: " + _this.fromY);
         } else {
           _this.play(arr[0],arr[1]);
         }
-        jQuery(this).one('mouseup', mouseUp);
+        jq4gv(this).one('mouseup', mouseUp);
         return false;
       };
       var mouseUp = function(e){
         // See http://stackoverflow.com/questions/1909760/how-to-get-mouseup-to-fire-once-mousemove-complete-javascript-jquery
         // Then see http://jsbin.com/ajidi source code on how IE can be supported
-        jQuery(this).unbind('mouseup');
+        jq4gv(this).unbind('mouseup');
 
         if (!(_this.config.gameType == jsGameViewer.DAOQI))
           return false;
 
-        jQuery(this).css('cursor', 'auto');
+        jq4gv(this).css('cursor', 'auto');
         if (_this.fromX == undefined || _this.fromX == NaN || _this.fromY == undefined || _this.fromY == NaN)
           return;
         if (_this.fromX != _this.toX || _this.fromY != _this.toY) {
@@ -120,57 +120,57 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
         return false;
       };
 
-      jQuery(this.jqId+"_boardFascade").mousemove(mouseMove).mouseout(mouseOut).mousedown(mouseDown);
+      jq4gv(this.jqId+"_boardFascade").mousemove(mouseMove).mouseout(mouseOut).mousedown(mouseDown);
 
       this.setToggleNumberImg();
-      jQuery(this.jqId+"_goToInput").keydown(function(){
+      jq4gv(this.jqId+"_goToInput").keydown(function(){
         if(e.keyCode==13){
           gvGoTo(id);
         }
       });
       this.addPrisonerHandlers();
       this.registerKeyListener();
-      jQuery(document).ready(function(){tb_init("a.thickbox")});
+      jq4gv(document).ready(function(){tb_init("a.thickbox")});
       return this;
     },
-  
+
     addPrisonerHandlers: function(){
       var _this = this;
-      jQuery(this.jqId + "_moveOuter, " + this.jqId + "_blackPrisonersOuter, " + this.jqId + "_whitePrisonersOuter")
+      jq4gv(this.jqId + "_moveOuter, " + this.jqId + "_blackPrisonersOuter, " + this.jqId + "_whitePrisonersOuter")
         .mouseout(function(){
-          jQuery(_this.jqId+"_prisoners").empty();        
+          jq4gv(_this.jqId+"_prisoners").empty();
         });
-      jQuery(this.jqId + "_blackPrisonersOuter").mouseover(function(){
-        jQuery(_this.jqId+"_prisoners").empty();
+      jq4gv(this.jqId + "_blackPrisonersOuter").mouseover(function(){
+        jq4gv(_this.jqId+"_prisoners").empty();
         if (_this.gameState.blackPrisoners > 0){
-          jQuery.each(_this.gameState.blackPrisonerPoints, function(i,item){
+          jq4gv.each(_this.gameState.blackPrisonerPoints, function(i,item){
             _this.showPrisoner(item);
           });
         }
       });
-      jQuery(this.jqId + "_whitePrisonersOuter").mouseover(function(){
-        jQuery(this.jqId+"_prisoners").empty();
+      jq4gv(this.jqId + "_whitePrisonersOuter").mouseover(function(){
+        jq4gv(this.jqId+"_prisoners").empty();
         if (_this.gameState.whitePrisoners > 0){
-          jQuery.each(_this.gameState.whitePrisonerPoints, function(i,item){
+          jq4gv.each(_this.gameState.whitePrisonerPoints, function(i,item){
             _this.showPrisoner(item);
           });
         }
       });
-      jQuery(this.jqId + "_moveOuter").mouseover(function(){
-        jQuery(_this.jqId+"_prisoners").empty();
+      jq4gv(this.jqId + "_moveOuter").mouseover(function(){
+        jq4gv(_this.jqId+"_prisoners").empty();
         if (_this.gameState.currentNode.blackPrisoners > 0){
-          jQuery.each(_this.gameState.currentNode.blackPrisonerPoints, function(i,item){
+          jq4gv.each(_this.gameState.currentNode.blackPrisonerPoints, function(i,item){
             _this.showPrisoner(item);
           });
         }
         if (_this.gameState.currentNode.whitePrisoners > 0){
-          jQuery.each(_this.gameState.currentNode.whitePrisonerPoints, function(i,item){
+          jq4gv.each(_this.gameState.currentNode.whitePrisonerPoints, function(i,item){
             _this.showPrisoner(item);
           });
         }
       });
     },
-  
+
     showPrisoner: function(item){
       var _this = this;
       var x = item[0], y = item[1], color = item[2];
@@ -190,7 +190,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
             }
           }
           s += "'></div>";
-          jQuery(this.jqId+"_prisoners").append(s);
+          jq4gv(this.jqId+"_prisoners").append(s);
         });
       } else {
         var cssClass = color == jsGameViewer.model.STONE_BLACK? "gvsprite-21-markblack" : "gvsprite-21-markwhite";
@@ -199,29 +199,29 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
           s += "background-color:"+this.config.boardColor+";";
         }
         s += "'></div>";
-        jQuery(this.jqId+"_prisoners").append(s);
+        jq4gv(this.jqId+"_prisoners").append(s);
       }
     },
 
     removeKeyListener: function(){
-      jQuery(this.jqId+"_bannerbg").css("background-color",this.config.inactiveBackground);
+      jq4gv(this.jqId+"_bannerbg").css("background-color",this.config.inactiveBackground);
     },
-  
+
     registerKeyListener: function(){
       var _this = this;
       for(var i=1; i<=jsGameViewer.length; i++){
         jsGameViewer[jsGameViewer.getGameId(i)].removeKeyListener();
       }
-      jQuery(this.jqId+"_bannerbg").css("background-color",this.config.activeBackground);
+      jq4gv(this.jqId+"_bannerbg").css("background-color",this.config.activeBackground);
       document.onkeydown = function(e){
         var keyCode;
         if (window.event)
           keyCode = window.event.keyCode;
         else if (e)
           keyCode = e.which;
-        else 
+        else
           return;
-        
+
         e = e || window.event;
         switch(keyCode){
           case 37: // left
@@ -254,7 +254,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
             _this.remove();
             return;
         }
-      
+
         if (e.altKey && e.shiftKey){
           switch (keyCode) {
             case 71: // g
@@ -284,42 +284,42 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
         .setGameState()
         .addRemoveStones(this.gameState.currentNode.points);
     },
-  
+
     setGameInfo: function(){
       // show/hide resign button
       if (this.isMyTurn() && !this.game.isFinished()){
-        jQuery(this.jqId + "_resign").show();
+        jq4gv(this.jqId + "_resign").show();
       } else {
-        jQuery(this.jqId + "_resign").hide();
+        jq4gv(this.jqId + "_resign").hide();
       }
-      var infoNode = jQuery(this.jqId + "_info").empty();
+      var infoNode = jq4gv(this.jqId + "_info").empty();
       var game = this.game;
       if (game == undefined || game == null)
         return this;
       if (jsGameViewer.notNull(game.name)){
-        infoNode.append("<div align='center' style='font-weight:bold'>"+jQuery.trim(game.name)+"</div>");
+        infoNode.append("<div align='center' style='font-weight:bold'>"+jq4gv.trim(game.name)+"</div>");
       }
       if (jsGameViewer.notNull(game.date)){
-        infoNode.append("<div>"+jsgvTranslations['time']+": "+jQuery.trim(game.date)+"</div>");
+        infoNode.append("<div>"+jsgvTranslations['time']+": "+jq4gv.trim(game.date)+"</div>");
       }
       if (jsGameViewer.notNull(game.place)){
-        infoNode.append("<div>"+jsgvTranslations['place']+": "+jQuery.trim(game.place)+"</div>");
+        infoNode.append("<div>"+jsgvTranslations['place']+": "+jq4gv.trim(game.place)+"</div>");
       }
       var playFirst = "&nbsp;&#8592; "+jsgvTranslations['play_first'];
       // black player name + rank
       var blackRank = "";
       if (jsGameViewer.notNull(game.blackRank))
         blackRank = "&nbsp;("+game.blackRank+")";
-      var blackPlayer = "<div>"+jsgvTranslations['black']+": <strong>"+jQuery.trim(game.blackName)+"</strong>"+blackRank;
+      var blackPlayer = "<div>"+jsgvTranslations['black']+": <strong>"+jq4gv.trim(game.blackName)+"</strong>"+blackRank;
       if (game.getFirstPlayer() == jsGameViewer.model.STONE_BLACK)
         blackPlayer += playFirst;
       blackPlayer += "</div>";
-      infoNode.append(blackPlayer);   
+      infoNode.append(blackPlayer);
       // white player name + rank
       var whiteRank = "";
       if (jsGameViewer.notNull(game.whiteRank))
         whiteRank = "&nbsp;("+game.whiteRank+")";
-      var whitePlayer = "<div>"+jsgvTranslations['white']+": <strong>"+jQuery.trim(game.whiteName)+"</strong>"+whiteRank;
+      var whitePlayer = "<div>"+jsgvTranslations['white']+": <strong>"+jq4gv.trim(game.whiteName)+"</strong>"+whiteRank;
       if (game.getFirstPlayer() == jsGameViewer.model.STONE_WHITE)
         whitePlayer += playFirst;
       whitePlayer += "</div>";
@@ -327,19 +327,19 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
       if (game.handicap > 0){
         infoNode.append("<div>"+jsgvTranslations['handicap']+": "+game.handicap+"</div>");
       } else {
-        infoNode.append("<div>"+jsgvTranslations['rule']+": "+jQuery.trim(game.rule)+"</div>");
+        infoNode.append("<div>"+jsgvTranslations['rule']+": "+jq4gv.trim(game.rule)+"</div>");
         infoNode.append("<div>"+jsgvTranslations['komi']+": "+game.komi+"</div>");
       }
       infoNode.append("<div>"+jsgvTranslations['moves']+": "+game.getMoves()+"</div>");
-      infoNode.append("<div>"+jsgvTranslations['result']+": "+jQuery.trim(game.result)+"</div>");
+      infoNode.append("<div>"+jsgvTranslations['result']+": "+jq4gv.trim(game.result)+"</div>");
       return this;
     },
-  
+
     removeGameInfo: function(){
-      jQuery(this.jqId + "_info").empty();
+      jq4gv(this.jqId + "_info").empty();
       return this;
     },
-  
+
     setGameState: function(){
       var node = this.gameState.currentNode;
       this.setNextPlayer(this.gameState.getNextPlayer());
@@ -354,7 +354,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
       this.setComment();
       return this;
     },
-  
+
     moveBoard: function(xDiff,yDiff){
       var _this = this;
       if (this.config.gameType != jsGameViewer.DAOQI)
@@ -384,7 +384,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
         }
       }
       if (s.length > 0)
-        jQuery(this.jqId+"_boardPoints").append(s);
+        jq4gv(this.jqId+"_boardPoints").append(s);
       // add branches
       this.setBranches();
       // show move mark
@@ -395,9 +395,9 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
         this.removeMoveMark();
       // move labels
       var vlabelStart = (this.config.y0-this.config.vbw)*this.config.gridSize;
-      jQuery(this.jqId+"_vlabel").css("backgroundPosition", "0px "+vlabelStart+"px");
+      jq4gv(this.jqId+"_vlabel").css("backgroundPosition", "0px "+vlabelStart+"px");
       var hlabelStart = (this.config.x0-this.config.vbw)*this.config.gridSize;
-      jQuery(this.jqId+"_hlabel").css("backgroundPosition", hlabelStart+"px 0px");
+      jq4gv(this.jqId+"_hlabel").css("backgroundPosition", hlabelStart+"px 0px");
       // move marks
       this.setMarks(node.marks);
       return this;
@@ -430,7 +430,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
         }
       return stones;
     },
-  
+
     mapToPoints: function(x,y,func){
       var stones = this.mapToPoints_(x,y);
       for(var i=0; i<stones.length; i++){
@@ -439,11 +439,11 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
       }
       return this;
     },
-  
+
     getStoneId: function(x,y){
       return this.id+"_point_"+x+"-"+y;
     },
-  
+
     createStone: function(x,y,color,moveNumber){
       var styleClass = "";
       if (this.config.gameType == jsGameViewer.DAOQI){
@@ -464,7 +464,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
       var s = "<div id='" + this.getStoneId(x,y) + "' class='" + styleClass + "' style='position:absolute;left:";
       a = this.xyToArea(x,y);
       s += a[0] + "px;top:" + a[1] + "px;'>";
-      if (this.config.showMoveNumber && moveNumber > 0){     
+      if (this.config.showMoveNumber && moveNumber > 0){
         // http://www.jakpsatweb.cz/css/css-vertical-center-solution.html
         var colorS = "white";
         if (color == jsGameViewer.model.STONE_WHITE)
@@ -485,7 +485,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
       s += "</div>";
       return s;
     },
-  
+
     addStone: function(x,y,color){
       var _this = this;
       var moveNumber = 0;
@@ -496,18 +496,18 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
         this.mapToPoints(x,y,function(x,y){
           var s = _this.createStone(x,y,color,moveNumber);
           if (s != null){
-            jQuery(_this.jqId+"_boardPoints").append(s);
+            jq4gv(_this.jqId+"_boardPoints").append(s);
           }
         });
       } else {
         var s = this.createStone(x,y,color,moveNumber);
         if (s != null){
-          jQuery(this.jqId+"_boardPoints").append(s);
+          jq4gv(this.jqId+"_boardPoints").append(s);
         }
       }
       return this;
     },
-  
+
     /*
      * iterate through points
      * remove all
@@ -523,73 +523,73 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
       }
       return this;
     },
-  
+
     removeStone: function(x,y){
       var _this = this;
       if (this.config.gameType == jsGameViewer.DAOQI){
         this.mapToPoints(x,y,function(x,y){
-          var stone = jQuery("#"+_this.getStoneId(x,y));
+          var stone = jq4gv("#"+_this.getStoneId(x,y));
           stone.remove();
         });
       } else {
-        var stone = jQuery("#"+this.getStoneId(x,y));
+        var stone = jq4gv("#"+this.getStoneId(x,y));
         stone.remove();
       }
       return this;
     },
-  
+
     /*
      * remove all stones on the board
      */
     removeAllStones: function(){
-      jQuery(this.jqId+"_boardPoints").children().remove();
+      jq4gv(this.jqId+"_boardPoints").children().remove();
       return this;
     },
-  
+
     setNextPlayer: function(color){
       var imgSrc = "";
       if (color == jsGameViewer.model.STONE_WHITE)
         imgSrc = this.config.viewDir+"/images/15/white.gif";
       else
         imgSrc = this.config.viewDir+"/images/15/black.gif";
-      jQuery(this.jqId+"_nextPlayer").attr('src', imgSrc);
+      jq4gv(this.jqId+"_nextPlayer").attr('src', imgSrc);
       return this;
     },
-  
+
     setMoveNumber: function(moveNumber){
       if (moveNumber == 0)
         moveNumber = "0";
-      jQuery(this.jqId+"_curMove").empty().append(moveNumber);
+      jq4gv(this.jqId+"_curMove").empty().append(moveNumber);
       return this;
     },
-  
+
     setMoveMark: function(x,y){
       var _this = this;
       if (this.config.gameType == jsGameViewer.DAOQI){
-        jQuery(this.jqId+"_moveMarks").empty();
+        jq4gv(this.jqId+"_moveMarks").empty();
         this.mapToPoints(x,y,function(x,y){
           var area = _this.xyToArea(x,y);
-          jQuery(_this.jqId+"_moveMarks").append("<div class='gvsprite-19-markmove' style='position:absolute;left:"+
+          jq4gv(_this.jqId+"_moveMarks").append("<div class='gvsprite-19-markmove' style='position:absolute;left:"+
             area[0]+"px;top:"+area[1]+"px;width:"+area[2]+"px;height:"+area[3]+"px'>&nbsp;</div>");
         });
       } else {
-        jQuery(this.jqId+"_moveMark").css({position: "absolute", left:x*this.config.gridSize, top:y*this.config.gridSize, width:this.config.gridSize, height:this.config.gridSize});
+        jq4gv(this.jqId+"_moveMark").css({position: "absolute", left:x*this.config.gridSize, top:y*this.config.gridSize, width:this.config.gridSize, height:this.config.gridSize});
       }
       return this;
     },
-  
+
     removeMoveMark: function(){
       if (this.config.gameType == jsGameViewer.DAOQI){
-        jQuery(this.jqId+"_moveMarks").empty();
+        jq4gv(this.jqId+"_moveMarks").empty();
       } else {
-        jQuery(this.jqId+"_moveMark").css({width:0, height:0});
+        jq4gv(this.jqId+"_moveMark").css({width:0, height:0});
       }
       return this;
     },
-  
+
     setMarks: function(marks){
       var _this = this;
-      jQuery(this.jqId+"_boardMarks").empty();
+      jq4gv(this.jqId+"_boardMarks").empty();
       if (marks == undefined || marks == null)
         return this;
       if (this.config.gameType == jsGameViewer.DAOQI){
@@ -630,7 +630,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
                   }
                 }
                 s += "'>"+mark[3]+"</div>";
-                jQuery(_this.jqId+"_boardMarks").append(s);
+                jq4gv(_this.jqId+"_boardMarks").append(s);
               });
               continue;
           }
@@ -646,7 +646,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
               }
             }
             s += "'></div>";
-            jQuery(_this.jqId+"_boardMarks").append(s);
+            jq4gv(_this.jqId+"_boardMarks").append(s);
           });
         }
       } else {
@@ -682,7 +682,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
                 s += "background-color:"+this.config.boardColor+";";
               }
               s += "'>"+mark[3]+"</div>";
-              jQuery(this.jqId+"_boardMarks").append(s);
+              jq4gv(this.jqId+"_boardMarks").append(s);
               continue;
           }
           var s = "<div class='"+styleClass+"' style='position:absolute;left:"+left+"px;top:"+top+"px;";
@@ -690,7 +690,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
             s += "background-color:"+this.config.boardColor+";";
           }
           s += "'></div>";
-          jQuery(this.jqId+"_boardMarks").append(s);
+          jq4gv(this.jqId+"_boardMarks").append(s);
         }
       }
       return this;
@@ -701,16 +701,16 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
         b = "0";
       if (w == 0)
         w = "0";
-      jQuery(this.jqId+"_blackPrisoners").empty().append(b);
-      jQuery(this.jqId+"_whitePrisoners").empty().append(w);
+      jq4gv(this.jqId+"_blackPrisoners").empty().append(b);
+      jq4gv(this.jqId+"_whitePrisoners").empty().append(w);
       return this;
     },
-  
+
     setBranches: function(){
       var _this = this;
-      jQuery(this.jqId+"_boardBranches").empty();
-      jQuery(this.jqId+"_branches").empty();
-      jQuery(this.jqId+"_branches").css({height:0});
+      jq4gv(this.jqId+"_boardBranches").empty();
+      jq4gv(this.jqId+"_branches").empty();
+      jq4gv(this.jqId+"_branches").css({height:0});
       var node = this.gameState.currentNode;
       if (node.hasChildren() && node.children.length >= 2){
         var n = node.children.length;
@@ -725,8 +725,8 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
             }
           }
           var s = "<div class='gvtb-branch gvbutton'><a href='#' title='" + title + "' onclick='jsGameViewer."+this.id+".goToBranch("+i+");return false;'>"+BRANCHES[i]+"</a></div>";
-          jQuery(this.jqId+"_branches").append(s);
-          jQuery(this.jqId+"_branches").css({height:n*23});
+          jq4gv(this.jqId+"_branches").append(s);
+          jq4gv(this.jqId+"_branches").css({height:n*23});
           var child = node.children[i];
           if (child.type == jsGameViewer.model.NODE_MOVE){
             var x = child.x, y = child.y;
@@ -736,12 +736,12 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
                 if (_this.isInCentralArea(x,y))
                   styleClass = "gvbranch-real";
                 var area = _this.xyToArea(x,y);
-                jQuery(_this.jqId+"_boardBranches").append("<div class='"+styleClass+"' style='left:"+area[0]+"px;top:"+area[1]
-                  +"px;width:"+area[2]+"px;height:"+area[3]+"px;'>"+BRANCHES[i]+"</div>");              
+                jq4gv(_this.jqId+"_boardBranches").append("<div class='"+styleClass+"' style='left:"+area[0]+"px;top:"+area[1]
+                  +"px;width:"+area[2]+"px;height:"+area[3]+"px;'>"+BRANCHES[i]+"</div>");
               });
             } else {
               var area = _this.xyToArea(x,y);
-              jQuery(_this.jqId+"_boardBranches").append("<div class='gvbranch' style='left:"+area[0]+"px;top:"+area[1]
+              jq4gv(_this.jqId+"_boardBranches").append("<div class='gvbranch' style='left:"+area[0]+"px;top:"+area[1]
                 +"px;width:"+area[2]+"px;height:"+area[3]+"px;'>"+BRANCHES[i]+"</div>");
             }
           }
@@ -749,14 +749,14 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
       }
       return this;
     },
-  
+
     removeBranches: function(){
-      jQuery(this.jqId+"_boardBranches").empty();
-      jQuery(this.jqId+"_branches").empty();
-      jQuery(this.jqId+"_branches").css({height: 0});
+      jq4gv(this.jqId+"_boardBranches").empty();
+      jq4gv(this.jqId+"_branches").empty();
+      jq4gv(this.jqId+"_branches").css({height: 0});
       return this;
     },
-  
+
     setComment: function(comment){
       var node = this.gameState.currentNode;
       if (!comment){
@@ -767,16 +767,16 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
         if (node.comment != undefined && node.comment != null)
           comment += "<br/>"+node.comment.replace(/\n/g, "<br/>\n");
       }
-      jQuery(this.jqId+"_comment").empty().append(comment);
-      jQuery(this.jqId+"_comment").height(this.rightPaneHeight - jQuery(this.jqId+"_info").height()-12);
+      jq4gv(this.jqId+"_comment").empty().append(comment);
+      jq4gv(this.jqId+"_comment").height(this.rightPaneHeight - jq4gv(this.jqId+"_info").height()-12);
       return this;
     },
-  
+
     removeComment: function(){
-      jQuery(this.jqId+"_comment").empty();
+      jq4gv(this.jqId+"_comment").empty();
       return this;
     },
-  
+
     redrawBoard: function(){
       var _this = this;
       var board = this.gameState.board;
@@ -810,12 +810,12 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
           }
         }
       }
-      jQuery(this.jqId+"_boardPoints").empty();
+      jq4gv(this.jqId+"_boardPoints").empty();
       if (s.length > 0)
-        jQuery(this.jqId+"_boardPoints").append(s);
+        jq4gv(this.jqId+"_boardPoints").append(s);
       return this;
     },
-  
+
     play: function(x,y){
       if (this.gameState == null)
         return this;
@@ -836,7 +836,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
           changed = true;
         }
         if (changed){
-          jQuery.each(points, function(i,point){
+          jq4gv.each(points, function(i,point){
             _this.removeStone(point.x,point.y);
             if (point.deleteFlag){
               _this.addStone(point.x, point.y, point.color);
@@ -847,7 +847,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
         }
         return false;
       }
-    
+
       // check whether (x,y) is the same as next move/branches
       if (!this.gameState.isLast()){
         var children = this.gameState.currentNode.children;
@@ -861,7 +861,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
 
       if (this.gameState.play(x,y)){
         var node = this.gameState.currentNode;
-        jQuery.each(node.points, function(i,point){
+        jq4gv.each(node.points, function(i,point){
           _this.removeStone(point.x,point.y);
           if (!point.deleteFlag){
             _this.addStone(point.x, point.y, point.color);
@@ -873,12 +873,12 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
         return false;
       }
     },
-  
+
     remove: function(){
       var _this = this;
       if (this.gameState != null && this.gameState.canRemove()){
         var node = this.gameState.currentNode;
-        jQuery.each(node.points, function(i,point){
+        jq4gv.each(node.points, function(i,point){
           _this.removeStone(point.x,point.y);
           if (point.deleteFlag){
             _this.addStone(point.x, point.y, point.color);
@@ -914,7 +914,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
       // after
       return true;
     },
-  
+
     back: function(){
       if (this.gameState == null)
         return this;
@@ -922,7 +922,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
         return false;
       var _this = this;
       var node = this.gameState.currentNode;
-      jQuery.each(node.points, function(i,point){
+      jq4gv.each(node.points, function(i,point){
         _this.removeStone(point.x,point.y);
         if (point.deleteFlag){
           _this.addStone(point.x, point.y, point.color);
@@ -932,7 +932,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
       this.setGameState();
       return true;
     },
-  
+
     backN: function(n){
       if (this.gameState == null)
         return this;
@@ -947,7 +947,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
         changed = true;
       }
       if (changed){
-        jQuery.each(points, function(i,point){
+        jq4gv.each(points, function(i,point){
           _this.removeStone(point.x,point.y);
           if (point.deleteFlag){
             _this.addStone(point.x, point.y, point.color);
@@ -957,7 +957,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
       }
       return this;
     },
-  
+
     backToComment: function(){
       if (this.gameState == null)
         return this;
@@ -974,7 +974,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
           break;
       }
       if (changed){
-        jQuery.each(points, function(i,point){
+        jq4gv.each(points, function(i,point){
           _this.removeStone(point.x,point.y);
           if (point.deleteFlag){
             _this.addStone(point.x, point.y, point.color);
@@ -984,7 +984,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
       }
       return this;
     },
-  
+
     backAll: function(){
       if (this.gameState == null)
         return this;
@@ -992,7 +992,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
       this.removeAllStones();
       this.gameState.backAll();
       var node = this.gameState.currentNode;
-      jQuery.each(node.points, function(i, point){
+      jq4gv.each(node.points, function(i, point){
         if (point.color == jsGameViewer.model.STONE_BLACK || point.color == jsGameViewer.model.STONE_WHITE){
           _this.addStone(point.x,point.y,point.color);
         }
@@ -1023,7 +1023,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
       }
       return true;
     },
-  
+
     forward: function(){
       if (this.gameState == null)
         return this;
@@ -1031,7 +1031,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
         return false;
       var _this = this;
       var node = this.gameState.currentNode;
-      jQuery.each(node.points, function(i,point){
+      jq4gv.each(node.points, function(i,point){
         _this.removeStone(point.x,point.y);
         if (!point.deleteFlag){
           _this.addStone(point.x, point.y, point.color);
@@ -1040,7 +1040,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
       this.setGameState();
       return true;
     },
-  
+
     forwardN: function(n){
       if (this.gameState == null)
         return this;
@@ -1055,7 +1055,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
         changed = true;
       }
       if (changed){
-        jQuery.each(points, function(i,point){
+        jq4gv.each(points, function(i,point){
           _this.removeStone(point.x,point.y);
           if (!point.deleteFlag){
             _this.addStone(point.x, point.y, point.color);
@@ -1065,7 +1065,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
       }
       return this;
     },
-  
+
     forwardToComment: function(){
       if (this.gameState == null)
         return this;
@@ -1082,7 +1082,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
           break;
       }
       if (changed){
-        jQuery.each(points, function(i,point){
+        jq4gv.each(points, function(i,point){
           _this.removeStone(point.x,point.y);
           if (!point.deleteFlag){
             _this.addStone(point.x, point.y, point.color);
@@ -1092,7 +1092,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
       }
       return this;
     },
-  
+
     forwardAll: function(){
       if (this.gameState == null)
         return this;
@@ -1102,7 +1102,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
       this.setGameState();
       return this;
     },
-  
+
     goToBranch: function(n){
       if (this.gameState == null)
         return this;
@@ -1110,7 +1110,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
         return this;
       var _this = this;
       var node = this.gameState.currentNode;
-      jQuery.each(node.points, function(i,point){
+      jq4gv.each(node.points, function(i,point){
         _this.removeStone(point.x,point.y);
         if (!point.deleteFlag){
           _this.addStone(point.x, point.y, point.color);
@@ -1119,7 +1119,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
       this.setGameState();
       return this;
     },
-  
+
     goTo: function(n){
       if (this.gameState == null)
         return this;
@@ -1140,7 +1140,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
           changed = true;
         }
         if (changed){
-          jQuery.each(points, function(i,point){
+          jq4gv.each(points, function(i,point){
             _this.removeStone(point.x,point.y);
             if (!point.deleteFlag){
               _this.addStone(point.x, point.y, point.color);
@@ -1157,7 +1157,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
           changed = true;
         }
         if (changed){
-          jQuery.each(points, function(i,point){
+          jq4gv.each(points, function(i,point){
             _this.removeStone(point.x,point.y);
             if (point.deleteFlag){
               _this.addStone(point.x, point.y, point.color);
@@ -1181,18 +1181,18 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
       }
       return this;
     },
-  
+
     setToggleNumberImg: function(){
       if (this.config.showMoveNumber){
-        jQuery(this.jqId+"_toggleNumberImg").removeClass("gvsprite-hidenumber");
-        jQuery(this.jqId+"_toggleNumberImg").addClass("gvsprite-shownumber");
+        jq4gv(this.jqId+"_toggleNumberImg").removeClass("gvsprite-hidenumber");
+        jq4gv(this.jqId+"_toggleNumberImg").addClass("gvsprite-shownumber");
       } else {
-        jQuery(this.jqId+"_toggleNumberImg").removeClass("gvsprite-shownumber");
-        jQuery(this.jqId+"_toggleNumberImg").addClass("gvsprite-hidenumber");
+        jq4gv(this.jqId+"_toggleNumberImg").removeClass("gvsprite-shownumber");
+        jq4gv(this.jqId+"_toggleNumberImg").addClass("gvsprite-hidenumber");
       }
       return this;
     },
-  
+
     toggleNumber: function(){
       if (this.config.showMoveNumber){
         this.config.showMoveNumber = false;
@@ -1205,21 +1205,21 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
       this.redrawBoard();
       return this;
     },
-  
+
     showNumber: function(){
       if (this.config.hideMoveNumber){
         this.toggleNumber();
       }
       return this;
     },
-  
+
     hideNumber: function(){
       if (this.config.showMoveNumber){
         this.toggleNumber();
       }
       return this;
     },
-  
+
     eventToXY: function(e){
       e = e.originalEvent || window.event;
       layerX = e.layerX || e.offsetX || e.clientX;
@@ -1232,21 +1232,21 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
       }
       return [x,y];
     },
-  
+
     isInCentralArea: function(x,y){
       return x >= this.config.vbw && x < this.config.boardSize+this.config.vbw && y >= this.config.vbw && y < this.config.boardSize+this.config.vbw;
     },
-  
+
     xyToArea: function(x,y){
       return [x*this.config.gridSize, y*this.config.gridSize, this.config.gridSize, this.config.gridSize];
     },
-  
+
     xyToLabel: function(x,y){
       var s = LABELS[x];
       s += this.config.boardSize - parseInt(y);
       return s;
     },
-  
+
     postThickBoxFix: function(){
       this.registerKeyListener();
     },
@@ -1255,7 +1255,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
       var url = "#TB_inline?test=0&width=250&height=56&inlineId="+this.id+"_goTo&focus="+this.id+"_goToInput&modal=true&test1=0";
       tb_show("",url,null);
     },
-  
+
     goToOkHandler: function(){
       try {
         var input = document.getElementsByName(this.id+"_goToForm")[1].goToInput.value;
@@ -1268,7 +1268,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
       }
       this.postThickBoxFix();
     },
-  
+
     goToKeyDown:function(input, e){
       var keyCode;
       if (window.event)
@@ -1277,14 +1277,14 @@ jQuery.extend(jsGameViewer.GameController.prototype, function(){
         keyCode = e.which;
       else
         return;
-  
+
       if (keyCode == 13){
         gvGoToInput = input.value;
         this.goToOkHandler();
       } else if (keyCode == 27){
         tb_remove();
         this.postThickBoxFix();
-      } 
+      }
     }
   };
 }());

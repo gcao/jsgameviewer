@@ -1,4 +1,4 @@
-jQuery.extend(jsGameViewer.GameController.prototype, {
+jq4gv.extend(jsGameViewer.GameController.prototype, {
   setPlayer: function(player){
     this.player = player;
     return this;
@@ -8,7 +8,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, {
   saveSession: function(url, interval){
     if (!this.sessionSaver){
       this.sessionSaver = setInterval(function(){
-        jQuery.ajax({url: url});
+        jq4gv.ajax({url: url});
       }, interval*1000);
     }
     return this;
@@ -28,7 +28,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, {
     if (this.username){
       return this.username;
     } else if (this.usernameElemId){
-      return jQuery.trim(jQuery('#' + this.usernameElemId).text());
+      return jq4gv.trim(jq4gv('#' + this.usernameElemId).text());
     } else {
       return null;
     }

@@ -2,16 +2,16 @@
 jsgvLoader = function(){
   var GAME_START = "SGF[[";
   var GAME_END = "]]SGF";
-  
+
   function splitStrings(input) {
     var result = [];
-  
+
     var i = input.indexOf(GAME_START);
     while(i >= 0){
       result[result.length] = input.substr(0, i);
       result[result.length] = input.substr(i, GAME_START.length);
       input = input.substr(i + GAME_START.length);
-    
+
       var j = input.indexOf(GAME_END);
       if (j >= 0) {
         result[result.length] = input.substr(0, j);
@@ -20,14 +20,14 @@ jsgvLoader = function(){
       } else {
         throw "No matching " + GAME_END + " is found.";
       }
-    
+
       i = input.indexOf(GAME_START);
     }
     return result;
   }
 
   function processElem(elem){
-    if (!elem) 
+    if (!elem)
       elem = document.body;
     var parts = splitStrings(elem.innerHTML);
     if (parts.length > 0) {
@@ -50,21 +50,21 @@ jsgvLoader = function(){
       return true;
     }
   }
-  
+
   return {
-    addOnloadHandler: function(func) {  
-      var oldonload = window.onload;  
-      if (typeof window.onload != 'function') {  
+    addOnloadHandler: function(func) {
+      var oldonload = window.onload;
+      if (typeof window.onload != 'function') {
         window.onload = func;
-      } else { 
-        window.onload = function() {  
+      } else {
+        window.onload = function() {
           if (oldonload)
-            oldonload();  
-          func();  
-        }  
+            oldonload();
+          func();
+        }
       }
     },
-  
+
     load: function(callback){
       var BASE_URL = 'http://localhost/jsgameviewer/';
       var STYLESHEET = BASE_URL + "build/compressed.css"
@@ -73,7 +73,7 @@ jsgvLoader = function(){
       this.loadJavascript('http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js');
       this.loadJavascript(JAVASCRIPT, callback);
     },
-  
+
     loadStylesheet: function(url) {
       var stylesheet = document.createElement("link");
       stylesheet.rel = "stylesheet";
@@ -88,7 +88,7 @@ jsgvLoader = function(){
       script.type = "text/javascript";
       script.src = url;
       if (callback) {
-        if (script.readyState){  
+        if (script.readyState){
           // IE
           script.onreadystatechange = function(){
             if (script.readyState == "loaded" || script.readyState == "complete"){
@@ -96,17 +96,17 @@ jsgvLoader = function(){
               callback();
             }
           };
-        } else {  
+        } else {
           // Others
           script.onload = function(){callback();};
         }
       }
       document.documentElement.lastChild.appendChild(script);
     },
-  
+
     loadGames: function(){
-      jQuery(".jsgv").each(function(){
-        var _this = jQuery(this);
+      jq4gv(".jsgv").each(function(){
+        var _this = jq4gv(this);
         var id = _this.attr('id');
         if (!id) {
           id = 'gv' + Math.floor(Math.random()*100000);
@@ -134,7 +134,7 @@ jsgvLoader = function(){
         }
       });
     },
-  
+
     loadCss: function(){
       if (document.getElementsByClassName == undefined) {
         // Borrowed from http://muffinresearch.co.uk/archives/2006/04/29/getelementsbyclassname-deluxe-edition/
@@ -169,7 +169,7 @@ jsgvLoader = function(){
         this.load(this.loadGames);
       }
     },
-    
+
     loadSgf: function(elem){
       if (processElem(elem))
         this.load(this.loadGames);

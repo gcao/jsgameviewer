@@ -3,10 +3,10 @@ var jsGameViewer = function() {
     name: "jsgameviewer",
     version: "1.0a",
     length: 0,
-    
+
     WEIQI: 0,
     DAOQI: 1,
-    
+
     EN_US: "en_us",
     ZH_CN: "zh_cn",
     LOCALES: ["en_us", "zh_cn"],
@@ -27,7 +27,7 @@ var jsGameViewer = function() {
         console.log(message);
       }
     },
-    
+
     getGameId: function(i){
       if (i == undefined){
         this.length ++;
@@ -36,7 +36,7 @@ var jsGameViewer = function() {
       }
       return "GV"+i;
     },
-    
+
     createClass: function() {
       return function() {
         this.initialize.apply(this, arguments);
@@ -57,7 +57,7 @@ var jsGameViewer = function() {
 
     // return true if obj is String and not empty
     notNull: function(obj){
-      return obj != undefined && obj != null && jQuery.trim(obj).length > 0;
+      return obj != undefined && obj != null && jq4gv.trim(obj).length > 0;
     },
 
     getId: function(x, y){

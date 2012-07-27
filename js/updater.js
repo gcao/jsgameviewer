@@ -1,4 +1,4 @@
-jQuery.extend(jsGameViewer.GameController.prototype, {
+jq4gv.extend(jsGameViewer.GameController.prototype, {
   setPlayerInterval: function(interval){
     this.config.playerInterval = interval;
     return this;

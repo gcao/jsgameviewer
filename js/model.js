@@ -22,9 +22,9 @@ jsGameViewer.model = function(){
   var MARK_TERR_BLACK = 7;
   var MARK_TERR_WHITE = 8;
   var MARK_STONE      = 9;
-  
+
   var MoveNumber = jsGameViewer.createClass();
-  jQuery.extend(MoveNumber.prototype, {
+  jq4gv.extend(MoveNumber.prototype, {
     initialize: function(val, depth){
       this.val = val;
       this.depth = 0;
@@ -41,7 +41,7 @@ jsGameViewer.model = function(){
    * moveNumber
    */
   var Point = jsGameViewer.createClass();
-  jQuery.extend(Point.prototype, {
+  jq4gv.extend(Point.prototype, {
     initialize: function(x,y,color,moveNumber,deleteFlag){
       this.x = x;
       this.y = y;
@@ -64,8 +64,8 @@ jsGameViewer.model = function(){
    * [][] - state: STONE_NONE, STONE_BLACK, STONE_WHITE
    */
   var Board = jsGameViewer.createClass();
-  jQuery.extend(Board, Array);
-  jQuery.extend(Board.prototype, {
+  jq4gv.extend(Board, Array);
+  jq4gv.extend(Board.prototype, {
     initialize: function(gameType, size){
       this.gameType = gameType;
       this.size = size;
@@ -87,7 +87,7 @@ jsGameViewer.model = function(){
         return false;
       }
     },
-  
+
     normalize: function(index){
       if (index < 0)
         return index + this.size;
@@ -95,7 +95,7 @@ jsGameViewer.model = function(){
         return index - this.size;
       return index;
     },
-  
+
     reset: function(){
       for(var i=0; i<this.size; i++) {
         this[i] = new Array(this.size);
@@ -103,7 +103,7 @@ jsGameViewer.model = function(){
           this[i][j] = 0;
       }
     },
-  
+
     copyFrom: function(b){
       // copy values from another board
       for(var i=0; i<this.size; i++){
@@ -112,7 +112,7 @@ jsGameViewer.model = function(){
         }
       }
     },
-  
+
     /* This function does:
      * 1. validate if board, x, y are valid. if not return null;
      * 2. check board[x][y], if it's 0, return null;
@@ -129,7 +129,7 @@ jsGameViewer.model = function(){
         y = this.normalize(y);
       } else {
         if (x < 0 || x>=this.size || y<0 || y>= this.size)
-          return null;  
+          return null;
       }
 
       if (this[x][y] == 0)
@@ -150,12 +150,12 @@ jsGameViewer.model = function(){
         )
           return null;
       }
-  
+
       var group = new Array();
       group.color = this[x][y];
       group.push([x,y]);
       group[x+"-"+y] = true;
-  
+
       if (this.gameType == jsGameViewer.DAOQI){
         if (this.expandDeadGroup(group, x-1, y))
           return null;
@@ -177,7 +177,7 @@ jsGameViewer.model = function(){
       }
       return group;
     },
-  
+
     /* This function does:
      * if group["x-y"] != null, means already checked,
      *   return false;
@@ -201,7 +201,7 @@ jsGameViewer.model = function(){
         return false;
       if (this[x][y] != group.color)
         return false;
-  
+
       if (this.gameType == jsGameViewer.DAOQI){
         if (this[this.normalize(x-1)][y] == 0 ||
           this[this.normalize(x+1)][y] == 0 ||
@@ -217,10 +217,10 @@ jsGameViewer.model = function(){
         )
           return true;
       }
-  
+
       group.push([x,y]);
       group[x+"-"+y] = true;
-  
+
       if (this.gameType == jsGameViewer.DAOQI){
         if (this.expandDeadGroup(group, x-1, y))
           return true;
@@ -240,7 +240,7 @@ jsGameViewer.model = function(){
         if (y < this.size-1 && this.expandDeadGroup(group, x, y+1))
           return true;
       }
-  
+
       return false;
     }
   });
@@ -254,7 +254,7 @@ jsGameViewer.model = function(){
    * depth - 0:trunk, 1:branch on trunk, 2: branch on branch,...
    * name
    * comment
-   * points - setup points + current move + removed prisoners (null if type is NODE_EMPTY or NODE_PASS) 
+   * points - setup points + current move + removed prisoners (null if type is NODE_EMPTY or NODE_PASS)
    * marks - [x, y, markType, markText]
    * ------------ dynamic properties
    * processed - updated node based on previous board state and current move
@@ -270,7 +270,7 @@ jsGameViewer.model = function(){
    * y
    */
   var Node = jsGameViewer.createClass();
-  jQuery.extend(Node.prototype, {
+  jq4gv.extend(Node.prototype, {
     initialize: function(parent){
       this.type = NODE_EMPTY;
       this.parent = parent;
@@ -284,15 +284,15 @@ jsGameViewer.model = function(){
       this.whitePrisoners = 0;
       this.whitePrisonerPoints = [];
     },
-  
+
     isRoot: function(){
       return this.parent == null;
     },
-  
+
     hasChildren: function(){
       return this.children.length > 0;
     },
-  
+
     firstChild: function(){
       if (this.children.length > 0)
         return this.children[0];
@@ -306,23 +306,23 @@ jsGameViewer.model = function(){
       }
       return null;
     },
-  
+
     isOnBranch: function(){
       return this.depth > 1;
     },
-  
+
     isDummyNode: function(){
       return this.type == NODE_EMPTY && !this.isRoot() && this.comment == null && this.marks == null;
     },
-  
+
     hasComment: function(){
-      return this.comment != undefined && this.comment !=null && jQuery.trim(this.comment).length > 0;
+      return this.comment != undefined && this.comment !=null && jq4gv.trim(this.comment).length > 0;
     },
-  
+
     hasBranches: function(){
       return this.children.length > 1;
     },
-  
+
     toString: function(){
       var indent = "";
       var typeName = "EMPTY";
@@ -364,7 +364,7 @@ jsGameViewer.model = function(){
    * rootNode
    */
   var Game = jsGameViewer.createClass();
-  jQuery.extend(Game.prototype, {
+  jq4gv.extend(Game.prototype, {
     initialize: function(gameType){
       this.type = gameType;
       this.charset = "";
@@ -383,7 +383,7 @@ jsGameViewer.model = function(){
       this._moves = 0;
       this.rootNode = new Node(null);
     },
-  
+
     isFinished: function(){
       return this.result && this.result.length > 0;
     },
@@ -399,7 +399,7 @@ jsGameViewer.model = function(){
       }
       return this._moves;
     },
-  
+
     getFirstPlayer: function(){
       if (!this.firstPlayer){
         if (this.handicap > 1)
@@ -415,12 +415,12 @@ jsGameViewer.model = function(){
       }
       return this.firstPlayer;
     },
-  
+
     getId: function(){
       var id = this.url;
       return id;
     },
-  
+
     getTitle: function(){
       var title = "";
       if (this.name)
@@ -467,7 +467,7 @@ jsGameViewer.model = function(){
    * last.whitePrisonerPoints
    */
   var GameState = jsGameViewer.createClass();
-  jQuery.extend(GameState.prototype, {
+  jq4gv.extend(GameState.prototype, {
     initialize: function(game){
       this.game = game;
       this.board = new Board(game.type, game.boardSize);
@@ -481,15 +481,15 @@ jsGameViewer.model = function(){
       this.tempMoves = new Array();
       this.processCurrentNode(); // process the root node
     },
-  
+
     isFirst: function(){
       return this.currentNode.isRoot();
     },
-  
+
     isLast: function(){
       return !this.currentNode.hasChildren();
     },
-  
+
     isOnBranch: function(){
       return this.currentNode.isOnBranch();
     },
@@ -528,7 +528,7 @@ jsGameViewer.model = function(){
         color = STONE_BLACK;
       return color;
     },
-  
+
     getMoveNumber: function(x,y){
       var m = this.moveNumbers[jsGameViewer.getId(x,y)];
       if (m instanceof Number)
@@ -537,7 +537,7 @@ jsGameViewer.model = function(){
         return m.val;
       return 0;
     },
-  
+
     /* This function update game state if a group of stones are dead after current move.
      */
     handleDeadGroup: function(group){
@@ -550,7 +550,7 @@ jsGameViewer.model = function(){
           gs.currentNode.whitePrisoners += group.length;
           gs.whitePrisoners += group.length;
         }
-        jQuery.each(group, function(i,item){
+        jq4gv.each(group, function(i,item){
           var x = item[0], y = item[1], moveNumber = gs.moveNumbers[jsGameViewer.getId(x,y)];
           // x, y, color of the dead stone, the move number of the dead stone, the move number that the stone is marked dead
           var p = [x, y, group.color, moveNumber, gs.currentNode.moveNumber];
@@ -568,7 +568,7 @@ jsGameViewer.model = function(){
         });
       }
     },
-  
+
     processCurrentNode: function(){
       var gs = this;
       var board = this.board;
@@ -596,7 +596,7 @@ jsGameViewer.model = function(){
       node.processed = true;
       switch(node.type){
       case NODE_EMPTY: // add/remove stones only
-        jQuery.each(node.points, function(i,point){
+        jq4gv.each(node.points, function(i,point){
           var x = point.x, y = point.y, color = point.color;
           if (x < 0 || x >= board.size || y < 0 || y >= board.size)
             return;
@@ -632,7 +632,7 @@ jsGameViewer.model = function(){
         board[x][y] = color;
         var moveNumber = new MoveNumber(node.moveNumber,node.depth);
         gs.moveNumbers[jsGameViewer.getId(x,y)] = moveNumber;
-        var point = new Point(x,y,color,moveNumber);      
+        var point = new Point(x,y,color,moveNumber);
         node.points.push(point);
         var opponentColor = (color==STONE_BLACK)?STONE_WHITE:STONE_BLACK;
         if (gs.game.type == jsGameViewer.DAOQI){
@@ -652,7 +652,7 @@ jsGameViewer.model = function(){
           y1 = board.normalize(y+1);
           if (board[x1][y1] == opponentColor)
             this.handleDeadGroup(board.getDeadGroup(x1, y1));
-        } else {        
+        } else {
           if (x > 0){
             var x1 = x-1, y1 = y;
             if (board[x1][y1] == opponentColor)
@@ -679,7 +679,7 @@ jsGameViewer.model = function(){
       case NODE_PASS: // nothing has to be done
         break;
       }
-    
+
       if (!node.hasChildren()){
         if (!node.isOnBranch() && this.last == null){
           // copy state to this.last
@@ -694,7 +694,7 @@ jsGameViewer.model = function(){
         }
       }
     },
-  
+
     play: function(x,y){
       var board = this.board;
       if (x < 0 || x >= board.size || y < 0 || y >= board.size)
@@ -711,7 +711,7 @@ jsGameViewer.model = function(){
       if (x > 0 && board[x-1][y]==opponentColor){
         var group = board.getDeadGroup(x-1,y);
         if (group != null){
-          killed = group.length;        
+          killed = group.length;
         }
       }
       if (killed < 2 && x < board.size-1 && board[x+1][y]==opponentColor){
@@ -771,14 +771,14 @@ jsGameViewer.model = function(){
       this.tempMoves.push([x,y]);
       return this.goToBranch(this.currentNode.children.length - 1);
     },
-  
+
     canRemove: function(){
       if (this.currentNode.temp)
         return true;
       else
         return false;
     },
-  
+
     remove: function(){
       if (this.canRemove()){
         var node = this.currentNode;
@@ -795,7 +795,7 @@ jsGameViewer.model = function(){
         }
       }
     },
-  
+
     back: function(){
       if (this.currentNode.isRoot())
         return false;
@@ -826,7 +826,7 @@ jsGameViewer.model = function(){
       this.currentNode = this.currentNode.parent;
       return true;
     },
-  
+
     backAll: function(){
       this.currentNode = this.rootNode;
       this.board.reset();
@@ -836,7 +836,7 @@ jsGameViewer.model = function(){
       this.whitePrisoners = 0;
       this.whitePrisonerPoints = [];
       var board = this.board;
-      jQuery.each(this.currentNode.points, function(i,point){
+      jq4gv.each(this.currentNode.points, function(i,point){
         board[point.x][point.y] = point.color;
       });
     },
@@ -848,7 +848,7 @@ jsGameViewer.model = function(){
       this.processCurrentNode();
       return true;
     },
-  
+
     forwardAll: function(){
       if (this.isOnBranch() || this.last == null){
         while(this.forward())
@@ -863,7 +863,7 @@ jsGameViewer.model = function(){
         this.whitePrisonerPoints = jsGameViewer.clone(this.last.whitePrisonerPoints);
       }
     },
-  
+
     goToBranch: function(n){
       if (!this.currentNode.hasChildren())
         return false;
@@ -876,7 +876,7 @@ jsGameViewer.model = function(){
   });
 
   var GameHistory = new Array();
-  jQuery.extend(GameHistory, {
+  jq4gv.extend(GameHistory, {
     max: 30,
     save: function(gameState){
       var id = gameState.game.getId();
@@ -892,7 +892,7 @@ jsGameViewer.model = function(){
           this[i+1] = this[i];
         }
       } else {
-        this.unshift(id); // insert to the beginning  
+        this.unshift(id); // insert to the beginning
         if (this.length > this.max){ // remove last
           var last = this.pop();
           delete this[last];
@@ -902,21 +902,21 @@ jsGameViewer.model = function(){
       this[id] = gameState;
     }
   });
-  
+
   return {
     STONE_NONE      : STONE_NONE,
     STONE_BLACK     : STONE_BLACK,
     STONE_WHITE     : STONE_WHITE,
     STONE_ERASE     : STONE_ERASE,
-                    
+
     MODE_NORMAL     : MODE_NORMAL,
     MODE_EDIT       : MODE_EDIT,
     MODE_SCORE      : MODE_SCORE,
-                    
+
     NODE_EMPTY      : NODE_EMPTY,
     NODE_MOVE       : NODE_MOVE,
     NODE_PASS       : NODE_PASS,
-    
+
     MARK_NONE       : MARK_NONE,
     MARK_SQUARE     : MARK_SQUARE,
     MARK_CIRCLE     : MARK_CIRCLE,
@@ -927,7 +927,7 @@ jsGameViewer.model = function(){
     MARK_TERR_BLACK : MARK_TERR_BLACK,
     MARK_TERR_WHITE : MARK_TERR_WHITE,
     MARK_STONE      : MARK_STONE,
-  
+
     MoveNumber      : MoveNumber,
     Point           : Point,
     Board           : Board,

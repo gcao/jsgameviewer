@@ -4,6 +4,17 @@
 
 $: << File.dirname(__FILE__) + "/lib"
 
+begin
+  require 'image_size'
+  require 'RMagick'
+rescue Exception => e
+  puts "Error is thrown: #{e}"
+  puts "Run below commands to install ImageMagick, rmagick and imagesize:
+sudo port install ImageMagick
+sudo gem install rmagick
+sudo gem install imagesize
+"
+end
 require 'rubygems'
 require 'rake'
 require 'ftools'
@@ -75,6 +86,7 @@ YUI_COMMAND = "java -jar lib/yuicompressor-2.4.2.jar"
 task :compress_js do
   my_files = %w(js/zh_cn.js
                 js/en_us.js
+                js/jquery-1.3.2.min.js
                 js/thickbox.js
                 js/base.js
                 js/model.js

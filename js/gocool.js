@@ -1,8 +1,8 @@
-//jQuery.extend(jsGameViewer.CONFIG, {
+//jq4gv.extend(jsGameViewer.CONFIG, {
 //  gocoolUrlPrefix: "/app/"
 //});
 //
-//jQuery.extend(jsGameViewer.GameController.prototype, {
+//jq4gv.extend(jsGameViewer.GameController.prototype, {
 //  loadGocoolGame: function(id, n){
 //    this.gocoolId = id;
 //    var conf = this.config;
@@ -16,7 +16,7 @@
 //});
 //
 //var GocoolPlayer = jsGameViewer.createClass();
-//jQuery.extend(GocoolPlayer.prototype, {
+//jq4gv.extend(GocoolPlayer.prototype, {
 //  initialize: function(gameController){
 //    this.gameController = gameController;
 //  },
@@ -46,7 +46,7 @@
 //    url += "?move=" + moveNumber;
 //    url += "&x=" + x;
 //    url += "&y=" + y;
-//    jQuery.ajax({url: url,
+//    jq4gv.ajax({url: url,
 //      success:function(response){
 //        if (response.charAt(0) == '0'){ // success
 //          // TODO: move to next game
@@ -67,7 +67,7 @@
 //  resign: function(){
 //    var c = this.gameController;
 //    var url = c.config.gocoolUrlPrefix + "games/" + c.gocoolId + "/resign";
-//    jQuery.ajax({url: url,
+//    jq4gv.ajax({url: url,
 //      success:function(response){
 //        if (response.charAt(0) == '0'){ // success
 //          // TODO: move to next game

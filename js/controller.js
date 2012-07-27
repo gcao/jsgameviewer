@@ -1,13 +1,13 @@
 jsGameViewer.GameController = jsGameViewer.createClass();
-jQuery.extend(jsGameViewer.GameController.prototype, {
+jq4gv.extend(jsGameViewer.GameController.prototype, {
   initialize: function(config){
     this.id = jsGameViewer.getGameId();
     this.jqId = "#" + this.id;
     jsGameViewer[this.id] = this;
-  
+
     this.config = jsGameViewer.clone(jsGameViewer.CONFIG);
     if (config != null)
-      jQuery.extend(this.config, config);
+      jq4gv.extend(this.config, config);
 
     this.reset();
   },
@@ -21,7 +21,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, {
   initialized: function(){
     return this._inialized == true;
   },
-  
+
   changeLocale: function(new_locale){
     if (this.config.locale == new_locale)
       return this;
@@ -50,21 +50,21 @@ jQuery.extend(jsGameViewer.GameController.prototype, {
 
   reset: function(){
     this._initialized = false;
-    
+
     if (this.config.container != null) {
-      var container = jQuery("#" + this.config.container);
+      var container = jq4gv("#" + this.config.container);
       if (container.get(0).nodeName == 'DIV') {
         container.empty().append(this.getPlaceHolder());
       } else {
-        if (jQuery(this.jqId).get(0)) {
-          jQuery(this.jqId).replaceWith(this.getPlaceHolder());
+        if (jq4gv(this.jqId).get(0)) {
+          jq4gv(this.jqId).replaceWith(this.getPlaceHolder());
         } else {
           container.after(this.getPlaceHolder());
         }
       }
     } else {
-      if (jQuery(this.jqId).get(0) != null)
-        jQuery(this.jqId).replaceWith(this.getPlaceHolder());
+      if (jq4gv(this.jqId).get(0) != null)
+        jq4gv(this.jqId).replaceWith(this.getPlaceHolder());
       else
         document.write(this.getPlaceHolder());
     }
@@ -74,12 +74,12 @@ jQuery.extend(jsGameViewer.GameController.prototype, {
   show: function(){
     if (!this.initialized())
       this.init();
-    jQuery(this.jqId).show();
+    jq4gv(this.jqId).show();
     return this;
   },
 
   hide: function(){
-    jQuery(this.jqId).hide();
+    jq4gv(this.jqId).hide();
     return this;
   },
 
@@ -115,7 +115,7 @@ jQuery.extend(jsGameViewer.GameController.prototype, {
       return this;
     }
     var _this = this;
-    jQuery.ajax({
+    jq4gv.ajax({
       url:url,
       success:function(response){
         try {
@@ -144,10 +144,10 @@ jQuery.extend(jsGameViewer.GameController.prototype, {
     });
     return this;
   },
-  
+
   loadSgf: function(sgf, n){
     try {
-      sgf = jQuery.trim(sgf);
+      sgf = jq4gv.trim(sgf);
       this.show();
       this.game = new jsGameViewer.SGFParser(this.config.gameType).parse(sgf);
       this.game.dataSize = sgf.length;
@@ -166,10 +166,10 @@ jQuery.extend(jsGameViewer.GameController.prototype, {
 
   loadInline: function(divId, n){
     try {
-      if (jQuery("#"+divId).length == 0){
+      if (jq4gv("#"+divId).length == 0){
         return this;
       }
-      loadSgf(jQuery("#"+divId).text(), n);
+      loadSgf(jq4gv("#"+divId).text(), n);
       return this;
     } catch(e) {
       throw "GameController.loadInline('" + divId + "'): " + e;
@@ -179,12 +179,12 @@ jQuery.extend(jsGameViewer.GameController.prototype, {
   refresh: function(force){
     var url = this.game.url;
     var _this = this;
-    jQuery.ajax({
+    jq4gv.ajax({
       url:url,
       //ifModified: true,
       success:function(response){
         try {
-          response = jQuery.trim(response);
+          response = jq4gv.trim(response);
           jsgv.debug('refresh 1');
           // if game data haven't changed, don't reload the game
           if (!force && _this.game && _this.game.dataSize && _this.game.dataSize == response.length){
