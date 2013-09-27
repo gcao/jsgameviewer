@@ -1,5 +1,3 @@
-window.jq4gv = jQuery;
-
 var jsGameViewer = function() {
 	return {
     name: "jsgameviewer",
