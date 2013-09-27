@@ -1,3 +1,5 @@
+t = (key) -> jsgvTranslations[key]
+
 T.def 'main', (game) ->
   [ '.gameviewer.size-21'
     T('banner'     , game)
@@ -19,7 +21,7 @@ T.def 'banner', (game) ->
       '&nbsp;&nbsp;'
       t('whose_turn')
       "&nbsp;"
-      [ 'img.next-player', src: 'images/default.gif' ]
+      [ 'img.next-player', src: '/view/images/default.gif' ]
     ]
     T('move-number', game)
     T('resign'     , game)
@@ -80,7 +82,7 @@ T.def 'banner-prisoner', (game, color) ->
       [ 'a'
         href: 'javascript: void(0)'
         [ 'img.prisoners'
-          src: "images/15/#{color}_dead.gif"
+          src: "/view/images/15/#{color}_dead.gif"
           '&nbsp;'
           [ "span.control-text.#{color}_PRISONERS", 0 ]
         ]
@@ -94,7 +96,7 @@ T.def 'window-opener', (game) ->
       title: "#{t('open_in_new_window')} [Alt Shift W]"
       href: 'javascript: void(0)'
       click: -> console.log 'Open in new window'
-      [ 'img.sprite-newwindow', src: 'images/default.gif' ]
+      [ 'img.sprite-newwindow', src: '/view/images/default.gif' ]
     ]
   ]
 
@@ -107,7 +109,7 @@ T.def 'board', (game) ->
       [ '.sprite-21-markmove.move-marks' ]
       [ '.board-overlay.prisoners' ]
       [ '.board-overlay.fascade'
-        [ 'img.sprite-21-blankboard', src: 'images/default.gif' ]
+        [ 'img.sprite-21-blankboard', src: '/view/images/default.gif' ]
       ]
     ]
   ]
@@ -119,7 +121,7 @@ T.def 'toolbar', (game) ->
         href: 'javascript: void(0)'
         click: -> console.log 'Refresh'
         title: "#{t('refresh')} [Alt Shift R]"
-        [ 'img.sprite-refresh', src: 'images/default.gif' ]
+        [ 'img.sprite-refresh', src: '/view/images/default.gif' ]
       ]
     ]
     [ '.tb-item.toggle-number'
@@ -127,7 +129,7 @@ T.def 'toolbar', (game) ->
         href: 'javascript: void(0)'
         click: -> console.log 'Toggle move number display'
         title: "#{t('refresh')} [Alt Shift R]"
-        [ 'img.sprite-toggle-number', src: 'images/shownumber.gif' ]
+        [ 'img.sprite-toggle-number', src: '/view/images/shownumber.gif' ]
       ]
     ]
   ]

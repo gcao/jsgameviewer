@@ -7,6 +7,8 @@ require 'rack-livereload'
 use Rack::LiveReload
 
 class MyApp < Sinatra::Base
+  set :public_folder, '.'
+
   get '/' do
     erb :index
   end
