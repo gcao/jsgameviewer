@@ -1,19 +1,19 @@
 t = (key) -> jsgvTranslations[key]
 
-T.def 'main', (game) ->
+T.def 'main', (controller) ->
   [ '.gameviewer.size-21'
-    T('banner'     , game)
-    T('board'      , game)
-    T('toolbar'    , game)
-    T('point-label', game)
-    T('right-panel', game)
+    T('banner'     , controller)
+    T('board'      , controller)
+    T('toolbar'    , controller)
+    T('point-label', controller)
+    T('right-panel', controller)
     languageChanged: (e, language) ->
       console.log "Language is changed to #{language}"
-    renderComplete: (el) -> 
-      game.element = el
+    renderComplete: (el) ->
+      controller.element = el
   ]
 
-T.def 'banner', (game) ->
+T.def 'banner', (controller) ->
   [ '.banner'
     [ '.banner-overlay' ]
     [ '.banner-left'
@@ -23,11 +23,11 @@ T.def 'banner', (game) ->
       "&nbsp;"
       [ 'img.next-player', src: '/view/images/default.gif' ]
     ]
-    T('move-number', game)
-    T('resign'     , game)
+    T('move-number', controller)
+    T('resign'     , controller)
     [ '.banner-overlay'
-      T('banner-prisoners', game)
-      T('window-opener'   , game)
+      T('banner-prisoners', controller)
+      T('window-opener'   , controller)
     ]
   ]
 
@@ -46,7 +46,7 @@ T.def 'language-switcher', ->
     ]
   ]
 
-T.def 'move-number', (game) ->
+T.def 'move-number', (controller) ->
   [ '.button.move-number-outer'
     [ 'a.thickbox'
       href: '#TB_inline?test=0&width=250&height=56&inlineId=1_goTo&focus=1_goToInput&modal=true&test1=0'
@@ -59,7 +59,7 @@ T.def 'move-number', (game) ->
     ]
   ]
 
-T.def 'resign', (game) ->
+T.def 'resign', (controller) ->
   [ '.resign'
     [ 'span.button'
       [ 'a'
@@ -70,13 +70,13 @@ T.def 'resign', (game) ->
     ]
   ]
 
-T.def 'banner-prisoners', (game) ->
+T.def 'banner-prisoners', (controller) ->
   [ '.prisoners-outer'
-    T('banner-prisoner', game, 'black')
-    T('banner-prisoner', game, 'white')
+    T('banner-prisoner', controller, 'black')
+    T('banner-prisoner', controller, 'white')
   ]
 
-T.def 'banner-prisoner', (game, color) ->
+T.def 'banner-prisoner', (controller, color) ->
   [ ".#{color}"
     [ 'span.button'
       [ 'a'
@@ -90,7 +90,7 @@ T.def 'banner-prisoner', (game, color) ->
     ]
   ]
 
-T.def 'window-opener', (game) ->
+T.def 'window-opener', (controller) ->
   [ '.open-window-outer'
     [ 'a'
       title: "#{t('open_in_new_window')} [Alt Shift W]"
@@ -100,7 +100,7 @@ T.def 'window-opener', (game) ->
     ]
   ]
 
-T.def 'board', (game) ->
+T.def 'board', (controller) ->
   [ '.board-outer.sprite-21-board'
     [ '.board'
       [ '.board-overlay.points' ]
@@ -114,49 +114,65 @@ T.def 'board', (game) ->
     ]
   ]
 
-T.def 'toolbar', (game) ->
+T.def 'toolbar', (controller) ->
   [ '.toolbar'
-    [ '.tb-item.refresh'
-      [ 'a.toggle-opacity'
-        href: 'javascript: void(0)'
-        click: -> console.log 'Refresh'
-        title: "#{t('refresh')} [Alt Shift R]"
-        [ 'img.sprite-refresh', src: '/view/images/default.gif' ]
-      ]
-    ]
-    [ '.tb-item.toggle-number'
-      [ 'a.toggle-opacity'
-        href: 'javascript: void(0)'
-        click: -> console.log 'Toggle move number display'
-        title: "#{t('refresh')} [Alt Shift R]"
-        [ 'img.sprite-toggle-number', src: '/view/images/shownumber.gif' ]
-      ]
+
+    T 'tb-item',
+      name: 'refresh'
+      callback: -> console.log 'Refresh'
+      linkTitle: "#{t('refresh')} [Alt Shift R]"
+
+    T 'tb-item',
+      name: 'backall'
+      callback: -> console.log 'Back to beginning'
+
+    T 'tb-item',
+      name: 'back'
+      callback: -> console.log 'Back'
+
+    T 'tb-item',
+      name: 'forward'
+      callback: -> console.log 'Forward'
+
+    T 'tb-item',
+      name: 'forwardall'
+      callback: -> console.log 'Forward to end'
+  ]
+
+T.def 'tb-item', (options) ->
+  [ ".tb-item.#{options.name}"
+    [ 'a.toggle-opacity'
+      href: 'javascript: void(0)'
+      click: options.callback
+      title: options.linkTitle
+      [ "img.sprite-#{options.name}", src: '/view/images/default.gif' ]
     ]
   ]
 
-T.def 'point-label', (game) ->
+T.def 'point-label', (controller) ->
   [ '.point-label' ]
 
-T.def 'right-panel', (game) ->
+T.def 'right-panel', (controller) ->
   [ '.right-pane'
-    T('info-pane', game)
+    T('info-pane', controller)
     [ '.comment' ]
   ]
 
-T.def 'info-pane', (game) ->
+T.def 'info-pane', (controller) ->
   [ '.info'
-    [ 'p'
-      'Name: '
-      game.name
+    [ 'div'
+      style:
+        'text-align': 'center'
+        'font-weight': 'bold'
+      controller.gameState?.game?.name
     ]
   ]
 
-window.game =
-  name: 'Test'
-  moves: [
-    [0, 3, 3]
-    [1, 16, 16]
-  ]
+$.extend jsGameViewer.GameController.prototype,
+  initView: ->
 
-T('main', game).render(inside: '#container')
+  initGame: ->
+    T('main', this).render(inside: '#' + this.config.container)
+
+  forwardAll: ->
 
