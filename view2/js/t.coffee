@@ -248,6 +248,8 @@ renderAttributes = (attributes) ->
       if isObject styles
         s = ""
         for own name, style of styles
+          if typeof style is 'number'
+            style += 'px'
           s += name + ":" + style + ";"
         result += " style=\"" + s + "\""
       else
