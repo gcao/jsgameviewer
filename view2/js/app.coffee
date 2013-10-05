@@ -178,9 +178,7 @@ T.def 'game-info', (controller) ->
   [
     if game.name
       [ 'div'
-        style:
-          'text-align': 'center'
-          'font-weight': 'bold'
+        style: 'text-align:center; font-weight:bold; margin-bottom: 5px'
         game.name
       ]
     if game.date
@@ -261,53 +259,113 @@ $.extend jsGameViewer.GameController.prototype,
     T('main', this).render(inside: '#' + this.config.container)
 
   setGameInfo: ->
-    infoNode = $(@jqId + "_info").empty()
-    game = @game
-    return this  if game is `undefined` or not game?
-    infoNode.append "<div align='center' style='font-weight:bold'>" + $.trim(game.name) + "</div>"  if jsGameViewer.notNull(game.name)
-    infoNode.append "<div>" + jsgvTranslations["time"] + ": " + $.trim(game.date) + "</div>"  if jsGameViewer.notNull(game.date)
-    infoNode.append "<div>" + jsgvTranslations["place"] + ": " + $.trim(game.place) + "</div>"  if jsGameViewer.notNull(game.place)
-    playFirst = "&nbsp;&#8592; " + jsgvTranslations["play_first"]
-    
-    # black player name + rank
-    blackRank = ""
-    blackRank = "&nbsp;(" + game.blackRank + ")"  if jsGameViewer.notNull(game.blackRank)
-    blackPlayer = "<div>" + jsgvTranslations["black"] + ": <strong>" + $.trim(game.blackName) + "</strong>" + blackRank
-    blackPlayer += playFirst  if game.getFirstPlayer() is jsGameViewer.model.STONE_BLACK
-    blackPlayer += "</div>"
-    infoNode.append blackPlayer
-    
-    # white player name + rank
-    whiteRank = ""
-    whiteRank = "&nbsp;(" + game.whiteRank + ")"  if jsGameViewer.notNull(game.whiteRank)
-    whitePlayer = "<div>" + jsgvTranslations["white"] + ": <strong>" + $.trim(game.whiteName) + "</strong>" + whiteRank
-    whitePlayer += playFirst  if game.getFirstPlayer() is jsGameViewer.model.STONE_WHITE
-    whitePlayer += "</div>"
-    infoNode.append whitePlayer
-    if game.handicap > 0
-      infoNode.append "<div>" + jsgvTranslations["handicap"] + ": " + game.handicap + "</div>"
+    infoNode = @el.find(".info").empty()
+    return  if not @game
+
+    T('game-info', this).render inside: '.info'
+
+  setGameState: ->
+    node = @gameState.currentNode
+    @setNextPlayer @gameState.getNextPlayer()
+    @setMoveNumber node.moveNumber
+    @setPrisoners @gameState.blackPrisoners, @gameState.whitePrisoners
+    if node.type is jsGameViewer.model.NODE_MOVE
+      @setMoveMark node.x, node.y
     else
-      infoNode.append "<div>" + jsgvTranslations["rule"] + ": " + $.trim(game.rule) + "</div>"
-      infoNode.append "<div>" + jsgvTranslations["komi"] + ": " + game.komi + "</div>"
-    infoNode.append "<div>" + jsgvTranslations["moves"] + ": " + game.getMoves() + "</div>"
-    infoNode.append "<div>" + jsgvTranslations["result"] + ": " + $.trim(game.result) + "</div>"
-    this
+      @removeMoveMark()
+    @setMarks node.marks
+    @setBranches()
+    @setComment()
 
   redrawBoard: ->
     T('stones-on-board', this).render inside: @el.find('.stones')
 
+  setNextPlayer: (color) ->
+    imgSrc = 
+      if color is jsGameViewer.model.STONE_WHITE
+        @config.viewDir + "/images/15/white.gif"
+      else
+        @config.viewDir + "/images/15/black.gif"
+
+    @el.find(".next-player").attr "src", imgSrc
+
+  setMoveNumber: (moveNumber) ->
+    @el.find(".move").replace moveNumber
+
+  setMoveMark: (x, y) ->
+    @el.find(".move-mark").css
+      position: "absolute"
+      left: x * @config.gridSize
+      top: y * @config.gridSize
+      width: @config.gridSize
+      height: @config.gridSize
+
+  removeMoveMark: ->
+    @el.find(".move-marks").css(width: 0, height: 0)
+
+  setMarks: (marks) ->
+    @el.find(".board-marks").empty()
+    return this  unless marks
+
+    for mark in marks
+      x = mark[0]
+      y = mark[1]
+      color = @gameState.board[x][y]
+      area = @xyToArea(x, y)
+      left = area[0]
+      top = area[1]
+      width = area[2]
+      height = area[3]
+      styleClass = ""
+      switch mark[2]
+        when jsGameViewer.model.MARK_CROSS
+          styleClass = "gvsprite-21-markcross"
+        when jsGameViewer.model.MARK_TRIANGLE
+          styleClass = "gvsprite-21-marktriangle"
+        when jsGameViewer.model.MARK_SQUARE
+          styleClass = "gvsprite-21-marksquare"
+        when jsGameViewer.model.MARK_CIRCLE
+          styleClass = "gvsprite-21-markcircle"
+        when jsGameViewer.model.MARK_TERR_BLACK
+          styleClass = "gvsprite-21-markblack"
+        when jsGameViewer.model.MARK_TERR_WHITE
+          styleClass = "gvsprite-21-markwhite"
+        when jsGameViewer.model.MARK_TEXT
+          s = "<div style='position:absolute;left:" + left + "px;top:" + top + 
+            "px;width:" + width + "px;height:" + height + 
+            "px;text-align:center;vertical-align:middle;color:red;font-family:Nina;font-weight:bolder;font-size:15px;"
+          s += "background-color:" + @config.boardColor + ";"  if color is jsGameViewer.model.STONE_NONE
+          s += "'>" + mark[3] + "</div>"
+          @el.find(".board-marks").append s
+
+      s = "<div class='" + styleClass + "' style='position:absolute;left:" + left + "px;top:" + top + "px;"
+      s += "background-color:" + @config.boardColor + ";"  if color is jsGameViewer.model.STONE_NONE
+      s += "'></div>"
+      @el.find(".board-marks").append s
+
+  setComment: (comment) ->
+    @el.find('.comment').empty()
+    return  unless comment
+    node = @gameState.currentNode
+    comment = "<strong>"
+    comment += t("branch_tag")  if node.depth > 1
+    comment += t("comment_for").replace(/MOVE/, node.moveNumber) + ":</strong>"
+    comment += "<br/>" + node.comment.replace(/\n/g, "<br/>\n")  if node.comment
+    @el.find(".comment").html comment
+
   forward: ->
-    return false  unless @gameState?.forward()
+    return false  if @gameState?.isLast()
+
+    @gameState.forward()
 
     node = @gameState.currentNode
-    console.log node
-
     for point in node.points
       @removeStone(point.x, point.y)
       if not point.deleteFlag
         @addStone(point.x, point.y, point.color)
 
-    #@setGameState()
+    @setGameState()
+
     true
 
   forwardAll: ->
@@ -315,7 +373,7 @@ $.extend jsGameViewer.GameController.prototype,
     @removeAllStones()
     @gameState.forwardAll()
     @redrawBoard()
-    #@setGameState()
+    @setGameState()
 
   back: ->
     return false  if @gameState?.isFirst()
@@ -326,8 +384,8 @@ $.extend jsGameViewer.GameController.prototype,
       @addStone point.x, point.y, point.color  if point.deleteFlag
 
     @gameState.back()
+    @setGameState()
 
-    #@setGameState()
     true
 
   backAll: ->
@@ -339,7 +397,7 @@ $.extend jsGameViewer.GameController.prototype,
     for point in node.points
       @addStone point.x, point.y, point.color
 
-    #@setGameState()
+    @setGameState()
 
   addStone: (x, y, color, move = 0) ->
     return  unless color is jsGameViewer.model.STONE_BLACK or color is jsGameViewer.model.STONE_WHITE
@@ -347,8 +405,6 @@ $.extend jsGameViewer.GameController.prototype,
     T('stone', this, x, y, color, move).render append: @el.find('.board .stones')
 
   addRemoveStones = (points) ->
-    i = 0
-
     for point in points
       if point.deleteFlag
         @removeStone point.x, point.y
@@ -364,3 +420,14 @@ $.extend jsGameViewer.GameController.prototype,
   xyToArea: (x, y) ->
     [x * @config.gridSize, y * @config.gridSize, @config.gridSize, @config.gridSize]
 
+bind = (el, obj, properties, options) ->
+  tagName = $(el).get(0).tagName
+
+  watch obj, properties, ->
+    if tagName is 'INPUT'
+      $(el).val(obj[properties])
+    else if tagName is 'SPAN'
+      $(el).text(obj[properties])
+
+  if tagName is 'INPUT'
+    $(el).change -> obj[properties] = $(this).val()

@@ -82,13 +82,6 @@
   .gameviewer img.prisoners {
     position: relative;
     top: 2px; }
-  .gameviewer .resign {
-    display: none;
-    position: absolute;
-    top: -1px;
-    z-index: 200; }
-  .gameviewer .resign {
-    left: 255px; }
   .gameviewer .move-number-outer {
     position: absolute;
     left: 22px;
