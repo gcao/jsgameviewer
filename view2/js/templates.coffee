@@ -23,6 +23,7 @@ T.def 'main', (controller) ->
       console.log "Language is changed to #{language}"
     renderComplete: (el) ->
       controller.el = $(el)
+      controller.publish 'test', 'a', 'b'
   ]
 
 T.def 'banner', (controller) ->
@@ -84,7 +85,12 @@ T.def 'banner-prisoner', (controller, color) ->
         [ 'img.prisoners'
           src: "/view/images/15/#{color}_dead.gif"
           '&nbsp;&nbsp;'
-          [ "span.control-text.#{color}_PRISONERS", 0 ]
+          [ "span.control-text.#{color}_PRISONERS", 
+            renderComplete: (el) ->
+              controller.subscribe "set-#{color}-prisoners", (prisoners) ->
+                el.val(prisoners)
+            0 
+          ]
         ]
       ]
     ]
@@ -122,11 +128,15 @@ T.def 'toolbar', (controller) ->
     T 'tb-item',
       name: 'refresh'
       callback: -> console.log 'Refresh'
-      linkTitle: "#{t('refresh')} [Alt Shift R]"
+      #linkTitle: "#{t('refresh')} [Alt Shift R]"
 
     T 'tb-item',
-      name: 'backall'
+      name: 'backAll'
       callback: -> controller.backAll()
+
+    T 'tb-item',
+      name: 'backN'
+      callback: -> controller.backN()
 
     T 'tb-item',
       name: 'back'
@@ -135,6 +145,10 @@ T.def 'toolbar', (controller) ->
     T 'tb-item',
       name: 'forward'
       callback: -> controller.forward()
+
+    T 'tb-item',
+      name: 'forwardN'
+      callback: -> controller.forwardN()
 
     T 'tb-item',
       name: 'forwardall'
@@ -149,7 +163,7 @@ T.def 'tb-item', (options) ->
       href: 'javascript: void(0)'
       click: options.callback
       title: options.linkTitle
-      [ "img.sprite-#{options.name}", src: '/view/images/default.gif' ]
+      [ "img.sprite-#{options.name.toLowerCase()}", src: '/view/images/default.gif' ]
     ]
   ]
 

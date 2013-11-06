@@ -15,11 +15,37 @@ $.extend jsGameViewer.CONFIG,
   rightPaneHeight: 446
   rightPaneHeightDQ: 560
 
+# http://darcyclarke.me/development/library-agnostic-pubsub-publish-subscribe/
+$.extend jsGameViewer.GameController.prototype,
+  subscriptions: []
+
+  subscribe: (name, context, callback) ->
+    # If there is only two arguments, treat the second one as callback
+    if not callback
+      [callback, context] = [context, @]
+
+    @subscriptions.push name: name, callback: callback, context: context
+    @subscriptions
+
+  unsubscribe: (name, callback) ->
+    for subscription, i in subscriptions
+      if subscription.name is name and subscription.callback is callback
+        @subscriptions.splice(i, 1)
+        return true
+    false
+
+  publish: (name, args...) ->
+    for subscription in @subscriptions
+      if subscription.name is name
+        subscription.callback.call(subscription.context, args...)
+    return
+
 $.extend jsGameViewer.GameController.prototype,
   LABELS = ["A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T"]
   BRANCHES = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]
 
   initView: ->
+    @subscribe 'test', (arg1, arg2) => console.log @, arg1, arg2
 
   initGame: ->
     T('main', this).render(inside: '#' + this.config.container)
@@ -59,8 +85,10 @@ $.extend jsGameViewer.GameController.prototype,
     @el.find(".move-number").html moveNumber
 
   setPrisoners: (b, w) ->
-    @el.find(".black_PRISONERS").html b
-    @el.find(".white_PRISONERS").html w
+    @publish 'set-black-prisoner', b
+    @publish 'set-white-prisoner', w
+    #@el.find(".black_PRISONERS").html b
+    #@el.find(".white_PRISONERS").html w
 
   setMoveMark: (x, y) ->
     @el.find(".move-mark").css
@@ -147,6 +175,23 @@ $.extend jsGameViewer.GameController.prototype,
         area = @xyToArea(x, y)
         T('board-branch', i, left: area[0], top: area[1], width: area[2], height: area[3]).render append: '.board .branches'
 
+  forward_: (points) ->
+    return false  if @gameState.isLast()
+
+    @gameState.forward()
+    node = @gameState.currentNode
+    for point, i in node.points
+      found = false
+      for p, j in points
+        if point.x is p.x and point.y is p.y
+          found = true
+          points[j] = point
+          break
+
+      points.push point  unless found
+
+    true
+
   forward: ->
     return false  if @gameState?.isLast()
 
@@ -162,12 +207,50 @@ $.extend jsGameViewer.GameController.prototype,
 
     true
 
+  forwardN: (n) ->
+    return this  unless @gameState?
+  
+    n = @config.fastMode  if n is `undefined`
+    points = new Array()
+    changed = false
+
+    for i in [0..n]
+      break  unless @forward_(points)
+      changed = true
+
+    if changed
+      for point, i in points
+        @removeStone point.x, point.y
+        @addStone point.x, point.y, point.color  unless point.deleteFlag
+
+      @setGameState()
+
   forwardAll: ->
     return  if not @gameState
     @removeAllStones()
     @gameState.forwardAll()
     @redrawBoard()
     @setGameState()
+
+  back_: (points) ->
+    return false  if @gameState.isFirst()
+    node = @gameState.currentNode
+    
+    # before
+    for point, i in node.points
+      found = false
+      for p, j in points
+        if point.x is p.x and point.y is p.y
+          found = true
+          points[j] = point
+          break
+
+      points.push point  unless found
+
+    @gameState.back()
+    
+    # after
+    true
 
   back: ->
     return false  if @gameState?.isFirst()
@@ -181,6 +264,24 @@ $.extend jsGameViewer.GameController.prototype,
     @setGameState()
 
     true
+
+  backN: (n) ->
+    return false  unless @gameState?
+
+    n = @config.fastMode  if n is `undefined`
+    points = new Array()
+    changed = false
+
+    for i in [0..n]
+      break  unless @back_(points)
+      changed = true
+
+    if changed
+      for point, i in points
+        @removeStone point.x, point.y
+        @addStone point.x, point.y, point.color  if point.deleteFlag
+
+      @setGameState()
 
   backAll: ->
     return  if not @gameState

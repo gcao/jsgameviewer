@@ -16,6 +16,7 @@
     <script type="text/javascript" src="/view2/js/watch.js"></script>
     <script type="text/javascript" src="/view2/js/coffee-script.js"></script>
     <script type="text/coffeescript" src="/view2/js/t.coffee"></script>
+    <script type="text/coffeescript" src="/view2/js/templates.coffee"></script>
     <script type="text/coffeescript" src="/view2/js/app.coffee"></script>
     <title>
       jsgameviewer1.0a Weiqi(Go)
@@ -31,6 +32,7 @@
 
       window.controller = new jsGameViewer.GameController(container:'container')
       controller.load('/examples/games/test2.sgf')
+      window.cc = controller
     </script>
   </body>
 </html>
