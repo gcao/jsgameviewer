@@ -191,12 +191,12 @@
             return;
         }
 
-        if(obj[prop] != null && (level === undefined || level > 0)){
-            if(level !== undefined){
-                level--;
-            }
-            watchAll(obj[prop], watcher, level); //recursively watch all attributes of this
-        }
+        //if(obj[prop] != null && (level === undefined || level > 0)){
+        //    if(level !== undefined){
+        //        level--;
+        //    }
+        //    watchAll(obj[prop], watcher, level); //recursively watch all attributes of this
+        //}
 
         defineWatcher(obj, prop, watcher);
 

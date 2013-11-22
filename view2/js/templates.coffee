@@ -1,4 +1,4 @@
-t = (key) -> jsgvTranslations[key]
+this.t = (key) -> jsgvTranslations[key]
 
 bind = (el, obj, properties, options) ->
   tagName = $(el).get(0).tagName
@@ -65,7 +65,29 @@ T.def 'move-number', (controller) ->
       title: "#{t('jump_to_xx')} [Alt Shift G]"
       t('move_number_before')
       '&nbsp;'
-      [ 'span.control-text.move-number', 0 ]
+      [ 'span.control-text.move-number'
+        #renderComplete: (el) ->
+        #  console.log 'before'
+
+        #  setMoveNumber = ->
+        #    console.log 'updateMoveNumber'
+        #    move = controller.gameState?.currentNode?.moveNumber or 0
+        #    $(el).text(move)
+
+        #  setMoveNumber() # Set initial move number
+
+        #  registerWatcher = ->
+        #    console.log 'registerWatcher'
+        #    if controller.gameState
+        #      watch controller.gameState, 'currentNode', setMoveNumber, 0
+
+        #  registerWatcher() # Initial watcher for controller.gameState.currentNode
+
+        #  # Any change to controller.gameState creates another watcher
+        #  #watch controller, 'gameState', registerWatcher, 0
+
+        #  console.log 'after'
+      ]
       '&nbsp;'
       t('move_number_after')
     ]
@@ -85,11 +107,11 @@ T.def 'banner-prisoner', (controller, color) ->
         [ 'img.prisoners'
           src: "/view/images/15/#{color}_dead.gif"
           '&nbsp;&nbsp;'
-          [ "span.control-text.#{color}_PRISONERS", 
+          [ "span.control-text.#{color}_PRISONERS",
             renderComplete: (el) ->
               controller.subscribe "set-#{color}-prisoners", (prisoners) ->
                 el.val(prisoners)
-            0 
+            0
           ]
         ]
       ]
@@ -112,7 +134,7 @@ T.def 'board', (controller) ->
       [ '.board-overlay.stones' ]
       [ '.board-overlay.marks' ]
       [ '.board-overlay.branches' ]
-      [ '.sprite-21-markmove.move-marks' 
+      [ '.sprite-21-markmove.move-marks'
         style: display: 'none'
       ]
       [ '.board-overlay.prisoners' ]
@@ -129,6 +151,17 @@ T.def 'toolbar', (controller) ->
       name: 'refresh'
       callback: -> console.log 'Refresh'
       #linkTitle: "#{t('refresh')} [Alt Shift R]"
+
+    [ ".tb-item.toggleNumber"
+      [ 'a.toggle-opacity'
+        href: 'javascript: void(0)'
+        click: ->
+          console.log 'toggleNumber'
+          controller.toggleNumber()
+        title: t('show_hide_move_number')
+        [ "img.sprite-shownumber", src: '/view/images/default.gif' ]
+      ]
+    ]
 
     T 'tb-item',
       name: 'backAll'
@@ -210,7 +243,7 @@ T.def 'game-info', (controller) ->
       ': '
       [ 'strong', game.blackName ]
       if game.blackRank
-        "&nbsp;(" + game.blackRank + ")" 
+        "&nbsp;(#{game.blackRank})"
       if game.getFirstPlayer() is jsGameViewer.model.STONE_BLACK
         playFirst
     ]
@@ -219,7 +252,7 @@ T.def 'game-info', (controller) ->
       ': '
       [ 'strong', game.whiteName ]
       if game.whiteRank
-        "&nbsp;(" + game.whiteRank + ")" 
+        "&nbsp;(#{game.whiteRank})"
       if game.getFirstPlayer() is jsGameViewer.model.STONE_WHITE
         playFirst
     ]
@@ -243,7 +276,7 @@ T.def 'stones-on-board', (controller) ->
     for j in [0..board.size - 1]
       color = board[i][j]
       continue unless color is jsGameViewer.model.STONE_BLACK or color is jsGameViewer.model.STONE_WHITE
-      stones.push T('stone', controller, i, j, color, 0)
+      stones.push T('stone', controller, i, j, color, controller.gameState.getMoveNumber(i, j))
 
   stones
 
@@ -254,33 +287,62 @@ T.def 'stone', (controller, x, y, color, move) ->
     else if color is jsGameViewer.model.STONE_WHITE
       "sprite-21-white"
 
-  box = controller.xyToArea(x, y)
+  box = controller.xyToBox(x, y)
 
   [ 'div'
-    'class': "stone x#{x} y#{y} #{imgClass}"
+    class: "stone x#{x} y#{y} #{imgClass}"
     style:
       position: 'absolute'
-      left: box[0]
-      top: box[1]
+      left: box.left
+      top: box.top
+
+    if controller.config.showMoveNumber and move > 0
+      # http://www.jakpsatweb.cz/css/css-vertical-center-solution.html
+      fontSize = "medium"
+      left = 0
+      if move >= 10 and move < 100
+        fontSize = "small"
+      else if move >= 100
+        fontSize = "x-small"
+        left = 1
+
+      [ 'div'
+        style:
+          display: 'table'
+          width: box.width
+          height: box.height
+          overflow: 'hidden'
+        [ 'div'
+          style:
+            display: 'table-cell'
+            vertical_align: 'middle'
+          [ 'div'
+            style:
+              left: left
+              width: '100%'
+              text_align: 'center'
+              color: if color is jsGameViewer.model.STONE_WHITE then 'black' else 'white'
+              font_family: 'times'
+              font_size: fontSize
+            move
+          ]
+        ]
+      ]
   ]
 
 T.def 'tb-branch', (controller, i, title) ->
   [ '.branch.button'
     [ 'a'
       href: 'javascript:void(0)'
-      click: controller.goToBranch(i)
+      click: -> controller.goToBranch(i)
       title: title
-      BRANCHES[i]
+      controller.BRANCHES[i]
     ]
   ]
 
-T.def 'board-branch', (i, dimension) ->
+T.def 'board-branch', (i, box) ->
   [ '.branch'
-    style:
-      left: dimension.left
-      top: dimension.top
-      width: dimension.width
-      height: dimension.height
+    style: box
     BRANCHES[i]
   ]
 

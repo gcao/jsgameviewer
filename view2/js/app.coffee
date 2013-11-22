@@ -1,3 +1,6 @@
+this.LABELS = ["A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T"]
+this.BRANCHES = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]
+
 # Default view configuration
 $.extend jsGameViewer.CONFIG,
   viewDir: "/jsgameviewer/view2/"
@@ -15,37 +18,8 @@ $.extend jsGameViewer.CONFIG,
   rightPaneHeight: 446
   rightPaneHeightDQ: 560
 
-# http://darcyclarke.me/development/library-agnostic-pubsub-publish-subscribe/
 $.extend jsGameViewer.GameController.prototype,
-  subscriptions: []
-
-  subscribe: (name, context, callback) ->
-    # If there is only two arguments, treat the second one as callback
-    if not callback
-      [callback, context] = [context, @]
-
-    @subscriptions.push name: name, callback: callback, context: context
-    @subscriptions
-
-  unsubscribe: (name, callback) ->
-    for subscription, i in subscriptions
-      if subscription.name is name and subscription.callback is callback
-        @subscriptions.splice(i, 1)
-        return true
-    false
-
-  publish: (name, args...) ->
-    for subscription in @subscriptions
-      if subscription.name is name
-        subscription.callback.call(subscription.context, args...)
-    return
-
-$.extend jsGameViewer.GameController.prototype,
-  LABELS = ["A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T"]
-  BRANCHES = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]
-
   initView: ->
-    @subscribe 'test', (arg1, arg2) => console.log @, arg1, arg2
 
   initGame: ->
     T('main', this).render(inside: '#' + this.config.container)
@@ -73,11 +47,11 @@ $.extend jsGameViewer.GameController.prototype,
     T('stones-on-board', this).render inside: @el.find('.stones')
 
   setNextPlayer: (color) ->
-    imgSrc = 
+    imgSrc = @config.viewDir +
       if color is jsGameViewer.model.STONE_WHITE
-        @config.viewDir + "/images/15/white.gif"
+        "/images/15/white.gif"
       else
-        @config.viewDir + "/images/15/black.gif"
+        "/images/15/black.gif"
 
     @el.find(".next-player").attr "src", imgSrc
 
@@ -109,11 +83,7 @@ $.extend jsGameViewer.GameController.prototype,
       x = mark[0]
       y = mark[1]
       color = @gameState.board[x][y]
-      area = @xyToArea(x, y)
-      left = area[0]
-      top = area[1]
-      width = area[2]
-      height = area[3]
+      box = @xyToBox(x, y)
       styleClass = ""
       switch mark[2]
         when jsGameViewer.model.MARK_CROSS
@@ -129,14 +99,14 @@ $.extend jsGameViewer.GameController.prototype,
         when jsGameViewer.model.MARK_TERR_WHITE
           styleClass = "gvsprite-21-markwhite"
         when jsGameViewer.model.MARK_TEXT
-          s = "<div style='position:absolute;left:" + left + "px;top:" + top + 
-            "px;width:" + width + "px;height:" + height + 
+          s = "<div style='position:absolute;left:" + box.left + "px;top:" + box.top +
+            "px;width:" + box.width + "px;height:" + box.height +
             "px;text-align:center;vertical-align:middle;color:red;font-family:Nina;font-weight:bolder;font-size:15px;"
           s += "background-color:" + @config.boardColor + ";"  if color is jsGameViewer.model.STONE_NONE
           s += "'>" + mark[3] + "</div>"
           @el.find(".board-marks").append s
 
-      s = "<div class='" + styleClass + "' style='position:absolute;left:" + left + "px;top:" + top + "px;"
+      s = "<div class='" + styleClass + "' style='position:absolute;left:" + box.left + "px;top:" + box.top + "px;"
       s += "background-color:" + @config.boardColor + ";"  if color is jsGameViewer.model.STONE_NONE
       s += "'></div>"
       @el.find(".board-marks").append s
@@ -170,10 +140,7 @@ $.extend jsGameViewer.GameController.prototype,
       @el.find(".toolbar .branches").css height: n * 23
 
       if child.type is jsGameViewer.model.NODE_MOVE
-        x = child.x
-        y = child.y
-        area = @xyToArea(x, y)
-        T('board-branch', i, left: area[0], top: area[1], width: area[2], height: area[3]).render append: '.board .branches'
+        T('board-branch', i, @xyToBox(child.x, child.y)).render append: '.board .branches'
 
   forward_: (points) ->
     return false  if @gameState.isLast()
@@ -208,8 +175,8 @@ $.extend jsGameViewer.GameController.prototype,
     true
 
   forwardN: (n) ->
-    return this  unless @gameState?
-  
+    return  unless @gameState?
+
     n = @config.fastMode  if n is `undefined`
     points = new Array()
     changed = false
@@ -235,7 +202,7 @@ $.extend jsGameViewer.GameController.prototype,
   back_: (points) ->
     return false  if @gameState.isFirst()
     node = @gameState.currentNode
-    
+
     # before
     for point, i in node.points
       found = false
@@ -248,7 +215,7 @@ $.extend jsGameViewer.GameController.prototype,
       points.push point  unless found
 
     @gameState.back()
-    
+
     # after
     true
 
@@ -322,6 +289,22 @@ $.extend jsGameViewer.GameController.prototype,
   removeAllStones: ->
     @el.find(".stones").empty()
 
-  xyToArea: (x, y) ->
-    [x * @config.gridSize, y * @config.gridSize, @config.gridSize, @config.gridSize]
+  xyToBox: (x, y) ->
+    left: x * @config.gridSize
+    top: y * @config.gridSize
+    width: @config.gridSize
+    height: @config.gridSize
+
+  setToggleNumberImg: ->
+    if @config.showMoveNumber
+      @el.find(".toggleNumber img").removeClass "sprite-hidenumber"
+      @el.find(".toggleNumber img").addClass    "sprite-shownumber"
+    else
+      @el.find(".toggleNumber img").removeClass "sprite-shownumber"
+      @el.find(".toggleNumber img").addClass    "sprite-hidenumber"
+
+  toggleNumber: ->
+    @config.showMoveNumber = !@config.showMoveNumber
+    @setToggleNumberImg()
+    if @gameState? then @redrawBoard()
 

@@ -118,7 +118,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, {
     jq4gv.ajax({
       url:url,
       success:function(response){
-        try {
+        //try {
           // if game data haven't changed, don't reload the game
           if (_this.game && _this.game.dataSize && _this.game.dataSize == response.length){
             return;
@@ -134,9 +134,9 @@ jq4gv.extend(jsGameViewer.GameController.prototype, {
             _this.forwardAll();
           else
             _this.forwardN(n);
-        } catch(e) {
-          throw "GameController.load('" + url + "')->success: " + e;
-        }
+        //} catch(e) {
+        //  throw "GameController.load('" + url + "')->success: " + e;
+        //}
       },
       failure:function(){
         throw "GameController.load('" + url + "')->failure:";
