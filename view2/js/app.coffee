@@ -20,6 +20,16 @@ $.extend jsGameViewer.CONFIG,
 
 $.extend jsGameViewer.GameController.prototype,
   initView: ->
+    @pubsub = $(@)
+
+  subscribe: ->
+    @pubsub.on.apply @pubsub, arguments
+
+  unsubscribe: ->
+    @pubsub.off.apply @pubsub, arguments
+
+  publish: ->
+    @pubsub.trigger.apply @pubsub, arguments
 
   initGame: ->
     T('main', this).render(inside: '#' + this.config.container)
@@ -59,10 +69,10 @@ $.extend jsGameViewer.GameController.prototype,
     @el.find(".move-number").html moveNumber
 
   setPrisoners: (b, w) ->
-    @publish 'set-black-prisoner', b
-    @publish 'set-white-prisoner', w
-    #@el.find(".black_PRISONERS").html b
-    #@el.find(".white_PRISONERS").html w
+    #@publish 'black-prisoner', b
+    #@publish 'white-prisoner', w
+    @el.find(".black_PRISONERS").html b
+    @el.find(".white_PRISONERS").html w
 
   setMoveMark: (x, y) ->
     @el.find(".move-mark").css

@@ -130,6 +130,7 @@
     };
 
     var watch = function () {
+        if (!arguments[0]) return;
 
         if (isFunction(arguments[1])) {
             watchAll.apply(this, arguments);
@@ -248,6 +249,21 @@
         }
     };
 
+    var stringify = function(o) {
+      var cache = [];
+      return JSON.stringify(o, function(key, value) {
+          if (typeof value === 'object' && value !== null) {
+              if (cache.indexOf(value) !== -1) {
+                  // Circular reference found, discard key
+                  return;
+              }
+              // Store value in our collection
+              cache.push(value);
+          }
+          return value;
+      });
+    };
+
     var defineWatcher = function (obj, prop, watcher) {
 
         var val = obj[prop];
@@ -288,7 +304,7 @@
             watchFunctions(obj, prop);
 
             if (!WatchJS.noMore){
-                if (JSON.stringify(oldval) !== JSON.stringify(newval)) {
+                if (stringify(oldval) !== stringify(newval)) {
                     callWatchers(obj, prop, "set", newval, oldval);
                     WatchJS.noMore = false;
                 }

@@ -23,7 +23,6 @@ T.def 'main', (controller) ->
       console.log "Language is changed to #{language}"
     renderComplete: (el) ->
       controller.el = $(el)
-      controller.publish 'test', 'a', 'b'
   ]
 
 T.def 'banner', (controller) ->
@@ -67,26 +66,21 @@ T.def 'move-number', (controller) ->
       '&nbsp;'
       [ 'span.control-text.move-number'
         #renderComplete: (el) ->
-        #  console.log 'before'
-
         #  setMoveNumber = ->
-        #    console.log 'updateMoveNumber'
         #    move = controller.gameState?.currentNode?.moveNumber or 0
         #    $(el).text(move)
 
-        #  setMoveNumber() # Set initial move number
+        #  # Set initial move number
+        #  setMoveNumber()
 
         #  registerWatcher = ->
-        #    console.log 'registerWatcher'
-        #    if controller.gameState
-        #      watch controller.gameState, 'currentNode', setMoveNumber, 0
-
-        #  registerWatcher() # Initial watcher for controller.gameState.currentNode
+        #    watch controller.gameState, 'currentNode', setMoveNumber, 0
 
         #  # Any change to controller.gameState creates another watcher
-        #  #watch controller, 'gameState', registerWatcher, 0
+        #  watch controller, 'gameState', registerWatcher, 0
 
-        #  console.log 'after'
+        #  # Initial watcher for controller.gameState.currentNode
+        #  registerWatcher()
       ]
       '&nbsp;'
       t('move_number_after')
@@ -108,9 +102,9 @@ T.def 'banner-prisoner', (controller, color) ->
           src: "/view/images/15/#{color}_dead.gif"
           '&nbsp;&nbsp;'
           [ "span.control-text.#{color}_PRISONERS",
-            renderComplete: (el) ->
-              controller.subscribe "set-#{color}-prisoners", (prisoners) ->
-                el.val(prisoners)
+            #renderComplete: (el) ->
+            #  controller.subscribe "#{color}-prisoners", (prisoners) ->
+            #    el.val(prisoners)
             0
           ]
         ]
@@ -336,7 +330,7 @@ T.def 'tb-branch', (controller, i, title) ->
       href: 'javascript:void(0)'
       click: -> controller.goToBranch(i)
       title: title
-      controller.BRANCHES[i]
+      BRANCHES[i]
     ]
   ]
 
