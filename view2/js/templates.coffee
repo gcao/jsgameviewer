@@ -27,6 +27,17 @@ T.def 'main', (controller) ->
 
 T.def 'banner', (controller) ->
   [ '.banner'
+    renderComplete: (el) ->
+      controller.subscribe 'current-node', ->
+        color = controller.gameState.getNextPlayer()
+        imgSrc = @config.viewDir +
+          if color is jsGameViewer.model.STONE_WHITE
+            "/images/15/white.gif"
+          else
+            "/images/15/black.gif"
+
+        $(el).find(".next-player").attr "src", imgSrc
+
     [ '.banner-overlay' ]
     [ '.banner-left'
       T('language-switcher')
@@ -65,22 +76,9 @@ T.def 'move-number', (controller) ->
       t('move_number_before')
       '&nbsp;'
       [ 'span.control-text.move-number'
-        #renderComplete: (el) ->
-        #  setMoveNumber = ->
-        #    move = controller.gameState?.currentNode?.moveNumber or 0
-        #    $(el).text(move)
-
-        #  # Set initial move number
-        #  setMoveNumber()
-
-        #  registerWatcher = ->
-        #    watch controller.gameState, 'currentNode', setMoveNumber, 0
-
-        #  # Any change to controller.gameState creates another watcher
-        #  watch controller, 'gameState', registerWatcher, 0
-
-        #  # Initial watcher for controller.gameState.currentNode
-        #  registerWatcher()
+        renderComplete: (el) ->
+          controller.subscribe 'current-node', (node) ->
+            $(el).text(node.moveNumber || 0)
       ]
       '&nbsp;'
       t('move_number_after')
@@ -89,6 +87,10 @@ T.def 'move-number', (controller) ->
 
 T.def 'banner-prisoners', (controller) ->
   [ '.prisoners-outer'
+    renderComplete: (el) ->
+      controller.subscribe 'current-node', ->
+        $(el).find('.black .control-text').text(controller.gameState.blackPrisoners)
+        $(el).find('.white .control-text').text(controller.gameState.whitePrisoners)
     T('banner-prisoner', controller, 'black')
     T('banner-prisoner', controller, 'white')
   ]
@@ -102,9 +104,6 @@ T.def 'banner-prisoner', (controller, color) ->
           src: "/view/images/15/#{color}_dead.gif"
           '&nbsp;&nbsp;'
           [ "span.control-text.#{color}_PRISONERS",
-            #renderComplete: (el) ->
-            #  controller.subscribe "#{color}-prisoners", (prisoners) ->
-            #    el.val(prisoners)
             0
           ]
         ]
@@ -199,9 +198,26 @@ T.def 'point-label', (controller) ->
 
 T.def 'right-panel', (controller) ->
   [ '.right-pane'
+    renderComplete: (el) ->
+      controller.subscribe 'current-node', (node) ->
+        T('comment', controller, node).render inside: '.comment'
+
     T('info-pane', controller)
-    [ '.comment' ]
+    ['.comment']
   ]
+
+T.def 'comment', (controller, node) ->
+  if node
+    move = node.moveNumber || 0
+    [
+      [ 'strong'
+        t('branch_tag') if node.depth > 1
+        t("comment_for").replace(/MOVE/, move)
+        ':'
+      ]
+      ['br']
+      node.comment?.replace(/\n/g, "<br/>\n")
+    ]
 
 T.def 'info-pane', (controller) ->
   [ '.info'

@@ -42,37 +42,16 @@ $.extend jsGameViewer.GameController.prototype,
 
   setGameState: ->
     node = @gameState.currentNode
-    @setNextPlayer @gameState.getNextPlayer()
-    @setMoveNumber node.moveNumber
-    @setPrisoners @gameState.blackPrisoners, @gameState.whitePrisoners
+    @publish 'current-node', node
     if node.type is jsGameViewer.model.NODE_MOVE
       @setMoveMark node.x, node.y
     else
       @removeMoveMark()
     @setMarks node.marks
     @setBranches()
-    @setComment()
 
   redrawBoard: ->
     T('stones-on-board', this).render inside: @el.find('.stones')
-
-  setNextPlayer: (color) ->
-    imgSrc = @config.viewDir +
-      if color is jsGameViewer.model.STONE_WHITE
-        "/images/15/white.gif"
-      else
-        "/images/15/black.gif"
-
-    @el.find(".next-player").attr "src", imgSrc
-
-  setMoveNumber: (moveNumber) ->
-    @el.find(".move-number").html moveNumber
-
-  setPrisoners: (b, w) ->
-    #@publish 'black-prisoner', b
-    #@publish 'white-prisoner', w
-    @el.find(".black_PRISONERS").html b
-    @el.find(".white_PRISONERS").html w
 
   setMoveMark: (x, y) ->
     @el.find(".move-mark").css
@@ -120,16 +99,6 @@ $.extend jsGameViewer.GameController.prototype,
       s += "background-color:" + @config.boardColor + ";"  if color is jsGameViewer.model.STONE_NONE
       s += "'></div>"
       @el.find(".board-marks").append s
-
-  setComment: (comment) ->
-    @el.find('.comment').empty()
-    return  unless comment
-    node = @gameState.currentNode
-    comment = "<strong>"
-    comment += t("branch_tag")  if node.depth > 1
-    comment += t("comment_for").replace(/MOVE/, node.moveNumber) + ":</strong>"
-    comment += "<br/>" + node.comment.replace(/\n/g, "<br/>\n")  if node.comment
-    @el.find(".comment").html comment
 
   setBranches: ->
     @el.find(".branches").empty()

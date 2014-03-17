@@ -33,7 +33,7 @@ komi                    : 贴目/子
 moves                   : 手数
 result                  : 结果
 comment                 : 评论
-comment_for             : 第MOVE手评论
+comment_for             : 第 MOVE 手评论
 branch                  : 变化
 trunk                   : 实战
 branch_tag              : <变化>
