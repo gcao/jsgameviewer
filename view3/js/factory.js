@@ -102,13 +102,15 @@ function initCellFactory() {
 
 	for(var c = 0; c<2; c++) {
 
-		diff = textures['img/texture/wood-'+c+'.jpg'].clone();
+		//diff = textures['img/texture/wood-'+c+'.jpg'].clone();
+		diff = textures['img/texture/wood-1.jpg'].clone();
 		diff.tile(tiling);
 
 		//common material
 		materials[c] =  new THREE.MeshPhongMaterial({
 			color:0xffffff,
-			specular:[0xAAAAAA,0x444444][c],
+			//specular:[0xAAAAAA,0x444444][c],
+			specular:0x444444,
 			shininess:30.0,
 			wireframe:WIREFRAME,
 			transparent:true,
@@ -125,15 +127,15 @@ function initCellFactory() {
 		// container for the cell and its reflexion
 		var geo = new THREE.PlaneGeometry(size,size);
 
-		// randomize uv offset to ad a bit of variety
-		var randU = Math.random();
-		var randV = Math.random();
+		//// randomize uv offset to ad a bit of variety
+		//var randU = Math.random();
+		//var randV = Math.random();
 
-		var uvs = geo.faceVertexUvs[0][0];
-		for (var j = 0; j < uvs.length; j++) {
-			uvs[j].x += randU;
-			uvs[j].y += randV;
-		}
+		//var uvs = geo.faceVertexUvs[0][0];
+		//for (var j = 0; j < uvs.length; j++) {
+		//  uvs[j].x += randU;
+		//  uvs[j].y += randV;
+		//}
 
 		var cell = new THREE.Mesh(geo,materials[color]);
 
@@ -215,7 +217,7 @@ function createChessBoard(size) {
 	}
 
 	lChessBoard.add(innerBoard);
-	lChessBoard.add(board);
+  lChessBoard.add(board);
 
 	lChessBoard.name = "chessboard";
 	return lChessBoard;

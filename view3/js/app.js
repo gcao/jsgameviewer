@@ -88,7 +88,7 @@ var camera;
 		blackLight.position.set(0,0,-100);
 
 		// generate createPiece and createCell functions
-		initPieceFactory();
+		//initPieceFactory();
 		initCellFactory();
 
 		// we let chessBoard in global scope to use it for picking

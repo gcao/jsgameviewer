@@ -18,28 +18,8 @@ var textures   = {};
 		var loaded = 0;
 		// list of all mesh and texture
 		var resources = [
-			//'3D/json/knight.json',
-			//'3D/json/king.json',
-			//'3D/json/queen.json',
-			//'3D/json/bishop.json',
-			//'3D/json/rook.json',
-			//'3D/json/pawn.json',
       'resources/3D/json/board.json',
       'resources/3D/json/innerBoard.json',
-      'img/texture/wood-0.jpg',
-      'img/texture/wood-1.jpg',
-      'img/texture/wood_N.jpg',
-      'img/texture/wood_S.jpg',
-			//'texture/knight-ao.jpg',
-			//'texture/rook-ao.jpg',
-			//'texture/king-ao.jpg',
-			//'texture/bishop-ao.jpg',
-			//'texture/queen-ao.jpg',
-			//'texture/pawn-ao.jpg',
-			//'texture/floor.jpg',
-			//'texture/floor_N.jpg',
-			//'texture/floor_S.jpg',
-			//'texture/fakeShadow.jpg'
       'img/texture/wood-0.jpg',
       'img/texture/wood-1.jpg',
       'img/texture/wood_N.jpg',
