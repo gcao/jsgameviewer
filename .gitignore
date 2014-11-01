@@ -2,3 +2,4 @@ dist
 php/cache/*
 .sass-cache
 .bundle
+Chess3D/
