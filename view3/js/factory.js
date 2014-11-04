@@ -110,7 +110,7 @@ function initCellFactory() {
 		materials[c] =  new THREE.MeshPhongMaterial({
 			color:0xffffff,
 			//specular:[0xAAAAAA,0x444444][c],
-			specular:0x444444,
+			specular:0xffffff,
 			shininess:30.0,
 			wireframe:WIREFRAME,
 			transparent:true,
@@ -158,51 +158,53 @@ function createChessBoard(size) {
 	// contains everything that makes the board
 	var lChessBoard = new THREE.Object3D();
 
-	var cellSize = size/COLS;
-	var square,cell;
+  //var cellSize = size/COLS;
+  //var square,cell;
 
-	for(var i=0; i< ROWS*COLS; i++) {
+  //for(var i=0; i< ROWS*COLS; i++) {
 
-		var col = i%COLS;
-		var row = Math.floor(i/COLS);
+  //  var col = i%COLS;
+  //  var row = Math.floor(i/COLS);
 
-		cell = new Cell(i);
-		square = createCell(cellSize,1-(i+row)%2);
-		square.position = cell.getWorldPosition();
-		square.name = cell.position;
+  //  cell = new Cell(i);
+  //  square = createCell(cellSize,1-(i+row)%2);
+  //  square.position = cell.getWorldPosition();
+  //  square.name = cell.position;
 
-		lChessBoard.add(square);
-	}
+  //  lChessBoard.add(square);
+  //}
 
-	// some fake inner environment color for reflexion
-	var innerBoard = new THREE.Mesh (
-		geometries['resources/3D/json/innerBoard.json'],
-		new THREE.MeshBasicMaterial({
-			color:0x783e12
-		})
-	);
-	innerBoard.scale.set(size,size,size);
+  //// some fake inner environment color for reflexion
+  //var innerBoard = new THREE.Mesh (
+  //  geometries['resources/3D/json/innerBoard.json'],
+  //  new THREE.MeshBasicMaterial({
+  //    color:0x783e12
+  //  })
+  //);
+  //innerBoard.scale.set(size,size,size);
 
 	/// board borders
 	var tiling = 6;
-	var wood = textures['img/texture/wood-0.jpg'].clone();
+	//var wood = textures['img/texture/wood-0.jpg'].clone();
+	var wood = textures['img/texture/wood-1.jpg'].clone();
 	var spec = textures['img/texture/wood_S.jpg'].clone();
 	var norm = textures['img/texture/wood_N.jpg'].clone();
 	wood.tile(tiling);
 	spec.tile(tiling);
 	norm.tile(tiling);
 
-	var geo = geometries['resources/3D/json/board.json'];
+	//var geo = geometries['resources/3D/json/board.json'];
+	var geo = geometries['resources/3D/json/board2.json'];
 	geo.computeBoundingBox();
 
 	var board = new THREE.Mesh (
 		geo,
 		new THREE.MeshPhongMaterial({
 			color:0xffffff,
-			map:wood,
+      map:wood,
 			specular: 0xffffff,
-			specularMap: spec,
-			normalMap: norm,
+      specularMap: spec,
+      normalMap: norm,
 			shininess: 60,
 			normalScale: new THREE.Vector2(0.2,0.2)
 		})
@@ -216,7 +218,7 @@ function createChessBoard(size) {
 		board.castShadow = true;
 	}
 
-	lChessBoard.add(innerBoard);
+  //lChessBoard.add(innerBoard);
   lChessBoard.add(board);
 
 	lChessBoard.name = "chessboard";

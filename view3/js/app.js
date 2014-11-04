@@ -36,7 +36,7 @@ var camera;
 		var canvasRatio  = canvasWidth / canvasHeight;
 
 		// RENDERER
-		renderer = new THREE.WebGLRenderer( { antialias: true } );
+    renderer = new THREE.WebGLRenderer( { antialias: true } );
 		renderer.gammaInput = true;
 		renderer.gammaOutput = true;
 		renderer.setSize(canvasWidth, canvasHeight);

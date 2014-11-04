@@ -19,6 +19,7 @@ var textures   = {};
 		// list of all mesh and texture
 		var resources = [
       'resources/3D/json/board.json',
+      'resources/3D/json/board2.json',
       'resources/3D/json/innerBoard.json',
       'img/texture/wood-0.jpg',
       'img/texture/wood-1.jpg',
