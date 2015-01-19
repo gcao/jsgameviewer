@@ -117,11 +117,11 @@ CHECKERS.BoardController = function (options) {
 
     pieceObjGroup.add(pieceMesh);
 
-    //// create shadow plane
-    //var shadowPlane = new THREE.Mesh(new THREE.PlaneGeometry(squareSize, squareSize, 1, 1), materials.pieceShadowPlane);
-    //shadowPlane.rotation.x = -90 * Math.PI / 180;
-
-    //pieceObjGroup.add(shadowPlane);
+    // create shadow plane
+    var shadowSize = squareSize * 0.2;
+    var shadowPlane = new THREE.Mesh(new THREE.PlaneGeometry(shadowSize, shadowSize, 1, 1), materials.pieceShadowPlane);
+    shadowPlane.rotation.x = -90 * Math.PI / 180;
+    pieceObjGroup.add(shadowPlane);
 
     pieceObjGroup.position = boardToWorld(piece.pos);
 
