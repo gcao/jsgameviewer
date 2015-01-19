@@ -285,19 +285,21 @@ CHECKERS.BoardController = function (options) {
       scene.add(groundModel);
 
       function drawGrids() {
-          var lineWidth = 1;
           var gridSize = 4.3;
           var offset = 1.25;
 
+          // https://github.com/mrdoob/three.js/wiki/Drawing-lines
+          var material1 = new THREE.LineBasicMaterial({
+              color: 0x000000,
+              linewidth: 1
+          });
+          var material2 = new THREE.LineBasicMaterial({
+              color: 0x000000,
+              linewidth: 4
+          });
+
           for (var i = 0; i < 19; i++) {
-              // https://github.com/mrdoob/three.js/wiki/Drawing-lines
-              if (i == 0 || i == 18) {
-                  lineWidth = 2;
-              }
-              var material = new THREE.LineBasicMaterial({
-                  color: 0x000000,
-                  lineWidth: lineWidth
-              });
+              var material = i == 0 || i == 18 ? material2 : material1;
               var geometry1 = new THREE.Geometry();
               geometry1.vertices.push(new THREE.Vector3(i * gridSize + offset, 0, offset));
               geometry1.vertices.push(new THREE.Vector3(i * gridSize + offset, 0, 18 * gridSize + offset));
@@ -315,20 +317,22 @@ CHECKERS.BoardController = function (options) {
       drawGrids();
 
       function drawStars() {
-        var material = new THREE.MeshBasicMaterial({
-            color: 0x000000
-        });
+        var starRadius = 0.5;
         var gridSize = 4.3;
         var offset = 1.25;
+        var material = new THREE.MeshBasicMaterial({
+          color: 0x000000
+        });
 
         for (var i=0; i<3; i++) {
           for (j=0; j<3; j++) {
             var pointX = i * 6 + 3;
             var pointY = j * 6 + 3;
 
-            var object = new THREE.Mesh(new THREE.CircleGeometry(3, 32, 0, Math.PI * 2), material);
-            object.position.set(pointX * gridSize + offset, 10, pointY * gridSize + offset);
-            object.rotation.x = Math.PI * 0.5;
+            var object = new THREE.Mesh(new THREE.CircleGeometry(starRadius, 32, 0, Math.PI * 2), material);
+            object.position.set(pointX * gridSize + offset, 0, pointY * gridSize + offset);
+            object.rotation.x = 90 * Math.PI/180;
+            object.material.side = THREE.DoubleSide;
             scene.add(object);
           }
         }

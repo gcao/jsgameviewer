@@ -55,6 +55,7 @@ CHECKERS.Game = function (options) {
         board[row][col] = piece;
         boardController.addPiece(piece);
       }
+      addStone(0 , 0 , CHECKERS.BLACK);
       addStone(3 , 3 , CHECKERS.BLACK);
       addStone(3 , 4 , CHECKERS.WHITE);
       addStone(4 , 3 , CHECKERS.WHITE);
@@ -62,6 +63,7 @@ CHECKERS.Game = function (options) {
       addStone(3 , 16, CHECKERS.BLACK);
       addStone(16, 3 , CHECKERS.BLACK);
       addStone(16, 16, CHECKERS.WHITE);
+      addStone(18, 18, CHECKERS.WHITE);
 			//var row, col, piece;
 			////
 			//for (row = 0; row < board.length; row++) {
