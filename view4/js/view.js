@@ -42,7 +42,6 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
   return {
     initView: function(){
       this.container = document.getElementById('container');
-      this.assetsUrl = '3d_assets/';
 
       /** @type THREE.WebGLRenderer */
       this.renderer = null;
@@ -214,23 +213,23 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
     initMaterials: function() {
       // board material
       this.materials.boardMaterial = new THREE.MeshLambertMaterial({
-        map: THREE.ImageUtils.loadTexture(this.assetsUrl + 'square_light_texture.jpg')
+        map: THREE.ImageUtils.loadTexture('3d_assets/square_light_texture.jpg')
       });
 
       // ground material
       this.materials.groundMaterial = new THREE.MeshBasicMaterial({
         transparent: true,
-        map: THREE.ImageUtils.loadTexture(this.assetsUrl + 'ground.png')
+        map: THREE.ImageUtils.loadTexture('3d_assets/ground.png')
       });
 
       // dark square material
       this.materials.darkSquareMaterial = new THREE.MeshLambertMaterial({
-        map: THREE.ImageUtils.loadTexture(this.assetsUrl + 'square_dark_texture.jpg')
+        map: THREE.ImageUtils.loadTexture('3d_assets/square_dark_texture.jpg')
       });
       //
       // light square material
       this.materials.lightSquareMaterial = new THREE.MeshLambertMaterial({
-        map: THREE.ImageUtils.loadTexture(this.assetsUrl + 'square_light_texture.jpg')
+        map: THREE.ImageUtils.loadTexture('3d_assets/square_light_texture.jpg')
       });
 
       // white piece material
@@ -248,7 +247,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       // pieces shadow plane material
       this.materials.pieceShadowPlane = new THREE.MeshBasicMaterial({
         transparent: true,
-        map: THREE.ImageUtils.loadTexture(this.assetsUrl + 'piece_shadow.png')
+        map: THREE.ImageUtils.loadTexture('3d_assets/piece_shadow.png')
       });
     },
 
@@ -272,7 +271,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       }
 
       // load board
-      loader.load(this.assetsUrl + 'board.js', function (geom) {
+      loader.load('3d_assets/board.js', function (geom) {
         self.boardModel = new THREE.Mesh(geom, self.materials.boardMaterial);
         self.boardModel.position.y = -0.02;
 
@@ -282,7 +281,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       });
 
       // load piece
-      loader.load(this.assetsUrl + 'stone.js', function (geometry) {
+      loader.load('3d_assets/stone.js', function (geometry) {
         var s = 6.6;
         self.pieceGeometry = scale(geometry, new THREE.Vector3(s, s, s));
 
