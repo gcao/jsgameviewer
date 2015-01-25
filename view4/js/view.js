@@ -133,11 +133,11 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
 
       pieceObjGroup.add(pieceMesh);
 
-      //// create shadow plane
-      //var shadowSize = squareSize * 0.5;
-      //var shadowPlane = new THREE.Mesh(new THREE.PlaneGeometry(shadowSize, shadowSize, 1, 1), materials.pieceShadowPlane);
-      //shadowPlane.rotation.x = -90 * Math.PI / 180;
-      //pieceObjGroup.add(shadowPlane);
+      // create shadow plane
+      var shadowSize = this.squareSize * 0.5;
+      var shadowPlane = new THREE.Mesh(new THREE.PlaneGeometry(shadowSize, shadowSize, 1, 1), this.materials.pieceShadowPlane);
+      shadowPlane.rotation.x = -90 * Math.PI / 180;
+      pieceObjGroup.add(shadowPlane);
 
       pieceObjGroup.position = boardToWorld(piece.pos);
 
@@ -220,16 +220,6 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       this.materials.groundMaterial = new THREE.MeshBasicMaterial({
         transparent: true,
         map: THREE.ImageUtils.loadTexture('3d_assets/ground.png')
-      });
-
-      // dark square material
-      this.materials.darkSquareMaterial = new THREE.MeshLambertMaterial({
-        map: THREE.ImageUtils.loadTexture('3d_assets/square_dark_texture.jpg')
-      });
-      //
-      // light square material
-      this.materials.lightSquareMaterial = new THREE.MeshLambertMaterial({
-        map: THREE.ImageUtils.loadTexture('3d_assets/square_light_texture.jpg')
       });
 
       // white piece material
