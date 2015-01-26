@@ -88,11 +88,11 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
        * The board representation.
        * @type Array
        */
-      this.board = [];
+      this.boardView = [];
       for (var i = 0; i < 19; i++) {
-        this.board[i] = [];
+        this.boardView[i] = [];
         for (var j = 0; j < 19; j++) {
-          this.board[i][j] = 0;
+          this.boardView[i][j] = 0;
         }
       }
 
@@ -109,8 +109,9 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
     },
 
     removeAllStones: function(){
-      for(var i=0; i<this.board.size; i++){
-        for(var j=0; j<this.board.size; j++){
+      var board = this.gameState.board;
+      for(var i=0; i<board.size; i++){
+        for(var j=0; j<board.size; j++){
           this.removeStone(i, j);
         }
       }
@@ -225,9 +226,9 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
     },
 
     removeStone: function(row, col) {
-      var pieceObjGroup = this.board[row][col];
+      var pieceObjGroup = this.boardView[row][col];
       this.scene.remove(pieceObjGroup);
-      this.board[row][col] = null;
+      this.boardView[row][col] = null;
     },
 
     /**
@@ -260,7 +261,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
 
       pieceObjGroup.position = boardToWorld(piece.pos);
 
-      this.board[piece.pos[0]][piece.pos[1]] = pieceObjGroup;
+      this.boardView[piece.pos[0]][piece.pos[1]] = pieceObjGroup;
 
       this.scene.add(pieceObjGroup);
     },
