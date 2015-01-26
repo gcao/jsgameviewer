@@ -47,23 +47,25 @@
     <script type="text/javascript" src="/js/controller.js"></script>
     <script src="js/three/three.js"></script>
     <script src="js/three/OrbitControls.js"></script>
-    <script src="js/three/OrbitAndPanControls.js"></script>
+    <script src="3d_assets/board.js"></script>
+    <script src="3d_assets/stone.js"></script>
     <script src="js/view.js"></script>
     <script type="text/javascript">
       var controller = new jsGameViewer.GameController({container: 'container'})
-      controller.init();
-      setTimeout(function() {
-        // setup board pieces for testing
-        controller.addStone(0, 0, jsGameViewer.model.STONE_BLACK);
-        controller.addStone(3, 3, jsGameViewer.model.STONE_BLACK);
-        controller.addStone(3, 4, jsGameViewer.model.STONE_WHITE);
-        controller.addStone(4, 3, jsGameViewer.model.STONE_WHITE);
-        controller.addStone(4, 4, jsGameViewer.model.STONE_BLACK);
-        controller.addStone(3, 15, jsGameViewer.model.STONE_BLACK);
-        controller.addStone(15, 3, jsGameViewer.model.STONE_BLACK);
-        controller.addStone(15, 15, jsGameViewer.model.STONE_WHITE);
-        controller.addStone(18, 18, jsGameViewer.model.STONE_WHITE);
-      }, 1000);
+      controller.load('/examples/games/test2.sgf');
+      <%#controller.init();%>
+      <%#setTimeout(function() {%>
+      <%#  // setup board pieces for testing%>
+      <%#  controller.addStone(0, 0, jsGameViewer.model.STONE_BLACK);%>
+      <%#  controller.addStone(3, 3, jsGameViewer.model.STONE_BLACK);%>
+      <%#  controller.addStone(3, 4, jsGameViewer.model.STONE_WHITE);%>
+      <%#  controller.addStone(4, 3, jsGameViewer.model.STONE_WHITE);%>
+      <%#  controller.addStone(4, 4, jsGameViewer.model.STONE_BLACK);%>
+      <%#  controller.addStone(3, 15, jsGameViewer.model.STONE_BLACK);%>
+      <%#  controller.addStone(15, 3, jsGameViewer.model.STONE_BLACK);%>
+      <%#  controller.addStone(15, 15, jsGameViewer.model.STONE_WHITE);%>
+      <%#  controller.addStone(18, 18, jsGameViewer.model.STONE_WHITE);%>
+      <%#}, 1000);%>
     </script>
   </body>
 </html>

@@ -1,4 +1,4 @@
-{
+var BOARD_MODEL = {
 
     "metadata" :
     {

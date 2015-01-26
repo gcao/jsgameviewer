@@ -92,18 +92,94 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       this.drawBoard();
     },
 
+    /* reset view to beginning of a game
+     */
+    initGame: function(){
+      return this.removeAllStones()
+        //.setGameInfo()
+        //.setGameState()
+        .addRemoveStones(this.gameState.currentNode.points);
+    },
+
+    removeAllStones: function(){
+      return this;
+    },
+
+    /*
+     * iterate through points
+     * remove all
+     * add those whose deleteFlag is not set
+     */
+    addRemoveStones: function(points){
+      for(var i=0; i<points.length; i++){
+        var point = points[i];
+        this.removeStone(point.x,point.y);
+        if (!point.deleteFlag){
+          this.addStone(point.x, point.y, point.color);
+        }
+      }
+      return this;
+    },
+
+    forwardAll: function(){
+      if (this.gameState == null)
+        return this;
+      this.removeAllStones();
+      this.gameState.forwardAll();
+      this.redrawBoard();
+      //this.setGameState();
+      return this;
+    },
+
+    redrawBoard: function(){
+      //var _this = this;
+      var board = this.gameState.board;
+      //var s = "";
+      //if (this.config.gameType == jsGameViewer.DAOQI){
+      //  for(var i=0; i<board.size; i++){
+      //    for(var j=0; j<board.size; j++){
+      //      var color = board[i][j];
+      //      var moveNumber = 0;
+      //      if (this.config.showMoveNumber){
+      //        moveNumber = this.gameState.getMoveNumber(i,j);
+      //      }
+      //      if (color == jsGameViewer.model.STONE_BLACK || color == jsGameViewer.model.STONE_WHITE){
+      //        this.mapToPoints(i,j,function(x,y){
+      //          s += _this.createStone(x,y,color,moveNumber);
+      //        });
+      //      }
+      //    }
+      //  }
+      //} else {
+        for(var i=0; i<board.size; i++){
+          for(var j=0; j<board.size; j++){
+            var color = board[i][j];
+            this.addStone(i, j, color);
+            //var moveNumber = 0;
+            //if (this.config.showMoveNumber){
+            //  moveNumber = this.gameState.getMoveNumber(i,j);
+            //}
+            //if (color == jsGameViewer.model.STONE_BLACK || color == jsGameViewer.model.STONE_WHITE){
+            //  s += this.createStone(i,j,color,moveNumber);
+            //}
+          }
+        }
+      //}
+      //jq4gv(this.jqId+"_boardPoints").empty();
+      //if (s.length > 0)
+      //  jq4gv(this.jqId+"_boardPoints").append(s);
+      return this;
+    },
+
     /**
      * Draws the board.
      */
     drawBoard: function () {
-      var self = this;
       this.initEngine();
       this.initLights();
       this.initMaterials();
-
-      this.initObjects(function () {
-        self.onAnimationFrame();
-      });
+      this.initObjects();
+      this.onAnimationFrame();
     },
 
     addStone: function (row, col, color) {
@@ -248,40 +324,21 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
 
     /**
      * Initialize the objects.
-     * @param {Object} callback Function to call when the objects have been loaded.
      */
     initObjects: function(callback) {
       var self = this;
-      var loader = new THREE.JSONLoader();
-      var totalObjectsToLoad = 2; // board + the piece
-      var loadedObjects = 0; // count the loaded pieces
-
-      // checks if all the objects have been loaded
-      function checkLoad() {
-        loadedObjects++;
-
-        if (loadedObjects === totalObjectsToLoad && callback) {
-          callback();
-        }
-      }
 
       // load board
-      loader.load('3d_assets/board.js', function (geom) {
-        self.boardModel = new THREE.Mesh(geom, self.materials.boardMaterial);
-        self.boardModel.position.y = -0.02;
-
-        self.scene.add(self.boardModel);
-
-        checkLoad();
-      });
+      var loader = new THREE.JSONLoader();
+      var boardGeometry = loader.parse(BOARD_MODEL).geometry;
+      this.boardModel = new THREE.Mesh(boardGeometry, this.materials.boardMaterial);
+      this.boardModel.position.y = -0.02;
+      this.scene.add(this.boardModel);
 
       // load piece
-      loader.load('3d_assets/stone.js', function (geometry) {
-        var s = 6.6;
-        self.pieceGeometry = scale(geometry, new THREE.Vector3(s, s, s));
-
-        checkLoad();
-      });
+      var s = 6.6;
+      var stoneGeometry = loader.parse(STONE_MODEL).geometry;
+      this.pieceGeometry = scale(stoneGeometry, new THREE.Vector3(s, s, s));
 
       // add ground
       this.groundModel = new THREE.Mesh(new THREE.PlaneGeometry(100, 100, 1, 1), this.materials.groundMaterial);
