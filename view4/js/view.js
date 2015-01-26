@@ -7,6 +7,22 @@ jq4gv.extend(jsGameViewer.CONFIG, {
 
 jq4gv.extend(jsGameViewer.GameController.prototype, function(){
   var LABELS = ['A','B','C','D','E','F','G','H','J','K','L','M','N','O','P','Q','R','S','T'];
+
+  var BOARD = {
+    width: 84,
+    height: 84,
+    thickness: 4,
+    grid: 4,
+    x: -2,
+    y: 0,
+    z: -2
+  };
+
+  var STONE = {
+    scale: 6.6,
+    radius: 1.8
+  };
+
   var GRID_SIZE = 4.3;
 
   var MOVE_MARK_MATERILAL = new THREE.MeshBasicMaterial({
@@ -49,6 +65,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
 
   return {
     initView: function(){
+      jq4gv('.toolbar .refresh').click(this.refresh.bind(this));
       jq4gv('.toolbar .backAll').click(this.backAll.bind(this));
       jq4gv('.toolbar .backN').click(this.backN.bind(this));
       jq4gv('.toolbar .back').click(this.back.bind(this));
@@ -89,13 +106,6 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       this.moveMark = null;
 
       /**
-       * The board square size.
-       * @type Number
-       * @constant
-       */
-      this.squareSize = 10;
-
-      /**
        * The board representation.
        * @type Array
        */
@@ -108,6 +118,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       }
 
       this.drawBoard();
+      this.calibrate();
     },
 
     /* reset view to beginning of a game
@@ -439,7 +450,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       pieceObjGroup.add(pieceMesh);
 
       // create shadow plane
-      var shadowSize = this.squareSize * 0.5;
+      var shadowSize = 5;
       var shadowPlane = new THREE.Mesh(new THREE.PlaneGeometry(shadowSize, shadowSize, 1, 1), this.materials.pieceShadowPlane);
       shadowPlane.rotation.x = -90 * Math.PI / 180;
       pieceObjGroup.add(shadowPlane);
@@ -469,15 +480,22 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
 
       // create camera
       this.camera = new THREE.PerspectiveCamera(35, viewWidth / viewHeight, 1, 1000);
-      this.camera.position.set(this.squareSize * 4, 120, 150);
+      this.camera.position.set(40, 120, 150);
       this.cameraController = new THREE.OrbitControls(this.camera, this.container);
       this.cameraController.minPolarAngle = 0;
       this.cameraController.maxPolarAngle = 80 * Math.PI/180;
-      this.cameraController.center = new THREE.Vector3(this.squareSize * 4, 0, this.squareSize * 4);
+      this.cameraController.center = new THREE.Vector3(40, 0, 40);
       //
       this.scene.add(this.camera);
 
       this.container.appendChild(this.renderer.domElement);
+    },
+
+    /**
+     * Refresh view - reset camera position etc
+     */
+    refresh: function() {
+      // TODO
     },
 
     /**
@@ -486,18 +504,18 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
     initLights: function() {
       // top light
       this.lights.topLight = new THREE.PointLight();
-      this.lights.topLight.position.set(this.squareSize * 4, 150, this.squareSize * 4);
+      this.lights.topLight.position.set(40, 150, 40);
       this.lights.topLight.intensity = 0.4;
 
       // white's side light
       this.lights.whiteSideLight = new THREE.SpotLight();
-      this.lights.whiteSideLight.position.set(this.squareSize * 4, 100, this.squareSize * 4 + 200);
+      this.lights.whiteSideLight.position.set(40, 100, 40 + 200);
       this.lights.whiteSideLight.intensity = 0.8;
       this.lights.whiteSideLight.shadowCameraFov = 55;
 
       // black's side light
       this.lights.blackSideLight = new THREE.SpotLight();
-      this.lights.blackSideLight.position.set(this.squareSize * 4, 100, this.squareSize * 4 - 200);
+      this.lights.blackSideLight.position.set(40, 100, 40 - 200);
       this.lights.blackSideLight.intensity = 0.8;
       this.lights.blackSideLight.shadowCameraFov = 55;
 
@@ -518,11 +536,17 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
      * Initialize the materials.
      */
     initMaterials: function() {
+      var boardImage;
+      //boardImage = '3d_assets/board_texture1.jpg';
+      //boardImage = '3d_assets/board_texture2.jpg';
+      boardImage = '3d_assets/board_texture3.jpg';
+      //boardImage = '3d_assets/square_light_texture.jpg';
+      var boardTexture = THREE.ImageUtils.loadTexture(boardImage);
+      boardTexture.wrapS = boardTexture.wrapT = THREE.RepeatWrapping;
+      boardTexture.repeat.set(3, 3);
       // board material
       this.materials.boardMaterial = new THREE.MeshLambertMaterial({
-        //map: THREE.ImageUtils.loadTexture('3d_assets/square_light_texture.jpg')
-        //map: THREE.ImageUtils.loadTexture('3d_assets/board_texture1.jpg')
-        map: THREE.ImageUtils.loadTexture('3d_assets/board_texture2.jpg')
+        map: boardTexture
       });
 
       // ground material
@@ -560,7 +584,9 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       var loader = new THREE.JSONLoader();
       var boardGeometry = loader.parse(BOARD_MODEL).geometry;
       this.boardModel = new THREE.Mesh(boardGeometry, this.materials.boardMaterial);
-      this.boardModel.position.y = -0.02;
+      //this.boardModel.position.x = 2;
+      //this.boardModel.position.y = 0;
+      //this.boardModel.position.z = 2;
       this.scene.add(this.boardModel);
 
       // load piece
@@ -570,7 +596,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
 
       // add ground
       this.groundModel = new THREE.Mesh(new THREE.PlaneGeometry(100, 100, 1, 1), this.materials.groundMaterial);
-      this.groundModel.position.set(this.squareSize * 4, -1.52, this.squareSize * 4);
+      this.groundModel.position.set(40, -1.52, 40);
       this.groundModel.rotation.x = -90 * Math.PI / 180;
       //
       this.scene.add(this.groundModel);
@@ -674,6 +700,29 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       mesh.position.z = z;
       this.scene.add(mesh);
       return mesh;
+    },
+
+    calibrate: function(){
+      var self = this;
+      function drawPoint(x, y, z) {
+        var object = new THREE.Mesh(new THREE.CircleGeometry(0.2, 32, 0, Math.PI * 2), MOVE_MARK_MATERILAL);
+        object.position.set(x, y, z);
+        object.rotation.x = -90 * Math.PI / 180;
+        self.scene.add(object);
+      }
+      function drawLine(x1, y1, z1, x2, y2, z2) {
+        var geometry = new THREE.Geometry();
+        geometry.vertices.push(new THREE.Vector3(x1, y1, z1));
+        geometry.vertices.push(new THREE.Vector3(x2, y2, z2));
+        var line = new THREE.Line(geometry, MOVE_MARK_MATERILAL);
+        self.scene.add(line);
+      }
+      var boardTop = 0.01;
+      var boardSize = 84;
+      drawPoint(0, boardTop, 0);
+      drawPoint(boardSize, boardTop, 0);
+      drawPoint(0, boardTop, boardSize);
+      drawPoint(boardSize, boardTop, boardSize);
     },
 
     /**
