@@ -2,10 +2,16 @@
 
 // Default view configuration
 jq4gv.extend(jsGameViewer.CONFIG, {
+  fastMode:5
 });
 
 jq4gv.extend(jsGameViewer.GameController.prototype, function(){
   var LABELS = ['A','B','C','D','E','F','G','H','J','K','L','M','N','O','P','Q','R','S','T'];
+  var GRID_SIZE = 4.3;
+
+  var MOVE_MARK_MATERILAL = new THREE.MeshBasicMaterial({
+    color: 0xcc0000
+  });
 
   // http://learningthreejs.com/data/THREEx/docs/THREEx.GeometryUtils.html
   /**
@@ -79,6 +85,9 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       /** @type THREE.Mesh */
       this.groundModel = null;
 
+      /** @type THREE.Mesh */
+      this.moveMark = null;
+
       /**
        * The board square size.
        * @type Number
@@ -104,11 +113,64 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
     /* reset view to beginning of a game
      */
     initGame: function(){
-      return this.removeAllStones()
-        //.setGameInfo()
-        //.setGameState()
-        .addRemoveStones(this.gameState.currentNode.points);
+      this.removeAllStones();
+      //this.setGameInfo();
+      this.setGameState();
+      this.addRemoveStones(this.gameState.currentNode.points);
     },
+
+    setGameState: function(){
+      var node = this.gameState.currentNode;
+      //this.setNextPlayer(this.gameState.getNextPlayer());
+      //this.setMoveNumber(node.moveNumber);
+      //this.setPrisoners(this.gameState.blackPrisoners, this.gameState.whitePrisoners);
+      if (node.type == jsGameViewer.model.NODE_MOVE)
+        this.setMoveMark(node.x, node.y);
+      else
+        this.removeMoveMark();
+      //this.setMarks(node.marks);
+      //this.setBranches();
+      //this.setComment();
+      //return this;
+    },
+
+    setMoveMark: function(i, j){
+      this.removeMoveMark();
+
+      var markRadius = 0.6;
+      var x = i * GRID_SIZE + 1.6;
+      var y = 1.3;
+      var z = (19 - j - 1) * GRID_SIZE + 1.35;
+      this.moveMark = new THREE.Mesh(new THREE.CircleGeometry(markRadius, 32, 0, Math.PI * 2), MOVE_MARK_MATERILAL);
+      this.moveMark.position.set(x, y, z);
+      this.moveMark.rotation.x = -90 * Math.PI / 180;
+      this.scene.add(this.moveMark);
+
+      //var _this = this;
+      //if (this.config.gameType == jsGameViewer.DAOQI){
+      //  jq4gv(this.jqId+"_moveMarks").empty();
+      //  this.mapToPoints(x,y,function(x,y){
+      //    var area = _this.xyToArea(x,y);
+      //    jq4gv(_this.jqId+"_moveMarks").append("<div class='gvsprite-19-markmove' style='position:absolute;left:"+
+      //      area[0]+"px;top:"+area[1]+"px;width:"+area[2]+"px;height:"+area[3]+"px'>&nbsp;</div>");
+      //  });
+      //} else {
+      //  jq4gv(this.jqId+"_moveMark").css({position: "absolute", left:x*this.config.gridSize, top:y*this.config.gridSize, width:this.config.gridSize, height:this.config.gridSize});
+      //}
+      //return this;
+    },
+
+    removeMoveMark: function(){
+      if (this.moveMark)
+        this.scene.remove(this.moveMark);
+      //if (this.config.gameType == jsGameViewer.DAOQI){
+      //  jq4gv(this.jqId+"_moveMarks").empty();
+      //} else {
+      //  jq4gv(this.jqId+"_moveMark").css({width:0, height:0});
+      //}
+      //return this;
+    },
+
 
     removeAllStones: function(){
       var board = this.gameState.board;
@@ -117,7 +179,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
           this.removeStone(i, j);
         }
       }
-      return this;
+      //return this;
     },
 
     /*
@@ -133,39 +195,160 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
           this.addStone(point.x, point.y, point.color);
         }
       }
-      return this;
+      //return this;
+    },
+
+    forward_: function(points){
+      if (this.gameState.isLast())
+        return false;
+      this.gameState.forward();
+      var node = this.gameState.currentNode;
+      for (var i=0; i<node.points.length; i++){
+        var point = node.points[i];
+        var found = false;
+        for(var j=0; j<points.length; j++){
+          var p = points[j];
+          if (point.x == p.x && point.y == p.y){
+            found = true;
+            points[j] = point;
+            break;
+          }
+        }
+        if (!found){
+          points.push(point);
+        }
+      }
+      return true;
     },
 
     forward: function() {
+      if (this.gameState == null)
+        return this;
+      if (!this.gameState.forward())
+        return false;
+      var _this = this;
+      var node = this.gameState.currentNode;
+      jq4gv.each(node.points, function(i,point){
+        _this.removeStone(point.x,point.y);
+        if (!point.deleteFlag){
+          _this.addStone(point.x, point.y, point.color);
+        }
+      });
+      this.setGameState();
+      return true;
     },
 
-    forwardN: function() {
+    forwardN: function(n) {
+      if (this.gameState == null)
+        return this;
+      var _this = this;
+      if (n == undefined || typeof(n) !== 'number')
+        n = this.config.fastMode;
+      var points = new Array();
+      var changed = false;
+      for(var i=0; i<n; i++){
+        if (!this.forward_(points))
+          break;
+        changed = true;
+      }
+      if (changed){
+        jq4gv.each(points, function(i,point){
+          _this.removeStone(point.x,point.y);
+          if (!point.deleteFlag){
+            _this.addStone(point.x, point.y, point.color);
+          }
+        });
+        this.setGameState();
+      }
+      return this;
     },
 
     forwardAll: function(){
-      if (this.gameState == null)
-        return this;
+      //if (this.gameState == null)
+      //  return this;
       this.removeAllStones();
       this.gameState.forwardAll();
       this.redrawBoard();
-      //this.setGameState();
+      this.setGameState();
+      //return this;
+    },
+
+    back_: function(points){
+      if (this.gameState.isFirst())
+        return false;
+      var node = this.gameState.currentNode;
+      // before
+      for (var i=0; i<node.points.length; i++){
+        var point = node.points[i];
+        var found = false;
+        for(var j=0; j<points.length; j++){
+          var p = points[j];
+          if (point.x == p.x && point.y == p.y){
+            found = true;
+            points[j] = point;
+            break;
+          }
+        }
+        if (!found){
+          points.push(point);
+        }
+      }
+      this.gameState.back();
+      // after
+      return true;
+    },
+
+    back: function(){
+      if (this.gameState == null)
+        return this;
+      if (this.gameState.isFirst())
+        return false;
+      var _this = this;
+      var node = this.gameState.currentNode;
+      jq4gv.each(node.points, function(i,point){
+        _this.removeStone(point.x,point.y);
+        if (point.deleteFlag){
+          _this.addStone(point.x, point.y, point.color);
+        }
+      });
+      this.gameState.back();
+      this.setGameState();
+      return true;
+    },
+
+    backN: function(n) {
+      if (this.gameState == null)
+        return this;
+      var _this = this;
+      if (n == undefined || typeof(n) !== 'number')
+        n = this.config.fastMode;
+      var points = new Array();
+      var changed = false;
+      for(var i=0; i<n; i++){
+        if (!this.back_(points))
+          break;
+        changed = true;
+      }
+      if (changed){
+        jq4gv.each(points, function(i,point){
+          _this.removeStone(point.x,point.y);
+          if (point.deleteFlag){
+            _this.addStone(point.x, point.y, point.color);
+          }
+        });
+        this.setGameState();
+      }
       return this;
-    },
-
-    back: function() {
-    },
-
-    backN: function() {
     },
 
     backAll: function() {
-      if (this.gameState == null)
-        return this;
+      //if (this.gameState == null)
+      //  return this;
       this.removeAllStones();
       this.gameState.backAll();
       this.redrawBoard();
-      //this.setGameState();
-      return this;
+      this.setGameState();
+      //return this;
     },
 
     redrawBoard: function(){
@@ -205,7 +388,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       //jq4gv(this.jqId+"_boardPoints").empty();
       //if (s.length > 0)
       //  jq4gv(this.jqId+"_boardPoints").append(s);
-      return this;
+      //return this;
     },
 
     /**
@@ -288,6 +471,8 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       this.camera = new THREE.PerspectiveCamera(35, viewWidth / viewHeight, 1, 1000);
       this.camera.position.set(this.squareSize * 4, 120, 150);
       this.cameraController = new THREE.OrbitControls(this.camera, this.container);
+      this.cameraController.minPolarAngle = 0;
+      this.cameraController.maxPolarAngle = 80 * Math.PI/180;
       this.cameraController.center = new THREE.Vector3(this.squareSize * 4, 0, this.squareSize * 4);
       //
       this.scene.add(this.camera);
@@ -389,7 +574,6 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       this.scene.add(this.groundModel);
 
       function drawGrids() {
-        var gridSize = 4.3;
         var offset = 1.25;
 
         // https://github.com/mrdoob/three.js/wiki/Drawing-lines
@@ -405,14 +589,14 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
         for (var i = 0; i < 19; i++) {
           var material = i == 0 || i == 18 ? material2 : material1;
           var geometry1 = new THREE.Geometry();
-          geometry1.vertices.push(new THREE.Vector3(i * gridSize + offset, 0, offset));
-          geometry1.vertices.push(new THREE.Vector3(i * gridSize + offset, 0, 18 * gridSize + offset));
+          geometry1.vertices.push(new THREE.Vector3(i * GRID_SIZE + offset, 0, offset));
+          geometry1.vertices.push(new THREE.Vector3(i * GRID_SIZE + offset, 0, 18 * GRID_SIZE + offset));
           var line1 = new THREE.Line(geometry1, material);
           self.scene.add(line1);
 
           var geometry2 = new THREE.Geometry();
-          geometry2.vertices.push(new THREE.Vector3(offset, 0, i * gridSize + offset));
-          geometry2.vertices.push(new THREE.Vector3(18 * gridSize + offset, 0, i * gridSize + offset));
+          geometry2.vertices.push(new THREE.Vector3(offset, 0, i * GRID_SIZE + offset));
+          geometry2.vertices.push(new THREE.Vector3(18 * GRID_SIZE + offset, 0, i * GRID_SIZE + offset));
           var line2 = new THREE.Line(geometry2, material);
           self.scene.add(line2);
         }
@@ -422,7 +606,6 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
 
       function drawStars() {
         var starRadius = 0.5;
-        var gridSize = 4.3;
         var offset = 1.25;
         var material = new THREE.MeshBasicMaterial({
           color: 0x000000
@@ -434,9 +617,9 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
             var pointY = j * 6 + 3;
 
             var object = new THREE.Mesh(new THREE.CircleGeometry(starRadius, 32, 0, Math.PI * 2), material);
-            object.position.set(pointX * gridSize + offset, 0, pointY * gridSize + offset);
-            object.rotation.x = 90 * Math.PI / 180;
-            object.material.side = THREE.DoubleSide;
+            object.position.set(pointX * GRID_SIZE + offset, 0, pointY * GRID_SIZE + offset);
+            object.rotation.x = -90 * Math.PI / 180;
+            //object.material.side = THREE.DoubleSide;
             self.scene.add(object);
           }
         }
@@ -445,39 +628,42 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       drawStars();
 
       function drawLabels() {
-        var gridSize = 4.3;
         var offset = 1.25;
         for (var i=0; i<19; i++) {
-          var x = i * gridSize + offset / 2;
-          var y = 0;
-          var z = 19 * gridSize + offset - 1.2;
-          self.drawText(LABELS[i], x, y, z);
+          var x = i * GRID_SIZE + offset / 2;
+          var z = 19 * GRID_SIZE + offset - 1.2;
+          self.drawText(LABELS[i], {x: x, z: z});
         }
         for (var i=0; i<19; i++) {
           var x = -1.7;
-          var y = 0;
-          var z = i * gridSize + offset + .5;
+          var z = i * GRID_SIZE + offset + .5;
           var text = i + 1;
           if (text < 10) text = "  " + text;
 
-          self.drawText(text, x, y, z);
+          self.drawText(text, {x: x, z: z});
         }
       }
 
       drawLabels();
     },
 
-    drawText: function(text, x, y, z) {
+    drawText: function(text, options) {
+      var size = options.size || 1.5;
+      var color = options.color || 0x444444;
+      var x = options.x;
+      var y = options.y || 0;
+      var z = options.z;
+
       var shapes, geom, mat, mesh;
 
       shapes = THREE.FontUtils.generateShapes(text, {
         font: "helvetiker",
         //weight: "bold",
-        size: 1.5
+        size: size
       });
       geom = new THREE.ShapeGeometry(shapes);
       mat = new THREE.MeshBasicMaterial({
-        color: 0x444444
+        color: color
       });
       mesh = new THREE.Mesh(geom, mat);
       mesh.rotation.x = -90 * Math.PI / 180;
@@ -485,6 +671,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       mesh.position.y = y;
       mesh.position.z = z;
       this.scene.add(mesh);
+      return mesh;
     },
 
     /**
