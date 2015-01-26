@@ -520,7 +520,9 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
     initMaterials: function() {
       // board material
       this.materials.boardMaterial = new THREE.MeshLambertMaterial({
-        map: THREE.ImageUtils.loadTexture('3d_assets/square_light_texture.jpg')
+        //map: THREE.ImageUtils.loadTexture('3d_assets/square_light_texture.jpg')
+        //map: THREE.ImageUtils.loadTexture('3d_assets/board_texture1.jpg')
+        map: THREE.ImageUtils.loadTexture('3d_assets/board_texture2.jpg')
       });
 
       // ground material
@@ -631,11 +633,11 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
         var offset = 1.25;
         for (var i=0; i<19; i++) {
           var x = i * GRID_SIZE + offset / 2;
-          var z = 19 * GRID_SIZE + offset - 1.2;
+          var z = 19 * GRID_SIZE + offset - 1.8;
           self.drawText(LABELS[i], {x: x, z: z});
         }
         for (var i=0; i<19; i++) {
-          var x = -1.7;
+          var x = -1.9;
           var z = i * GRID_SIZE + offset + .5;
           var text = i + 1;
           if (text < 10) text = "  " + text;
