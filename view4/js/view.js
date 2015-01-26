@@ -111,8 +111,13 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
         color: color,
         pos: [row, col]
       };
-      this.board[row][col] = piece;
       this.addPiece(piece);
+    },
+
+    removeStone: function(row, col) {
+      var pieceObjGroup = this.board[row][col];
+      this.scene.remove(pieceObjGroup);
+      this.board[row][col] = null;
     },
 
     /**

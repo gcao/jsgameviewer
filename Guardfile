@@ -14,4 +14,5 @@ guard 'livereload' do
 end
 
 guard 'sass', :input => 'view2/css'
+guard 'sass', :input => 'view4/css'
 
