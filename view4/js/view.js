@@ -41,6 +41,13 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
 
   return {
     initView: function(){
+      jq4gv('.toolbar .backAll').click(this.backAll.bind(this));
+      jq4gv('.toolbar .backN').click(this.backN.bind(this));
+      jq4gv('.toolbar .back').click(this.back.bind(this));
+      jq4gv('.toolbar .forward').click(this.forward.bind(this));
+      jq4gv('.toolbar .forwardN').click(this.forwardN.bind(this));
+      jq4gv('.toolbar .forwardAll').click(this.forwardAll.bind(this));
+
       this.container = document.getElementById('container');
 
       /** @type THREE.WebGLRenderer */
@@ -102,6 +109,11 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
     },
 
     removeAllStones: function(){
+      for(var i=0; i<this.board.size; i++){
+        for(var j=0; j<this.board.size; j++){
+          this.removeStone(i, j);
+        }
+      }
       return this;
     },
 
@@ -121,11 +133,33 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       return this;
     },
 
+    forward: function() {
+    },
+
+    forwardN: function() {
+    },
+
     forwardAll: function(){
       if (this.gameState == null)
         return this;
       this.removeAllStones();
       this.gameState.forwardAll();
+      this.redrawBoard();
+      //this.setGameState();
+      return this;
+    },
+
+    back: function() {
+    },
+
+    backN: function() {
+    },
+
+    backAll: function() {
+      if (this.gameState == null)
+        return this;
+      this.removeAllStones();
+      this.gameState.backAll();
       this.redrawBoard();
       //this.setGameState();
       return this;
@@ -201,15 +235,19 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
      * @param {Object} piece The piece properties.
      */
     addPiece: function (piece) {
+      if (piece.color !== jsGameViewer.model.STONE_BLACK && piece.color !== jsGameViewer.model.STONE_WHITE) {
+        return;
+      }
+
       var pieceMesh = new THREE.Mesh(this.pieceGeometry);
       var pieceObjGroup = new THREE.Object3D();
-      //
-      if (piece.color === jsGameViewer.model.STONE_WHITE) {
-        pieceObjGroup.color = jsGameViewer.model.STONE_WHITE;
-        pieceMesh.material = this.materials.whitePieceMaterial;
-      } else {
+
+      if (piece.color === jsGameViewer.model.STONE_BLACK) {
         pieceObjGroup.color = jsGameViewer.model.STONE_BLACK;
         pieceMesh.material = this.materials.blackPieceMaterial;
+      } else {
+        pieceObjGroup.color = jsGameViewer.model.STONE_WHITE;
+        pieceMesh.material = this.materials.whitePieceMaterial;
       }
 
       pieceObjGroup.add(pieceMesh);
