@@ -47,13 +47,14 @@
     <script type="text/javascript" src="/js/model.js"></script>
     <script type="text/javascript" src="/js/parser.js"></script>
     <script type="text/javascript" src="/js/controller.js"></script>
-    <script src="js/three/three.js"></script>
-    <script src="js/three/OrbitControls.js"></script>
-    <script src="3d_assets/board.js"></script>
-    <script src="3d_assets/stone.js"></script>
-    <script src="js/view.js"></script>
+    <script type="text/javascript" src="js/three/three.js"></script>
+    <script type="text/javascript" src="js/three/OrbitControls.js"></script>
+    <script type="text/javascript" src="fonts/helvetiker_regular.typeface.js"></script>
+    <script type="text/javascript" src="3d_assets/board.js"></script>
+    <script type="text/javascript" src="3d_assets/stone.js"></script>
+    <script type="text/javascript" src="js/view.js"></script>
     <script type="text/javascript">
-      var controller = new jsGameViewer.GameController({container: 'container'})
+      var cc = controller = new jsGameViewer.GameController({container: 'container'})
       controller.load('/examples/games/test2.sgf');
       <%#controller.init();%>
       <%#setTimeout(function() {%>

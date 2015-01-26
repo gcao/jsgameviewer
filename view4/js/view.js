@@ -5,6 +5,8 @@ jq4gv.extend(jsGameViewer.CONFIG, {
 });
 
 jq4gv.extend(jsGameViewer.GameController.prototype, function(){
+  var LABELS = ['A','B','C','D','E','F','G','H','J','K','L','M','N','O','P','Q','R','S','T'];
+
   // http://learningthreejs.com/data/THREEx/docs/THREEx.GeometryUtils.html
   /**
    * Change the scale of a geometry
@@ -33,8 +35,8 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
   function boardToWorld(pos) {
     var adjustment = 4.25;
     var offset = -2.55;
-    var x = (1 + pos[1]) * adjustment + offset;
-    var z = (1 + pos[0]) * adjustment + offset;
+    var x = (1 + pos[0]) * adjustment + offset;
+    var z = (19 - pos[1]) * adjustment + offset;
 
     return new THREE.Vector3(x, 0.6, z);
   }
@@ -441,6 +443,48 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       }
 
       drawStars();
+
+      function drawLabels() {
+        var gridSize = 4.3;
+        var offset = 1.25;
+        for (var i=0; i<19; i++) {
+          var x = i * gridSize + offset / 2;
+          var y = 0;
+          var z = 19 * gridSize + offset - 1.2;
+          self.drawText(LABELS[i], x, y, z);
+        }
+        for (var i=0; i<19; i++) {
+          var x = -1.7;
+          var y = 0;
+          var z = i * gridSize + offset + .5;
+          var text = i + 1;
+          if (text < 10) text = "  " + text;
+
+          self.drawText(text, x, y, z);
+        }
+      }
+
+      drawLabels();
+    },
+
+    drawText: function(text, x, y, z) {
+      var shapes, geom, mat, mesh;
+
+      shapes = THREE.FontUtils.generateShapes(text, {
+        font: "helvetiker",
+        //weight: "bold",
+        size: 1.5
+      });
+      geom = new THREE.ShapeGeometry(shapes);
+      mat = new THREE.MeshBasicMaterial({
+        color: 0x444444
+      });
+      mesh = new THREE.Mesh(geom, mat);
+      mesh.rotation.x = -90 * Math.PI / 180;
+      mesh.position.x = x;
+      mesh.position.y = y;
+      mesh.position.z = z;
+      this.scene.add(mesh);
     },
 
     /**
