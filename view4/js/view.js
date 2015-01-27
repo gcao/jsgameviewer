@@ -44,13 +44,10 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
   };
 
   var MOVE_MARK = {
+    color: 0xcc0000,
     size: 0.6,
     y: 1.08
   }
-
-  var MOVE_MARK_MATERILAL = new THREE.MeshBasicMaterial({
-    color: 0xcc0000
-  });
 
   // http://learningthreejs.com/data/THREEx/docs/THREEx.GeometryUtils.html
   /**
@@ -169,7 +166,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       this.removeMoveMark();
 
       var p = boardToWorld(i, j);
-      this.moveMark = new THREE.Mesh(new THREE.CircleGeometry(MOVE_MARK.size, 32, 0, Math.PI * 2), MOVE_MARK_MATERILAL);
+      this.moveMark = new THREE.Mesh(new THREE.CircleGeometry(MOVE_MARK.size, 32, 0, Math.PI * 2), this.materials.moveMarkMaterial);
       this.moveMark.position.set(p.x, MOVE_MARK.y, p.z);
       this.moveMark.rotation.x = -90 * Math.PI / 180;
       this.scene.add(this.moveMark);
@@ -498,7 +495,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       this.camera.position.set(CAMERA.x, CAMERA.y, CAMERA.z);
       this.cameraController = new THREE.OrbitControls(this.camera, this.container);
       this.cameraController.minPolarAngle = 0;
-      this.cameraController.maxPolarAngle = 80 * Math.PI/180;
+      this.cameraController.maxPolarAngle = 89 * Math.PI/180;
       this.cameraController.center = new THREE.Vector3(BOARD.centerX, BOARD.centerY, BOARD.centerZ);
       //
       this.scene.add(this.camera);
@@ -517,12 +514,14 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
 
       // white's side light
       this.lights.whiteSideLight = new THREE.SpotLight();
+      this.lights.whiteSideLight.target.position.set(BOARD.centerZ, BOARD.centerY, BOARD.centerZ);
       this.lights.whiteSideLight.position.set(BOARD.centerX, 100, BOARD.centerZ + 200);
       this.lights.whiteSideLight.intensity = 0.8;
       this.lights.whiteSideLight.shadowCameraFov = 55;
 
       // black's side light
       this.lights.blackSideLight = new THREE.SpotLight();
+      this.lights.blackSideLight.target.position.set(BOARD.centerZ, BOARD.centerY, BOARD.centerZ);
       this.lights.blackSideLight.position.set(BOARD.centerX, 100, BOARD.centerZ - 200);
       this.lights.blackSideLight.intensity = 0.8;
       this.lights.blackSideLight.shadowCameraFov = 55;
@@ -579,6 +578,10 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       this.materials.pieceShadowPlane = new THREE.MeshBasicMaterial({
         transparent: true,
         map: THREE.ImageUtils.loadTexture('3d_assets/piece_shadow.png')
+      });
+
+      this.materials.moveMarkMaterial = new THREE.MeshBasicMaterial({
+        color: MOVE_MARK.color
       });
     },
 
@@ -763,18 +766,40 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
 
     calibrate: function(){
       var self = this;
+      var lineMaterial = new THREE.LineBasicMaterial({
+        color: 0xcc0000,
+        linewidth: 1
+      });
       function drawPoint(x, y, z) {
-        var object = new THREE.Mesh(new THREE.CircleGeometry(0.2, 32, 0, Math.PI * 2), MOVE_MARK_MATERILAL);
+        var object = new THREE.Mesh(new THREE.CircleGeometry(0.2, 32, 0, Math.PI * 2), this.materials.moveMarkMaterial);
+        if (arguments.length === 1) {
+          y = x.y;
+          z = x.z;
+          x = x.x;
+        }
+        console.log("Point(" + x + ", " + y + ", " + z + ")");
+        object.position.set(x);
         object.position.set(x, y, z);
         object.rotation.x = -90 * Math.PI / 180;
         object.material.side = THREE.DoubleSide;
         self.scene.add(object);
       }
       function drawLine(x1, y1, z1, x2, y2, z2) {
+        if (arguments.length === 1) { // only one arg is passed
+          y1 = x1.y;
+          z1 = x1.z;
+          x1 = x1.x;
+        }
+        if (arguments.length <= 3) { // only first point's position is passed in
+          x2 = x1;
+          y2 = 0;
+          z2 = z1;
+        }
+        console.log("Line: (" + x1 + ", " + y1 + ", " + z1 + ") - (" + x2 + ", " + y2 + ", " + z2 + ")");
         var geometry = new THREE.Geometry();
         geometry.vertices.push(new THREE.Vector3(x1, y1, z1));
         geometry.vertices.push(new THREE.Vector3(x2, y2, z2));
-        var line = new THREE.Line(geometry, MOVE_MARK_MATERILAL);
+        var line = new THREE.Line(geometry, lineMaterial);
         self.scene.add(line);
       }
       var boardX = -2;
@@ -785,6 +810,10 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       drawPoint(boardX + boardSize, boardY, boardZ);
       drawPoint(boardX, boardY, boardZ + boardSize);
       drawPoint(boardX + boardSize, boardY, boardZ + boardSize);
+
+      drawLine(this.lights.topLight.position);
+      drawLine(this.lights.blackSideLight.position);
+      drawLine(this.lights.whiteSideLight.position);
     }
 
   };
