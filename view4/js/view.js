@@ -37,6 +37,12 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
     z: 130
   }
 
+  var CAMERA_TOPVIEW = {
+    x: BOARD.centerX,
+    y: 160,
+    z: BOARD.centerZ,
+  }
+
   var STONE = {
     scale: 6.1,
     shadowSize: 4.55,
@@ -83,10 +89,17 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
 
   return {
     initView: function(){
-      jq4gv('.toolbar .refresh').click(this.refresh.bind(this));
+      var self = this;
+      jq4gv('.toolbar .angledView').click(function() {
+        self.setCameraPos(CAMERA);
+      });
+      jq4gv('.toolbar .topView').click(function() {
+        self.setCameraPos(CAMERA_TOPVIEW);
+      });
       jq4gv('.toolbar .backAll').click(this.backAll.bind(this));
       jq4gv('.toolbar .backN').click(this.backN.bind(this));
       jq4gv('.toolbar .back').click(this.back.bind(this));
+      jq4gv('.toolbar .jumpTo').click(this.jumpTo.bind(this));
       jq4gv('.toolbar .forward').click(this.forward.bind(this));
       jq4gv('.toolbar .forwardN').click(this.forwardN.bind(this));
       jq4gv('.toolbar .forwardAll').click(this.forwardAll.bind(this));
@@ -376,11 +389,28 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       //return this;
     },
 
-    /**
-     * Refresh view - reset camera position etc
-     */
-    refresh: function() {
-      this.camera.position.set(CAMERA.x, CAMERA.y, CAMERA.z);
+    jumpTo: function() {
+      var s = prompt("Please enter the move number: ");
+      var n = parseInt(s);
+      if (n === NaN || n < 0) {
+        alert("Not a valid move");
+        return;
+      }
+
+      if (n == 0) {
+        this.backAll();
+      } else if (n < this.gameState.currentNode.moveNumber) {
+        this.backN(this.gameState.currentNode.moveNumber - n);
+      } else if (n > this.gameState.currentNode.moveNumber) {
+        this.forwardN(n - this.gameState.currentNode.moveNumber);
+      } else {
+        alert("You are already at move " + n);
+      }
+    },
+
+    setCameraPos: function(pos) {
+      pos = pos || CAMERA;
+      this.camera.position.set(pos.x, pos.y, pos.z);
     },
 
     redrawBoard: function(){
@@ -742,9 +772,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       });
       mesh = new THREE.Mesh(geom, mat);
       mesh.rotation.x = -90 * Math.PI / 180;
-      mesh.position.x = x;
-      mesh.position.y = y;
-      mesh.position.z = z;
+      mesh.position.set(x, y, z);
       this.scene.add(mesh);
       return mesh;
     },
@@ -778,7 +806,6 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
           x = x.x;
         }
         console.log("Point(" + x + ", " + y + ", " + z + ")");
-        object.position.set(x);
         object.position.set(x, y, z);
         object.rotation.x = -90 * Math.PI / 180;
         object.material.side = THREE.DoubleSide;
