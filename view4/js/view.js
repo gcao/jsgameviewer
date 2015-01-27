@@ -15,6 +15,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
     height: 84,
     thickness: 4,
     grid: 4,
+    border: 3.5, // Border thickness
     x: -2,
     y: 0,
     z: -2,
@@ -138,7 +139,6 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       }
 
       this.drawBoard();
-      if (this.config.showCalibrate) this.calibrate();
     },
 
     /* reset view to beginning of a game
@@ -379,6 +379,13 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       //return this;
     },
 
+    /**
+     * Refresh view - reset camera position etc
+     */
+    refresh: function() {
+      this.camera.position.set(CAMERA.x, CAMERA.y, CAMERA.z);
+    },
+
     redrawBoard: function(){
       //var _this = this;
       var board = this.gameState.board;
@@ -419,23 +426,6 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       //return this;
     },
 
-    /**
-     * Draws the board.
-     */
-    drawBoard: function () {
-      this.initEngine();
-      this.initLights();
-      this.initMaterials();
-      this.initObjects();
-      this.onAnimationFrame();
-    },
-
-    removeStone: function(row, col) {
-      var pieceObjGroup = this.boardView[row][col];
-      this.scene.remove(pieceObjGroup);
-      this.boardView[row][col] = null;
-    },
-
     addStone: function (row, col, color) {
       if (color !== jsGameViewer.model.STONE_BLACK && color !== jsGameViewer.model.STONE_WHITE) {
         return;
@@ -469,6 +459,24 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       this.scene.add(pieceObjGroup);
     },
 
+    removeStone: function(row, col) {
+      var pieceObjGroup = this.boardView[row][col];
+      this.scene.remove(pieceObjGroup);
+      this.boardView[row][col] = null;
+    },
+
+    /**
+     * Draws the board.
+     */
+    drawBoard: function () {
+      this.initEngine();
+      this.initLights();
+      this.initMaterials();
+      this.initObjects();
+      if (this.config.showCalibrate) this.calibrate();
+      this.onAnimationFrame();
+    },
+
     /**
      * Initialize some basic 3D engine elements.
      */
@@ -496,13 +504,6 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       this.scene.add(this.camera);
 
       this.container.appendChild(this.renderer.domElement);
-    },
-
-    /**
-     * Refresh view - reset camera position etc
-     */
-    refresh: function() {
-      this.camera.position.set(CAMERA.x, CAMERA.y, CAMERA.z);
     },
 
     /**
@@ -584,7 +585,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
     /**
      * Initialize the objects.
      */
-    initObjects: function(callback) {
+    initObjects: function() {
       var self = this;
 
       // load board
@@ -617,7 +618,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
         });
         var material2 = new THREE.LineBasicMaterial({
           color: 0x000000,
-          linewidth: 4
+          linewidth: BOARD.border
         });
 
         for (var i = 0; i < 19; i++) {
@@ -745,6 +746,21 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       return mesh;
     },
 
+    /**
+     * The render loop.
+     */
+    onAnimationFrame: function() {
+      requestAnimationFrame(this.onAnimationFrame.bind(this));
+
+      this.cameraController.update();
+
+      // update moving light position
+      this.lights.movingLight.position.x = this.camera.position.x;
+      this.lights.movingLight.position.z = this.camera.position.z;
+
+      this.renderer.render(this.scene, this.camera);
+    },
+
     calibrate: function(){
       var self = this;
       function drawPoint(x, y, z) {
@@ -769,21 +785,6 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       drawPoint(boardX + boardSize, boardY, boardZ);
       drawPoint(boardX, boardY, boardZ + boardSize);
       drawPoint(boardX + boardSize, boardY, boardZ + boardSize);
-    },
-
-    /**
-     * The render loop.
-     */
-    onAnimationFrame: function() {
-      requestAnimationFrame(this.onAnimationFrame.bind(this));
-
-      this.cameraController.update();
-
-      // update moving light position
-      this.lights.movingLight.position.x = this.camera.position.x;
-      this.lights.movingLight.position.z = this.camera.position.z;
-
-      this.renderer.render(this.scene, this.camera);
     }
 
   };
