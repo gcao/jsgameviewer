@@ -22,6 +22,29 @@ body {
   text-align: center; }
   .toolbar .tb-item {
     display: inline-block; }
+  .toolbar .jumpTo {
+    background-image: url(/view/images/base.png);
+    background-repeat: no-repeat;
+    height: 35px;
+    min-width: 35px;
+    vertical-align: top; }
+    .toolbar .jumpTo div {
+      color: #3288c6;
+      margin-top: 9px;
+      margin-left: -1px; }
+
+.info {
+  width: 100%;
+  text-align: center;
+  vertical-align: middle; }
+  .info div {
+    display: inline-block;
+    padding: 0 5px; }
+
+.comment {
+  width: 100%;
+  margin-top: 3px;
+  text-align: center; }
 
 /* Image sprite */
 .sprite-15-black {
