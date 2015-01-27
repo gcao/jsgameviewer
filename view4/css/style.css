@@ -38,8 +38,13 @@ body {
   text-align: center;
   vertical-align: middle; }
   .info div {
-    display: inline-block;
+    display: inline-block; }
+  .info > div {
     padding: 0 5px; }
+  .info .player-images {
+    padding: 0; }
+    .info .player-images .vs {
+      vertical-align: top; }
 
 .comment {
   width: 100%;

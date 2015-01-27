@@ -18,7 +18,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
     border: 3.5, // Border thickness
     x: -2,
     y: 0,
-    z: -2,
+    z: -2 + 5,
     markY: 0.01
   };
 
