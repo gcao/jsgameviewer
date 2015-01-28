@@ -4,58 +4,37 @@
     <link rel="stylesheet" type="text/css" href="css/style.css" />
   </head>
   <body>
-    <div class="gameviewer">
-      <div class="toolbar">
-        <div class="tb-item angledView"><a class="toggle-opacity " href="javascript: void(0)"><img class="angled-view" src="/view/images/default.gif"></a></div>
-        <div class="tb-item topView"><a class="toggle-opacity " href="javascript: void(0)"><img class="top-view" src="/view/images/default.gif"></a></div>
-        <%#<div class="tb-item toggleNumber"><a class="toggle-opacity " href="javascript: void(0)" title="显示/隐藏手数"><img class="sprite-shownumber" src="/view/images/default.gif"></a></div>%>
-        <div class="tb-item backAll"><a class="toggle-opacity " href="javascript: void(0)"><img class="sprite-backall" src="/view/images/default.gif"></a></div>
-        <div class="tb-item backN"><a class="toggle-opacity " href="javascript: void(0)"><img class="sprite-backn" src="/view/images/default.gif"></a></div>
-        <div class="tb-item back"><a class="toggle-opacity " href="javascript: void(0)"><img class="sprite-back" src="/view/images/default.gif"></a></div>
-        <div class="tb-item jumpTo"><div class="move-number">208</div></div>
-        <div class="tb-item forward"><a class="toggle-opacity " href="javascript: void(0)"><img class="sprite-forward" src="/view/images/default.gif"></a></div>
-        <div class="tb-item forwardN"><a class="toggle-opacity " href="javascript: void(0)"><img class="sprite-forwardn" src="/view/images/default.gif"></a></div>
-        <div class="tb-item forwardAll"><a class="toggle-opacity " href="javascript: void(0)"><img class="sprite-forwardall" src="/view/images/default.gif"></a></div>
-        <%#<div class="branches"></div>%>
+    <%#
+    <div class='gameviewer'>
+      <div class='toolbar'>
+        <div class='tb-item angledView'><a class='toggle-opacity ' href='javascript: void(0)'><img class='angled-view' src='/view/images/default.gif'></a></div>
+        <div class='tb-item topView'><a class='toggle-opacity ' href='javascript: void(0)'><img class='top-view' src='/view/images/default.gif'></a></div>
+        <div class='tb-item backAll'><a class='toggle-opacity ' href='javascript: void(0)'><img class='sprite-backall' src='/view/images/default.gif'></a></div>
+        <div class='tb-item backN'><a class='toggle-opacity ' href='javascript: void(0)'><img class='sprite-backn' src='/view/images/default.gif'></a></div>
+        <div class='tb-item back'><a class='toggle-opacity ' href='javascript: void(0)'><img class='sprite-back' src='/view/images/default.gif'></a></div>
+        <div class='tb-item jumpTo'><div class='move-number'>0</div></div>
+        <div class='tb-item forward'><a class='toggle-opacity ' href='javascript: void(0)'><img class='sprite-forward' src='/view/images/default.gif'></a></div>
+        <div class='tb-item forwardN'><a class='toggle-opacity ' href='javascript: void(0)'><img class='sprite-forwardn' src='/view/images/default.gif'></a></div>
+        <div class='tb-item forwardAll'><a class='toggle-opacity ' href='javascript: void(0)'><img class='sprite-forwardall' src='/view/images/default.gif'></a></div>
       </div>
-      <%#<div class="banner">%>
-      <%#  <div class="banner-overlay"></div>%>
-      <%#  <div class="banner-left"><a class="localization " href="javascript:void(0)">中文</a> | <a class="localization " href="javascript:void(0)">EN</a>&nbsp;&nbsp;下一手&nbsp;<img class="next-player" src="/view//images/15/black.gif"></div>%>
-      <%#  <div class="button move-number-outer"><a class="thickbox" href="#TB_inline?test=0&amp;width=250&amp;height=56&amp;inlineId=1_goTo&amp;focus=1_goToInput&amp;modal=true&amp;test1=0" title="跳到第XX手 [Alt Shift G]">&nbsp;<span class="control-text move-number ">0</span>&nbsp;</a></div>%>
-      <%#  <div class="banner-overlay">%>
-      <%#    <div class="prisoners-outer ">%>
-      <%#      <div class="prisoners black"><span class="button"><a href="javascript: void(0)"><img class="prisoners" src="/view/images/15/black_dead.gif">&nbsp;&nbsp;<span class="control-text black_PRISONERS">0</span></a></span></div>%>
-      <%#      <div class="prisoners white"><span class="button"><a href="javascript: void(0)"><img class="prisoners" src="/view/images/15/white_dead.gif">&nbsp;&nbsp;<span class="control-text white_PRISONERS">0</span></a></span></div>%>
-      <%#    </div>%>
-      <%#    <div class="open-window-outer"><a title="在新窗口打开 [Alt Shift W]" href="javascript: void(0)"><img class="sprite-newwindow" src="/view/images/default.gif"></a></div>%>
-      <%#  </div>%>
-      <%#</div>%>
-      <%#<div class="right-pane ">%>
-      <%#  <div class="info">%>
-      <%#    <div style="text-align:center;font-weight:bold;margin-bottom:5px;">Copyright goproblems.com</div>%>
-      <%#    <div>时间: 1999-07-21</div>%>
-      <%#    <div>黑方: <strong>Black</strong></div>%>
-      <%#    <div>白方: <strong>White</strong></div>%>
-      <%#    <div>手数: 4</div>%>
-      <%#    <div>结果: </div>%>
-      <%#  </div>%>
-      <%#  <div class="comment"><strong>第0手评论:</strong><br></div>%>
-      <%#</div>%>
-      <div class="info">
-        <div>1999-07-21</div>
-        <div>Copyright goproblems.com</div>
-        <div>White</div>
-        <div class="player-images">
-          <div class="white"><img src="/view/images/15/white.gif"/></div>
-          <div class="vs">-</div>
-          <div class="black"><img src="/view/images/15/black.gif"/></div>
+      <div class='info'>
+        <div class='time'></div>
+        <div class='name'></div>
+        <div class='white-player'></div>
+        <div class='player-images'>
+          <div class='white'><img src='/view/images/15/white.gif'/></div>
+          <div class='vs'>-</div>
+          <div class='black'><img src='/view/images/15/black.gif'/></div>
         </div>
-        <div>Black</div>
-        <div><span>B+</span> after <span>290</span> moves</div>
+        <div class='black-player'></div>
+        <div><span class='result'>B+</span> after <span class='moves'>290</span> moves</div>
       </div>
-      <div class="comment">This is a good move!</div>
-      <div id="container"></div>
+      <div class='comment-container' align='center'>
+        <div class='comment'></div>
+      </div>
+      <div class='board'></div>
     </div>
+    %>
     <script type="text/javascript" src="/js/jquery-1.3.2.min.js"></script>
     <script type="text/javascript" src="/js/zh_cn.js"></script>
     <script type="text/javascript" src="/js/base.js"></script>
@@ -69,7 +48,7 @@
     <script type="text/javascript" src="3d_assets/stone.js"></script>
     <script type="text/javascript" src="js/view.js"></script>
     <script type="text/javascript">
-      var cc = controller = new jsGameViewer.GameController({container: 'container'})
+      var cc = controller = new jsGameViewer.GameController();
 
       var game = getQueryVariable('game') || '/examples/games/danghu1.sgf';
 

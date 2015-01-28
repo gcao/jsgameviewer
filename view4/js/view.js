@@ -10,6 +10,38 @@ jq4gv.extend(jsGameViewer.CONFIG, {
 jq4gv.extend(jsGameViewer.GameController.prototype, function(){
   var LABELS = ['A','B','C','D','E','F','G','H','J','K','L','M','N','O','P','Q','R','S','T'];
 
+  var VIEW = "\
+    <div class='gameviewer'>\
+      <div class='toolbar'>\
+        <div class='tb-item angledView'><a class='toggle-opacity ' href='javascript: void(0)'><img class='angled-view' src='/view/images/default.gif'></a></div>\
+        <div class='tb-item topView'><a class='toggle-opacity ' href='javascript: void(0)'><img class='top-view' src='/view/images/default.gif'></a></div>\
+        <div class='tb-item backAll'><a class='toggle-opacity ' href='javascript: void(0)'><img class='sprite-backall' src='/view/images/default.gif'></a></div>\
+        <div class='tb-item backN'><a class='toggle-opacity ' href='javascript: void(0)'><img class='sprite-backn' src='/view/images/default.gif'></a></div>\
+        <div class='tb-item back'><a class='toggle-opacity ' href='javascript: void(0)'><img class='sprite-back' src='/view/images/default.gif'></a></div>\
+        <div class='tb-item jumpTo'><div class='move-number'>0</div></div>\
+        <div class='tb-item forward'><a class='toggle-opacity ' href='javascript: void(0)'><img class='sprite-forward' src='/view/images/default.gif'></a></div>\
+        <div class='tb-item forwardN'><a class='toggle-opacity ' href='javascript: void(0)'><img class='sprite-forwardn' src='/view/images/default.gif'></a></div>\
+        <div class='tb-item forwardAll'><a class='toggle-opacity ' href='javascript: void(0)'><img class='sprite-forwardall' src='/view/images/default.gif'></a></div>\
+      </div>\
+      <div class='info'>\
+        <div class='time'></div>\
+        <div class='name'></div>\
+        <div class='white-player'></div>\
+        <div class='player-images'>\
+          <div class='white'><img src='/view/images/15/white.gif'/></div>\
+          <div class='vs'>-</div>\
+          <div class='black'><img src='/view/images/15/black.gif'/></div>\
+        </div>\
+        <div class='black-player'></div>\
+        <div><span class='result'>B+</span> after <span class='moves'>290</span> moves</div>\
+      </div>\
+      <div class='comment-container' align='center'>\
+        <div class='comment'></div>\
+      </div>\
+      <div class='board'></div>\
+    </div>\
+  "
+
   var BOARD = {
     width: 84,
     height: 84,
@@ -90,12 +122,12 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
   return {
     initView: function(){
       var self = this;
-      jq4gv('.toolbar .angledView').click(function() {
-        self.setCameraPos(CAMERA);
-      });
-      jq4gv('.toolbar .topView').click(function() {
-        self.setCameraPos(CAMERA_TOPVIEW);
-      });
+      this.container = jq4gv(this.jqId);
+      this.container.empty().append(VIEW);
+      this.boardContainer = this.container.find('.board').get(0);
+
+      jq4gv('.toolbar .angledView').click(function(){ self.setCameraPos(CAMERA); });
+      jq4gv('.toolbar .topView').click(function(){ self.setCameraPos(CAMERA_TOPVIEW); });
       jq4gv('.toolbar .backAll').click(this.backAll.bind(this));
       jq4gv('.toolbar .backN').click(this.backN.bind(this));
       jq4gv('.toolbar .back').click(this.back.bind(this));
@@ -103,8 +135,6 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       jq4gv('.toolbar .forward').click(this.forward.bind(this));
       jq4gv('.toolbar .forwardN').click(this.forwardN.bind(this));
       jq4gv('.toolbar .forwardAll').click(this.forwardAll.bind(this));
-
-      this.container = document.getElementById('container');
 
       /** @type THREE.WebGLRenderer */
       this.renderer = null;
@@ -137,14 +167,14 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       this.moveMark = null;
 
       /**
-       * The board representation.
+       * The stones cache
        * @type Array
        */
-      this.boardView = [];
+      this.stonesCache = [];
       for (var i = 0; i < 19; i++) {
-        this.boardView[i] = [];
+        this.stonesCache[i] = [];
         for (var j = 0; j < 19; j++) {
-          this.boardView[i][j] = 0;
+          this.stonesCache[i][j] = 0;
         }
       }
 
@@ -155,7 +185,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
      */
     initGame: function(){
       this.removeAllStones();
-      //this.setGameInfo();
+      this.setGameInfo();
       this.setGameState();
       this.addRemoveStones(this.gameState.currentNode.points);
     },
@@ -175,10 +205,61 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       //return this;
     },
 
+    setGameInfo: function(){
+      //// show/hide resign button
+      //if (this.isMyTurn() && !this.game.isFinished()){
+      //  jq4gv(this.jqId + "_resign").show();
+      //} else {
+      //  jq4gv(this.jqId + "_resign").hide();
+      //}
+      //var infoNode = jq4gv(this.jqId + "_info").empty();
+      //var game = this.game;
+      //if (game == undefined || game == null)
+      //  return this;
+      //if (jsGameViewer.notNull(game.name)){
+      //  infoNode.append("<div align='center' style='font-weight:bold'>"+jq4gv.trim(game.name)+"</div>");
+      //}
+      //if (jsGameViewer.notNull(game.date)){
+      //  infoNode.append("<div>"+jsgvTranslations['time']+": "+jq4gv.trim(game.date)+"</div>");
+      //}
+      //if (jsGameViewer.notNull(game.place)){
+      //  infoNode.append("<div>"+jsgvTranslations['place']+": "+jq4gv.trim(game.place)+"</div>");
+      //}
+      //var playFirst = "&nbsp;&#8592; "+jsgvTranslations['play_first'];
+      //// black player name + rank
+      //var blackRank = "";
+      //if (jsGameViewer.notNull(game.blackRank))
+      //  blackRank = "&nbsp;("+game.blackRank+")";
+      //var blackPlayer = "<div>"+jsgvTranslations['black']+": <strong>"+jq4gv.trim(game.blackName)+"</strong>"+blackRank;
+      //if (game.getFirstPlayer() == jsGameViewer.model.STONE_BLACK)
+      //  blackPlayer += playFirst;
+      //blackPlayer += "</div>";
+      //infoNode.append(blackPlayer);
+      //// white player name + rank
+      //var whiteRank = "";
+      //if (jsGameViewer.notNull(game.whiteRank))
+      //  whiteRank = "&nbsp;("+game.whiteRank+")";
+      //var whitePlayer = "<div>"+jsgvTranslations['white']+": <strong>"+jq4gv.trim(game.whiteName)+"</strong>"+whiteRank;
+      //if (game.getFirstPlayer() == jsGameViewer.model.STONE_WHITE)
+      //  whitePlayer += playFirst;
+      //whitePlayer += "</div>";
+      //infoNode.append(whitePlayer);
+      //if (game.handicap > 0){
+      //  infoNode.append("<div>"+jsgvTranslations['handicap']+": "+game.handicap+"</div>");
+      //} else {
+      //  infoNode.append("<div>"+jsgvTranslations['rule']+": "+jq4gv.trim(game.rule)+"</div>");
+      //  infoNode.append("<div>"+jsgvTranslations['komi']+": "+game.komi+"</div>");
+      //}
+      //infoNode.append("<div>"+jsgvTranslations['moves']+": "+game.getMoves()+"</div>");
+      //infoNode.append("<div>"+jsgvTranslations['result']+": "+jq4gv.trim(game.result)+"</div>");
+      //return this;
+    },
+
+
     setMoveNumber: function(moveNumber){
       if (moveNumber == 0)
         moveNumber = "0";
-      jq4gv(".move-number").empty().append(moveNumber);
+      this.container.find(".move-number").empty().append(moveNumber);
       //return this;
     },
 
@@ -218,14 +299,17 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
 
     setComment: function(comment){
       var node = this.gameState.currentNode;
-      //if (!comment){
-      //  comment = "<strong>";
-      //  if (node.depth > 1)
-      //    comment += jsgvTranslations['branch_tag'];
-      //  comment += jsgvTranslations['comment_for'].replace(/MOVE/,node.moveNumber)+":</strong>";
-      //  if (node.comment != undefined && node.comment != null)
-      //    comment += "<br/>"+node.comment.replace(/\n/g, "<br/>\n");
-      //}
+      if (!comment && node.comment){
+        comment = "<strong>";
+        //if (node.depth > 1)
+        //  comment += jsgvTranslations['branch_tag'];
+        comment += jsgvTranslations['comment_for'].replace(/MOVE/,node.moveNumber)+":</strong> ";
+        comment += node.comment.replace(/\n/g, "<br/>\n");
+      }
+      var commentContainer = this.container.find('.comment-container');
+      commentContainer.empty();
+      if (comment)
+        commentContainer.append("<div class='comment'>" + comment + "</div>");
       //jq4gv(this.jqId+"_comment").empty().append(comment);
       //jq4gv(this.jqId+"_comment").height(this.rightPaneHeight - jq4gv(this.jqId+"_info").height()-12);
       //return this;
@@ -473,6 +557,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
     },
 
     addStone: function (row, col, color) {
+      return
       if (color !== jsGameViewer.model.STONE_BLACK && color !== jsGameViewer.model.STONE_WHITE) {
         return;
       }
@@ -500,15 +585,15 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       pieceObjGroup.position = boardToWorld(row, col);
       pieceObjGroup.position.y = STONE.y;
 
-      this.boardView[row][col] = pieceObjGroup;
+      this.stonesCache[row][col] = pieceObjGroup;
 
       this.scene.add(pieceObjGroup);
     },
 
     removeStone: function(row, col) {
-      var pieceObjGroup = this.boardView[row][col];
+      var pieceObjGroup = this.stonesCache[row][col];
       this.scene.remove(pieceObjGroup);
-      this.boardView[row][col] = null;
+      this.stonesCache[row][col] = null;
     },
 
     /**
@@ -518,7 +603,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       this.initEngine();
       this.initLights();
       this.initMaterials();
-      this.initObjects();
+      //this.initObjects();
       if (this.config.showCalibrate) this.calibrate();
       this.onAnimationFrame();
     },
@@ -527,8 +612,8 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
      * Initialize some basic 3D engine elements.
      */
     initEngine: function() {
-      var viewWidth = this.container.offsetWidth;
-      var viewHeight = this.container.offsetHeight;
+      var viewWidth = this.boardContainer.offsetWidth;
+      var viewHeight = this.boardContainer.offsetHeight;
 
       // instantiate the WebGL Renderer
       this.renderer = new THREE.WebGLRenderer({
@@ -542,14 +627,14 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       // create camera
       this.camera = new THREE.PerspectiveCamera(35, viewWidth / viewHeight, 1, 1000);
       this.camera.position.set(CAMERA.x, CAMERA.y, CAMERA.z);
-      this.cameraController = new THREE.OrbitControls(this.camera, this.container);
+      this.cameraController = new THREE.OrbitControls(this.camera, this.boardContainer);
       this.cameraController.minPolarAngle = 0;
       this.cameraController.maxPolarAngle = 89 * Math.PI/180;
       this.cameraController.center = new THREE.Vector3(BOARD.centerX, BOARD.centerY, BOARD.centerZ);
       //
       this.scene.add(this.camera);
 
-      this.container.appendChild(this.renderer.domElement);
+      this.boardContainer.appendChild(this.renderer.domElement);
     },
 
     /**
