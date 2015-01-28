@@ -33,7 +33,8 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
           <div class='black'><img src='/view/images/15/black.gif'/></div>\
         </div>\
         <div class='black-player'></div>\
-        <div><span class='result'>B+</span> after <span class='moves'>290</span> moves</div>\
+        <div class='result'></div>\
+        <div class='moves'></div>\
       </div>\
       <div class='comment-container' align='center'>\
         <div class='comment'></div>\
@@ -213,15 +214,17 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       //  jq4gv(this.jqId + "_resign").hide();
       //}
       //var infoNode = jq4gv(this.jqId + "_info").empty();
-      //var game = this.game;
-      //if (game == undefined || game == null)
-      //  return this;
-      //if (jsGameViewer.notNull(game.name)){
+      var game = this.game;
+      if (game == undefined || game == null)
+        return this;
+      if (jsGameViewer.notNull(game.name)){
+        this.container.find('.name').empty().append(jq4gv.trim(game.name));
       //  infoNode.append("<div align='center' style='font-weight:bold'>"+jq4gv.trim(game.name)+"</div>");
-      //}
-      //if (jsGameViewer.notNull(game.date)){
+      }
+      if (jsGameViewer.notNull(game.date)){
+        this.container.find('.time').empty().append(jq4gv.trim(game.date));
       //  infoNode.append("<div>"+jsgvTranslations['time']+": "+jq4gv.trim(game.date)+"</div>");
-      //}
+      }
       //if (jsGameViewer.notNull(game.place)){
       //  infoNode.append("<div>"+jsgvTranslations['place']+": "+jq4gv.trim(game.place)+"</div>");
       //}
@@ -244,6 +247,16 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       //  whitePlayer += playFirst;
       //whitePlayer += "</div>";
       //infoNode.append(whitePlayer);
+      var blackRank = "";
+      if (jsGameViewer.notNull(game.blackRank))
+        blackRank = "&nbsp;("+game.blackRank+")";
+      var blackPlayer = "<strong>"+jq4gv.trim(game.blackName)+"</strong>"+blackRank;
+      this.container.find('.black-player').empty().append(blackPlayer);
+      var whiteRank = "";
+      if (jsGameViewer.notNull(game.whiteRank))
+        whiteRank = "&nbsp;("+game.whiteRank+")";
+      var whitePlayer = "<strong>"+jq4gv.trim(game.whiteName)+"</strong>"+whiteRank;
+      this.container.find('.white-player').empty().append(whitePlayer);
       //if (game.handicap > 0){
       //  infoNode.append("<div>"+jsgvTranslations['handicap']+": "+game.handicap+"</div>");
       //} else {
@@ -252,7 +265,9 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       //}
       //infoNode.append("<div>"+jsgvTranslations['moves']+": "+game.getMoves()+"</div>");
       //infoNode.append("<div>"+jsgvTranslations['result']+": "+jq4gv.trim(game.result)+"</div>");
-      //return this;
+      this.container.find('.result').empty().append(jq4gv.trim(game.result));
+      this.container.find('.moves').empty().append(game.getMoves() + " moves");
+      return this;
     },
 
 
