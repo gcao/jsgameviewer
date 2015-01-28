@@ -31,7 +31,7 @@ body {
     .toolbar .jumpTo div {
       color: #3288c6;
       margin-top: 9px;
-      margin-left: -1px; }
+      margin-left: -2px; }
 
 .info {
   width: 100%;
@@ -49,7 +49,8 @@ body {
 .comment {
   width: 100%;
   margin-top: 3px;
-  text-align: center; }
+  text-align: center;
+  color: #aa4466; }
 
 img.angled-view {
   width: 31px;

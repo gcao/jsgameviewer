@@ -163,7 +163,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
     setGameState: function(){
       var node = this.gameState.currentNode;
       //this.setNextPlayer(this.gameState.getNextPlayer());
-      //this.setMoveNumber(node.moveNumber);
+      this.setMoveNumber(node.moveNumber);
       //this.setPrisoners(this.gameState.blackPrisoners, this.gameState.whitePrisoners);
       if (node.type == jsGameViewer.model.NODE_MOVE)
         this.setMoveMark(node.x, node.y);
@@ -171,7 +171,14 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
         this.removeMoveMark();
       //this.setMarks(node.marks);
       //this.setBranches();
-      //this.setComment();
+      this.setComment();
+      //return this;
+    },
+
+    setMoveNumber: function(moveNumber){
+      if (moveNumber == 0)
+        moveNumber = "0";
+      jq4gv(".move-number").empty().append(moveNumber);
       //return this;
     },
 
@@ -209,6 +216,20 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       //return this;
     },
 
+    setComment: function(comment){
+      var node = this.gameState.currentNode;
+      //if (!comment){
+      //  comment = "<strong>";
+      //  if (node.depth > 1)
+      //    comment += jsgvTranslations['branch_tag'];
+      //  comment += jsgvTranslations['comment_for'].replace(/MOVE/,node.moveNumber)+":</strong>";
+      //  if (node.comment != undefined && node.comment != null)
+      //    comment += "<br/>"+node.comment.replace(/\n/g, "<br/>\n");
+      //}
+      //jq4gv(this.jqId+"_comment").empty().append(comment);
+      //jq4gv(this.jqId+"_comment").height(this.rightPaneHeight - jq4gv(this.jqId+"_info").height()-12);
+      //return this;
+    },
 
     removeAllStones: function(){
       var board = this.gameState.board;
@@ -260,9 +281,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
     },
 
     forward: function() {
-      if (this.gameState == null)
-        return this;
-      if (!this.gameState.forward())
+      if (!this.gameState || !this.gameState.forward())
         return false;
       var _this = this;
       var node = this.gameState.currentNode;
@@ -277,8 +296,6 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
     },
 
     forwardN: function(n) {
-      if (this.gameState == null)
-        return this;
       var _this = this;
       if (n == undefined || typeof(n) !== 'number')
         n = this.config.fastMode;
@@ -298,17 +315,13 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
         });
         this.setGameState();
       }
-      return this;
     },
 
     forwardAll: function(){
-      //if (this.gameState == null)
-      //  return this;
       this.removeAllStones();
       this.gameState.forwardAll();
       this.redrawBoard();
       this.setGameState();
-      //return this;
     },
 
     back_: function(points){
@@ -337,9 +350,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
     },
 
     back: function(){
-      if (this.gameState == null)
-        return this;
-      if (this.gameState.isFirst())
+      if (!this.gameState || this.gameState.isFirst())
         return false;
       var _this = this;
       var node = this.gameState.currentNode;
@@ -393,18 +404,26 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       var s = prompt("Please enter the move number: ");
       var n = parseInt(s);
       if (n === NaN || n < 0) {
-        alert("Not a valid move");
+        alert("Not a valid move number.");
         return;
       }
 
       if (n == 0) {
         this.backAll();
       } else if (n < this.gameState.currentNode.moveNumber) {
-        this.backN(this.gameState.currentNode.moveNumber - n);
+        while (this.gameState.currentNode.moveNumber > n) {
+          if (!this.back()) {
+            break;
+          }
+        }
       } else if (n > this.gameState.currentNode.moveNumber) {
-        this.forwardN(n - this.gameState.currentNode.moveNumber);
+        while (this.gameState.currentNode.moveNumber < n) {
+          if (!this.forward()) {
+            break;
+          }
+        }
       } else {
-        alert("You are already at move " + n);
+        alert("You are already at move " + n + ".");
       }
     },
 
