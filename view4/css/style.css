@@ -43,10 +43,11 @@ body {
         vertical-align: top; }
   .gameviewer .comment-container {
     position: absolute;
-    margin-top: 3px;
     margin-left: 10px;
     margin-right: 10px;
-    max-height: 22px;
+    padding: 3px 0;
+    max-height: 19px;
+    max-width: 900px;
     background: #e6e0cf;
     font-size: small;
     overflow: auto;

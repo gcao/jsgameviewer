@@ -522,26 +522,40 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
     },
 
     angledView: function() {
+      var defaultWidth = 750;
+      var defaultHeight = 750;
+      var ratio1 = defaultWidth / this.boardContainer.offsetWidth;
+      var ratio2 = defaultHeight / this.boardContainer.offsetHeight;
+      var ratio = ratio1 > ratio2 ? ratio1 : ratio2;
+
+      var defaultY = 120;
+      var defaultZ = 90;
+      var offsetY = 20;
+      var offsetZ = 40;
+
       var pos = {
         x: BOARD.centerX,
-        y: 130,
-        z: 130
+        y: defaultY * ratio + offsetY,
+        z: defaultZ * ratio + offsetZ
       };
-      var viewWidth = this.boardContainer.offsetWidth;
-      var viewHeight = this.boardContainer.offsetHeight;
-      //pos.y =
-      //pos.z =
-
       this.setCameraPos(pos);
     },
 
     topView: function() {
+      var defaultWidth = 750;
+      var defaultHeight = 750;
+      var ratio1 = defaultWidth / this.boardContainer.offsetWidth;
+      var ratio2 = defaultHeight / this.boardContainer.offsetHeight;
+      var ratio = ratio1 > ratio2 ? ratio1 : ratio2;
+
+      var defaultY = 120;
+      var offsetY = 50;
+
       var pos = {
         x: BOARD.centerX,
-        y: 160,
+        y: defaultY * ratio + offsetY,
         z: BOARD.centerZ,
       };
-
       this.setCameraPos(pos);
     },
 
