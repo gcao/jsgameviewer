@@ -13,24 +13,26 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
   var VIEW = "\
     <div class='gameviewer'>\
       <div class='toolbar'>\
-        <div class='tb-item angledView'><a class='toggle-opacity ' href='javascript: void(0)'><img class='angled-view' src='../view/images/default.gif'></a></div>\
-        <div class='tb-item topView'><a class='toggle-opacity ' href='javascript: void(0)'><img class='top-view' src='../view/images/default.gif'></a></div>\
-        <div class='tb-item backAll'><a class='toggle-opacity ' href='javascript: void(0)'><img class='sprite-backall' src='../view/images/default.gif'></a></div>\
-        <div class='tb-item backN'><a class='toggle-opacity ' href='javascript: void(0)'><img class='sprite-backn' src='../view/images/default.gif'></a></div>\
-        <div class='tb-item back'><a class='toggle-opacity ' href='javascript: void(0)'><img class='sprite-back' src='../view/images/default.gif'></a></div>\
+        <div class='tb-item angledView'><a class='toggle-opacity ' href='javascript: void(0)'><img class='angled-view' src='/jsgameviewer/view/images/default.gif'></a></div>\
+        <div class='tb-item topView'><a class='toggle-opacity ' href='javascript: void(0)'><img class='top-view' src='/jsgameviewer/view/images/default.gif'></a></div>\
+        <div class='tb-item backAll'><a class='toggle-opacity ' href='javascript: void(0)'><img class='sprite-backall' src='/jsgameviewer/view/images/default.gif'></a></div>\
+        <div class='tb-item backToComment'><a class='toggle-opacity ' href='javascript: void(0)'><img class='sprite-backc' src='/jsgameviewer/view/images/default.gif'></a></div>\
+        <div class='tb-item backN'><a class='toggle-opacity ' href='javascript: void(0)'><img class='sprite-backn' src='/jsgameviewer/view/images/default.gif'></a></div>\
+        <div class='tb-item back'><a class='toggle-opacity ' href='javascript: void(0)'><img class='sprite-back' src='/jsgameviewer/view/images/default.gif'></a></div>\
         <div class='tb-item jumpTo'><div class='move-number'>0</div></div>\
-        <div class='tb-item forward'><a class='toggle-opacity ' href='javascript: void(0)'><img class='sprite-forward' src='../view/images/default.gif'></a></div>\
-        <div class='tb-item forwardN'><a class='toggle-opacity ' href='javascript: void(0)'><img class='sprite-forwardn' src='../view/images/default.gif'></a></div>\
-        <div class='tb-item forwardAll'><a class='toggle-opacity ' href='javascript: void(0)'><img class='sprite-forwardall' src='../view/images/default.gif'></a></div>\
+        <div class='tb-item forward'><a class='toggle-opacity ' href='javascript: void(0)'><img class='sprite-forward' src='/jsgameviewer/view/images/default.gif'></a></div>\
+        <div class='tb-item forwardN'><a class='toggle-opacity ' href='javascript: void(0)'><img class='sprite-forwardn' src='/jsgameviewer/view/images/default.gif'></a></div>\
+        <div class='tb-item forwardToComment'><a class='toggle-opacity ' href='javascript: void(0)'><img class='sprite-forwardc' src='/jsgameviewer/view/images/default.gif'></a></div>\
+        <div class='tb-item forwardAll'><a class='toggle-opacity ' href='javascript: void(0)'><img class='sprite-forwardall' src='/jsgameviewer/view/images/default.gif'></a></div>\
       </div>\
       <div class='info'>\
         <div class='time'></div>\
         <div class='name'></div>\
         <div class='white-player'></div>\
         <div class='player-images'>\
-          <div class='white'><img src='../view/images/15/white.gif'/></div>\
+          <div class='white'><img src='/jsgameviewer/view/images/15/white.gif'/></div>\
           <div class='vs'>-</div>\
-          <div class='black'><img src='../view/images/15/black.gif'/></div>\
+          <div class='black'><img src='/jsgameviewer/view/images/15/black.gif'/></div>\
         </div>\
         <div class='black-player'></div>\
         <div class='moves'></div>\
@@ -120,11 +122,13 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       jq4gv('.toolbar .angledView').click(this.angledView.bind(this));
       jq4gv('.toolbar .topView').click(this.topView.bind(this));
       jq4gv('.toolbar .backAll').click(this.backAll.bind(this));
+      jq4gv('.toolbar .backToComment').click(this.backToComment.bind(this));
       jq4gv('.toolbar .backN').click(this.backN.bind(this));
       jq4gv('.toolbar .back').click(this.back.bind(this));
       jq4gv('.toolbar .jumpTo').click(this.jumpTo.bind(this));
       jq4gv('.toolbar .forward').click(this.forward.bind(this));
       jq4gv('.toolbar .forwardN').click(this.forwardN.bind(this));
+      jq4gv('.toolbar .forwardToComment').click(this.forwardToComment.bind(this));
       jq4gv('.toolbar .forwardAll').click(this.forwardAll.bind(this));
 
       /** @type THREE.WebGLRenderer */
@@ -411,6 +415,34 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       }
     },
 
+    forwardToComment: function(){
+      if (this.gameState == null)
+        return this;
+      var _this = this;
+      var points = new Array();
+      var changed = false;
+      for(;;){
+        if (!this.forward_(points))
+          break;
+        changed = true;
+        // stop at move that has comments or branches
+        var node = this.gameState.currentNode;
+        if (node.hasComment() || node.hasBranches())
+          break;
+      }
+      if (changed){
+        jq4gv.each(points, function(i,point){
+          _this.removeStone(point.x,point.y);
+          if (!point.deleteFlag){
+            _this.addStone(point.x, point.y, point.color);
+          }
+        });
+        this.setGameState();
+      }
+      return this;
+    },
+
+
     forwardAll: function(){
       this.removeAllStones();
       this.gameState.forwardAll();
@@ -471,6 +503,33 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
         if (!this.back_(points))
           break;
         changed = true;
+      }
+      if (changed){
+        jq4gv.each(points, function(i,point){
+          _this.removeStone(point.x,point.y);
+          if (point.deleteFlag){
+            _this.addStone(point.x, point.y, point.color);
+          }
+        });
+        this.setGameState();
+      }
+      return this;
+    },
+
+    backToComment: function(){
+      if (this.gameState == null)
+        return this;
+      var _this = this;
+      var points = new Array();
+      var changed = false;
+      for(;;){
+        if (!this.back_(points))
+          break;
+        changed = true;
+        // stop at move that has comments or branches
+        var node = this.gameState.currentNode;
+        if (node.hasComment() || node.hasBranches())
+          break;
       }
       if (changed){
         jq4gv.each(points, function(i,point){
@@ -605,6 +664,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
     },
 
     addStone: function (row, col, color) {
+      return // TODO
       if (color !== jsGameViewer.model.STONE_BLACK && color !== jsGameViewer.model.STONE_WHITE) {
         return;
       }
@@ -650,7 +710,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       this.initEngine();
       this.initLights();
       this.initMaterials();
-      this.initObjects();
+      //this.initObjects(); // TODO
       if (this.config.showCalibrate) this.calibrate();
       this.onAnimationFrame();
     },
