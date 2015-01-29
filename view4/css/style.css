@@ -19,13 +19,13 @@ body {
     text-align: center; }
     .gameviewer .toolbar .tb-item {
       display: inline-block; }
-    .gameviewer .toolbar .jumpTo {
+    .gameviewer .toolbar .goTo {
       background-image: url(../../view/images/base.png);
       background-repeat: no-repeat;
       height: 35px;
       min-width: 35px;
       vertical-align: top; }
-      .gameviewer .toolbar .jumpTo div {
+      .gameviewer .toolbar .goTo div {
         color: #3288c6;
         margin-top: 9px;
         margin-left: -2px; }
@@ -54,6 +54,10 @@ body {
     opacity: 0.75; }
     .gameviewer .comment-container:hover {
       max-height: none; }
+    .gameviewer .comment-container .branches {
+      font-weight: bold; }
+      .gameviewer .comment-container .branches a {
+        text-decoration: none; }
     .gameviewer .comment-container .comment {
       display: inline-block;
       text-align: left; }

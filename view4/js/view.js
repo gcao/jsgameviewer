@@ -9,6 +9,7 @@ jq4gv.extend(jsGameViewer.CONFIG, {
 
 jq4gv.extend(jsGameViewer.GameController.prototype, function(){
   var LABELS = ['A','B','C','D','E','F','G','H','J','K','L','M','N','O','P','Q','R','S','T'];
+  var BRANCHES = ['A','B','C','D','E','F','G','H','I','J'];
 
   var VIEW = "\
     <div class='gameviewer'>\
@@ -19,7 +20,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
         <div class='tb-item backToComment'><a class='toggle-opacity ' href='javascript: void(0)'><img class='sprite-backc' src='/jsgameviewer/view/images/default.gif'></a></div>\
         <div class='tb-item backN'><a class='toggle-opacity ' href='javascript: void(0)'><img class='sprite-backn' src='/jsgameviewer/view/images/default.gif'></a></div>\
         <div class='tb-item back'><a class='toggle-opacity ' href='javascript: void(0)'><img class='sprite-back' src='/jsgameviewer/view/images/default.gif'></a></div>\
-        <div class='tb-item jumpTo'><div class='move-number'>0</div></div>\
+        <div class='tb-item goTo'><div class='move-number'>0</div></div>\
         <div class='tb-item forward'><a class='toggle-opacity ' href='javascript: void(0)'><img class='sprite-forward' src='/jsgameviewer/view/images/default.gif'></a></div>\
         <div class='tb-item forwardN'><a class='toggle-opacity ' href='javascript: void(0)'><img class='sprite-forwardn' src='/jsgameviewer/view/images/default.gif'></a></div>\
         <div class='tb-item forwardToComment'><a class='toggle-opacity ' href='javascript: void(0)'><img class='sprite-forwardc' src='/jsgameviewer/view/images/default.gif'></a></div>\
@@ -39,6 +40,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
         <div class='result'></div>\
       </div>\
       <div class='comment-container' align='center'>\
+        <span class='branches'></span>\
         <div class='comment'></div>\
       </div>\
       <div class='board'></div>\
@@ -125,7 +127,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       jq4gv('.toolbar .backToComment').click(this.backToComment.bind(this));
       jq4gv('.toolbar .backN').click(this.backN.bind(this));
       jq4gv('.toolbar .back').click(this.back.bind(this));
-      jq4gv('.toolbar .jumpTo').click(this.jumpTo.bind(this));
+      jq4gv('.toolbar .goTo').click(this.goTo.bind(this));
       jq4gv('.toolbar .forward').click(this.forward.bind(this));
       jq4gv('.toolbar .forwardN').click(this.forwardN.bind(this));
       jq4gv('.toolbar .forwardToComment').click(this.forwardToComment.bind(this));
@@ -264,7 +266,6 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       return this;
     },
 
-
     setMoveNumber: function(moveNumber){
       if (moveNumber == 0)
         moveNumber = "0";
@@ -307,46 +308,52 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
     },
 
     setBranches: function(){
+      this.container.find('.branches').empty();
       //var _this = this;
       //jq4gv(this.jqId+"_boardBranches").empty();
       //jq4gv(this.jqId+"_branches").empty();
       //jq4gv(this.jqId+"_branches").css({height:0});
-      //var node = this.gameState.currentNode;
-      //if (node.hasChildren() && node.children.length >= 2){
-      //  var n = node.children.length;
-      //  for(var i=0; i<node.children.length; i++){
-      //    var title = "";
-      //    if (i == 0){
-      //      title = jsgvTranslations['branch']+" A = "+jsgvTranslations['trunk']+" [Alt Shift &#8594;][Alt Shift A]";
-      //    } else {
-      //      if (i < BRANCHES.length){
-      //        var branchName = BRANCHES[i];
-      //        title = jsgvTranslations['branch']+" "+branchName + " [Alt Shift " + branchName + "]";
-      //      }
-      //    }
-      //    var s = "<div class='gvtb-branch gvbutton'><a href='#' title='" + title + "' onclick='jsGameViewer."+this.id+".goToBranch("+i+");return false;'>"+BRANCHES[i]+"</a></div>";
-      //    jq4gv(this.jqId+"_branches").append(s);
-      //    jq4gv(this.jqId+"_branches").css({height:n*23});
-      //    var child = node.children[i];
-      //    if (child.type == jsGameViewer.model.NODE_MOVE){
-      //      var x = child.x, y = child.y;
-      //      if (this.config.gameType == jsGameViewer.DAOQI){
-      //        this.mapToPoints(x,y,function(x,y){
-      //          var styleClass = "gvbranch";
-      //          if (_this.isInCentralArea(x,y))
-      //            styleClass = "gvbranch-real";
-      //          var area = _this.xyToArea(x,y);
-      //          jq4gv(_this.jqId+"_boardBranches").append("<div class='"+styleClass+"' style='left:"+area[0]+"px;top:"+area[1]
-      //            +"px;width:"+area[2]+"px;height:"+area[3]+"px;'>"+BRANCHES[i]+"</div>");
-      //        });
-      //      } else {
-      //        var area = _this.xyToArea(x,y);
-      //        jq4gv(_this.jqId+"_boardBranches").append("<div class='gvbranch' style='left:"+area[0]+"px;top:"+area[1]
-      //          +"px;width:"+area[2]+"px;height:"+area[3]+"px;'>"+BRANCHES[i]+"</div>");
-      //      }
-      //    }
-      //  }
-      //}
+      var node = this.gameState.currentNode;
+      if (node.hasChildren() && node.children.length >= 2){
+        var branchesContainer = this.container.find('.branches');
+        var n = node.children.length;
+        var s = "分支: ";
+        for(var i=0; i<node.children.length; i++){
+          s += "<a class='branch' href='#' onclick='jsGameViewer."+this.id+".goToBranch("+i+");return false;'>"+BRANCHES[i]+"</a>&nbsp; ";
+          //var title = "";
+          //if (i == 0){
+          //  title = jsgvTranslations['branch']+" A = "+jsgvTranslations['trunk']+" [Alt Shift &#8594;][Alt Shift A]";
+          //} else {
+          //  if (i < BRANCHES.length){
+          //    var branchName = BRANCHES[i];
+          //    title = jsgvTranslations['branch']+" "+branchName + " [Alt Shift " + branchName + "]";
+          //  }
+          //}
+          //var s = "<div class='gvtb-branch gvbutton'><a href='#' title='" + title + "' onclick='jsGameViewer."+this.id+".goToBranch("+i+");return false;'>"+BRANCHES[i]+"</a></div>";
+          //jq4gv(this.jqId+"_branches").append(s);
+          //jq4gv(this.jqId+"_branches").css({height:n*23});
+          //var child = node.children[i];
+          //if (child.type == jsGameViewer.model.NODE_MOVE){
+          //  var x = child.x, y = child.y;
+          //  if (this.config.gameType == jsGameViewer.DAOQI){
+          //    this.mapToPoints(x,y,function(x,y){
+          //      var styleClass = "gvbranch";
+          //      if (_this.isInCentralArea(x,y))
+          //        styleClass = "gvbranch-real";
+          //      var area = _this.xyToArea(x,y);
+          //      jq4gv(_this.jqId+"_boardBranches").append("<div class='"+styleClass+"' style='left:"+area[0]+"px;top:"+area[1]
+          //        +"px;width:"+area[2]+"px;height:"+area[3]+"px;'>"+BRANCHES[i]+"</div>");
+          //    });
+          //  } else {
+          //    var area = _this.xyToArea(x,y);
+          //    jq4gv(_this.jqId+"_boardBranches").append("<div class='gvbranch' style='left:"+area[0]+"px;top:"+area[1]
+          //      +"px;width:"+area[2]+"px;height:"+area[3]+"px;'>"+BRANCHES[i]+"</div>");
+          //  }
+          //}
+        }
+        s += "&nbsp;&nbsp; ";
+        branchesContainer.append(s);
+      }
       //return this;
     },
 
@@ -356,16 +363,20 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
         comment = "<strong>";
         //if (node.depth > 1)
         //  comment += jsgvTranslations['branch_tag'];
-        comment += jsgvTranslations['comment_for'].replace(/MOVE/,node.moveNumber)+":</strong> ";
+        comment += jsgvTranslations['comment_for'].replace(/MOVE/,node.moveNumber)+": </strong> ";
         comment += node.comment.replace(/\n/g, "<br/>\n");
       }
       var commentContainer = this.container.find('.comment-container');
-      commentContainer.empty();
       if (comment) {
-        commentContainer.append("<div class='comment'>" + comment + "</div>");
+        var s = "<div class='comment'>" + comment + "</div>";
+        if (commentContainer.find('.comment').length > 0)
+          commentContainer.find('.comment').replaceWith(s);
+        else
+          commentContainer.append(s);
         var left = (this.container.get(0).offsetWidth - commentContainer.get(0).offsetWidth)/2;
         commentContainer.css('left', left);
       } else {
+        commentContainer.find('.comment').replaceWith('');
         commentContainer.css('left', '');
       }
       //jq4gv(this.jqId+"_comment").empty().append(comment);
@@ -597,7 +608,22 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       //return this;
     },
 
-    jumpTo: function() {
+    goToBranch: function(n){
+      if (!this.gameState || !this.gameState.goToBranch(n))
+        return this;
+      var _this = this;
+      var node = this.gameState.currentNode;
+      jq4gv.each(node.points, function(i,point){
+        _this.removeStone(point.x,point.y);
+        if (!point.deleteFlag){
+          _this.addStone(point.x, point.y, point.color);
+        }
+      });
+      this.setGameState();
+      return this;
+    },
+
+    goTo: function() {
       var s = prompt("Please enter the move number: ");
       var n = parseInt(s);
       if (n === NaN || n < 0) {
