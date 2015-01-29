@@ -42,10 +42,15 @@ body {
       .gameviewer .info .player-images .vs {
         vertical-align: top; }
   .gameviewer .comment-container {
+    position: absolute;
     margin-top: 3px;
-    max-height: 20px;
-    color: #aa4466;
-    overflow: hidden; }
+    margin-left: 10px;
+    margin-right: 10px;
+    max-height: 22px;
+    background: #e6e0cf;
+    font-size: small;
+    overflow: auto;
+    opacity: 0.75; }
     .gameviewer .comment-container:hover {
       max-height: none; }
     .gameviewer .comment-container .comment {

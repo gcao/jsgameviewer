@@ -33,8 +33,8 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
           <div class='black'><img src='/view/images/15/black.gif'/></div>\
         </div>\
         <div class='black-player'></div>\
-        <div class='result'></div>\
         <div class='moves'></div>\
+        <div class='result'></div>\
       </div>\
       <div class='comment-container' align='center'>\
         <div class='comment'></div>\
@@ -63,18 +63,6 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
     color: 0x444444,
     fontSize: 2
   };
-
-  var CAMERA = {
-    x: BOARD.centerX,
-    y: 130,
-    z: 130
-  }
-
-  var CAMERA_TOPVIEW = {
-    x: BOARD.centerX,
-    y: 160,
-    z: BOARD.centerZ,
-  }
 
   var STONE = {
     scale: 6.1,
@@ -124,11 +112,13 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
     initView: function(){
       var self = this;
       this.container = jq4gv(this.jqId);
-      this.container.empty().append(VIEW);
+      this.container.css('width', '100%').css('height', '100%');
+      this.container.get(0).innerHTML = VIEW;
+      this.container.show();
       this.boardContainer = this.container.find('.board').get(0);
 
-      jq4gv('.toolbar .angledView').click(function(){ self.setCameraPos(CAMERA); });
-      jq4gv('.toolbar .topView').click(function(){ self.setCameraPos(CAMERA_TOPVIEW); });
+      jq4gv('.toolbar .angledView').click(this.angledView.bind(this));
+      jq4gv('.toolbar .topView').click(this.topView.bind(this));
       jq4gv('.toolbar .backAll').click(this.backAll.bind(this));
       jq4gv('.toolbar .backN').click(this.backN.bind(this));
       jq4gv('.toolbar .back').click(this.back.bind(this));
@@ -266,7 +256,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       //infoNode.append("<div>"+jsgvTranslations['moves']+": "+game.getMoves()+"</div>");
       //infoNode.append("<div>"+jsgvTranslations['result']+": "+jq4gv.trim(game.result)+"</div>");
       this.container.find('.result').empty().append(jq4gv.trim(game.result));
-      this.container.find('.moves').empty().append(game.getMoves() + " moves");
+      this.container.find('.moves').empty().append('共' + game.getMoves() + '手');
       return this;
     },
 
@@ -323,8 +313,13 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       }
       var commentContainer = this.container.find('.comment-container');
       commentContainer.empty();
-      if (comment)
+      if (comment) {
         commentContainer.append("<div class='comment'>" + comment + "</div>");
+        var left = (this.container.get(0).offsetWidth - commentContainer.get(0).offsetWidth)/2;
+        commentContainer.css('left', left);
+      } else {
+        commentContainer.css('left', '');
+      }
       //jq4gv(this.jqId+"_comment").empty().append(comment);
       //jq4gv(this.jqId+"_comment").height(this.rightPaneHeight - jq4gv(this.jqId+"_info").height()-12);
       //return this;
@@ -526,6 +521,30 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       }
     },
 
+    angledView: function() {
+      var pos = {
+        x: BOARD.centerX,
+        y: 130,
+        z: 130
+      };
+      var viewWidth = this.boardContainer.offsetWidth;
+      var viewHeight = this.boardContainer.offsetHeight;
+      //pos.y =
+      //pos.z =
+
+      this.setCameraPos(pos);
+    },
+
+    topView: function() {
+      var pos = {
+        x: BOARD.centerX,
+        y: 160,
+        z: BOARD.centerZ,
+      };
+
+      this.setCameraPos(pos);
+    },
+
     setCameraPos: function(pos) {
       pos = pos || CAMERA;
       this.camera.position.set(pos.x, pos.y, pos.z);
@@ -572,7 +591,6 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
     },
 
     addStone: function (row, col, color) {
-      return
       if (color !== jsGameViewer.model.STONE_BLACK && color !== jsGameViewer.model.STONE_WHITE) {
         return;
       }
@@ -618,7 +636,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       this.initEngine();
       this.initLights();
       this.initMaterials();
-      //this.initObjects();
+      this.initObjects();
       if (this.config.showCalibrate) this.calibrate();
       this.onAnimationFrame();
     },
@@ -641,7 +659,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
 
       // create camera
       this.camera = new THREE.PerspectiveCamera(35, viewWidth / viewHeight, 1, 1000);
-      this.camera.position.set(CAMERA.x, CAMERA.y, CAMERA.z);
+      this.angledView();
       this.cameraController = new THREE.OrbitControls(this.camera, this.boardContainer);
       this.cameraController.minPolarAngle = 0;
       this.cameraController.maxPolarAngle = 89 * Math.PI/180;
