@@ -195,7 +195,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       else
         this.removeMoveMark();
       //this.setMarks(node.marks);
-      //this.setBranches();
+      this.setBranches();
       this.setComment();
       //return this;
     },
@@ -302,6 +302,50 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       //  jq4gv(this.jqId+"_moveMarks").empty();
       //} else {
       //  jq4gv(this.jqId+"_moveMark").css({width:0, height:0});
+      //}
+      //return this;
+    },
+
+    setBranches: function(){
+      //var _this = this;
+      //jq4gv(this.jqId+"_boardBranches").empty();
+      //jq4gv(this.jqId+"_branches").empty();
+      //jq4gv(this.jqId+"_branches").css({height:0});
+      //var node = this.gameState.currentNode;
+      //if (node.hasChildren() && node.children.length >= 2){
+      //  var n = node.children.length;
+      //  for(var i=0; i<node.children.length; i++){
+      //    var title = "";
+      //    if (i == 0){
+      //      title = jsgvTranslations['branch']+" A = "+jsgvTranslations['trunk']+" [Alt Shift &#8594;][Alt Shift A]";
+      //    } else {
+      //      if (i < BRANCHES.length){
+      //        var branchName = BRANCHES[i];
+      //        title = jsgvTranslations['branch']+" "+branchName + " [Alt Shift " + branchName + "]";
+      //      }
+      //    }
+      //    var s = "<div class='gvtb-branch gvbutton'><a href='#' title='" + title + "' onclick='jsGameViewer."+this.id+".goToBranch("+i+");return false;'>"+BRANCHES[i]+"</a></div>";
+      //    jq4gv(this.jqId+"_branches").append(s);
+      //    jq4gv(this.jqId+"_branches").css({height:n*23});
+      //    var child = node.children[i];
+      //    if (child.type == jsGameViewer.model.NODE_MOVE){
+      //      var x = child.x, y = child.y;
+      //      if (this.config.gameType == jsGameViewer.DAOQI){
+      //        this.mapToPoints(x,y,function(x,y){
+      //          var styleClass = "gvbranch";
+      //          if (_this.isInCentralArea(x,y))
+      //            styleClass = "gvbranch-real";
+      //          var area = _this.xyToArea(x,y);
+      //          jq4gv(_this.jqId+"_boardBranches").append("<div class='"+styleClass+"' style='left:"+area[0]+"px;top:"+area[1]
+      //            +"px;width:"+area[2]+"px;height:"+area[3]+"px;'>"+BRANCHES[i]+"</div>");
+      //        });
+      //      } else {
+      //        var area = _this.xyToArea(x,y);
+      //        jq4gv(_this.jqId+"_boardBranches").append("<div class='gvbranch' style='left:"+area[0]+"px;top:"+area[1]
+      //          +"px;width:"+area[2]+"px;height:"+area[3]+"px;'>"+BRANCHES[i]+"</div>");
+      //      }
+      //    }
+      //  }
       //}
       //return this;
     },
