@@ -10,6 +10,7 @@ jq4gv.extend(jsGameViewer.CONFIG, {
 jq4gv.extend(jsGameViewer.GameController.prototype, function(){
   var LABELS = ['A','B','C','D','E','F','G','H','J','K','L','M','N','O','P','Q','R','S','T'];
   var BRANCHES = ['A','B','C','D','E','F','G','H','I','J'];
+  var BRANCHES_NAME = ['实战','变化一','变化二','变化三','变化四','变化五','变化六','变化七','变化八','变化九'];
 
   var VIEW = "\
     <div class='gameviewer'>\
@@ -163,6 +164,12 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       /** @type THREE.Mesh */
       this.moveMark = null;
 
+      /** @type [THREE.Mesh] */
+      this.branchModels = [];
+
+      /** @type [THREE.Mesh] */
+      this.markModels = [];
+
       /**
        * The stones cache
        * @type Array
@@ -196,7 +203,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
         this.setMoveMark(node.x, node.y);
       else
         this.removeMoveMark();
-      //this.setMarks(node.marks);
+      this.setMarks(node.marks);
       this.setBranches();
       this.setComment();
       //return this;
@@ -277,9 +284,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       this.removeMoveMark();
 
       var p = boardToWorld(i, j);
-      this.moveMark = new THREE.Mesh(new THREE.CircleGeometry(MOVE_MARK.size, 32, 0, Math.PI * 2), this.materials.moveMarkMaterial);
       this.moveMark.position.set(p.x, MOVE_MARK.y, p.z);
-      this.moveMark.rotation.x = -90 * Math.PI / 180;
       this.scene.add(this.moveMark);
 
       //var _this = this;
@@ -297,8 +302,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
     },
 
     removeMoveMark: function(){
-      if (this.moveMark)
-        this.scene.remove(this.moveMark);
+      this.scene.remove(this.moveMark);
       //if (this.config.gameType == jsGameViewer.DAOQI){
       //  jq4gv(this.jqId+"_moveMarks").empty();
       //} else {
@@ -307,8 +311,130 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       //return this;
     },
 
+    setMarks: function(marks){
+      if (this.markModels.length > 0) {
+        for (var i = 0; i < this.markModels.length; i++) {
+          this.scene.remove(this.markModels[i]);
+        }
+        this.markModels = [];
+      }
+      if (!marks)
+        return;
+      for (var i=0; i<marks.length; i++){
+        this.drawMark(marks[i]);
+      }
+      //var _this = this;
+      //jq4gv(this.jqId+"_boardMarks").empty();
+      //if (marks == undefined || marks == null)
+      //  return this;
+      //if (this.config.gameType == jsGameViewer.DAOQI){
+      //  for (var i=0; i<marks.length; i++){
+      //    var mark = marks[i];
+      //    var x = mark[0], y = mark[1];
+      //    var color = this.gameState.board[x][y];
+      //    var styleClass = "";
+      //    switch(mark[2]){
+      //      case jsGameViewer.model.MARK_CROSS:
+      //        styleClass = "gvsprite-19-markcross";
+      //        break;
+      //      case jsGameViewer.model.MARK_TRIANGLE:
+      //        styleClass = "gvsprite-19-marktriangle";
+      //        break;
+      //      case jsGameViewer.model.MARK_SQUARE:
+      //        styleClass = "gvsprite-19-marksquare";
+      //        break;
+      //      case jsGameViewer.model.MARK_CIRCLE:
+      //        styleClass = "gvsprite-19-markcircle";
+      //        break;
+      //      case jsGameViewer.model.MARK_TERR_BLACK:
+      //        styleClass = "gvsprite-19-markblack";
+      //        break;
+      //      case jsGameViewer.model.MARK_TERR_WHITE:
+      //        styleClass = "gvsprite-19-markwhite";
+      //        break;
+      //      case jsGameViewer.model.MARK_TEXT:
+      //        this.mapToPoints(x,y,function(x,y){
+      //          var area = _this.xyToArea(x,y);
+      //          var left = area[0], top = area[1], width = area[2], height = area[3];
+      //          var s = "<div style='position:absolute;left:"+left+"px;top:"+top+"px;width:"+width+"px;height:"+height+"px;text-align:center;vertical-align:middle;color:red;font-family:Nina;font-weight:bolder;font-size:14px;";
+      //          if (color == jsGameViewer.model.STONE_NONE){
+      //            if (_this.isInCentralArea(x,y)){
+      //              s += "background-color:"+_this.config.boardColorDQ+";";
+      //            } else {
+      //              s += "background-color:"+_this.config.boardColor+";";
+      //            }
+      //          }
+      //          s += "'>"+mark[3]+"</div>";
+      //          jq4gv(_this.jqId+"_boardMarks").append(s);
+      //        });
+      //        continue;
+      //    }
+      //    this.mapToPoints(x,y,function(x,y){
+      //      var area = _this.xyToArea(x,y);
+      //      var left = area[0], top = area[1], width = area[2], height = area[3];
+      //      var s = "<div class='"+styleClass+"' style='position:absolute;left:"+left+"px;top:"+top+"px;";
+      //      if (color == jsGameViewer.model.STONE_NONE){
+      //        if (_this.isInCentralArea(x,y)){
+      //          s += "background-color:"+_this.config.boardColorDQ+";";
+      //        } else {
+      //          s += "background-color:"+_this.config.boardColor+";";
+      //        }
+      //      }
+      //      s += "'></div>";
+      //      jq4gv(_this.jqId+"_boardMarks").append(s);
+      //    });
+      //  }
+      //} else {
+      //  for (var i=0; i<marks.length; i++){
+      //    var color = this.gameState.board[x][y];
+      //    var area = this.xyToArea(x,y);
+      //    var left = area[0], top = area[1], width = area[2], height = area[3];
+      //    var styleClass = "";
+      //    switch(mark[2]){
+      //      case jsGameViewer.model.MARK_CROSS:
+      //        styleClass = "gvsprite-21-markcross";
+      //        break;
+      //      case jsGameViewer.model.MARK_TRIANGLE:
+      //        styleClass = "gvsprite-21-marktriangle";
+      //        break;
+      //      case jsGameViewer.model.MARK_SQUARE:
+      //        styleClass = "gvsprite-21-marksquare";
+      //        break;
+      //      case jsGameViewer.model.MARK_CIRCLE:
+      //        styleClass = "gvsprite-21-markcircle";
+      //        break;
+      //      case jsGameViewer.model.MARK_TERR_BLACK:
+      //        styleClass = "gvsprite-21-markblack";
+      //        break;
+      //      case jsGameViewer.model.MARK_TERR_WHITE:
+      //        styleClass = "gvsprite-21-markwhite";
+      //        break;
+      //      case jsGameViewer.model.MARK_TEXT:
+      //        var s = "<div style='position:absolute;left:"+left+"px;top:"+top+"px;width:"+width+"px;height:"+height+"px;text-align:center;vertical-align:middle;color:red;font-family:Nina;font-weight:bolder;font-size:15px;";
+      //        if (color == jsGameViewer.model.STONE_NONE){
+      //          s += "background-color:"+this.config.boardColor+";";
+      //        }
+      //        s += "'>"+mark[3]+"</div>";
+      //        jq4gv(this.jqId+"_boardMarks").append(s);
+      //        continue;
+      //    }
+      //    var s = "<div class='"+styleClass+"' style='position:absolute;left:"+left+"px;top:"+top+"px;";
+      //    if (color == jsGameViewer.model.STONE_NONE){
+      //      s += "background-color:"+this.config.boardColor+";";
+      //    }
+      //    s += "'></div>";
+      //    jq4gv(this.jqId+"_boardMarks").append(s);
+      //  }
+      //}
+      //return this;
+    },
+
     setBranches: function(){
       this.container.find('.branches').empty();
+      for (var i = 0; i < this.branchModels.length; i++) {
+        this.scene.remove(this.branchModels[i]);
+      }
+      this.branchModels = [];
       //var _this = this;
       //jq4gv(this.jqId+"_boardBranches").empty();
       //jq4gv(this.jqId+"_branches").empty();
@@ -317,9 +443,10 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       if (node.hasChildren() && node.children.length >= 2){
         var branchesContainer = this.container.find('.branches');
         var n = node.children.length;
-        var s = "分支: ";
+        var s = "";
         for(var i=0; i<node.children.length; i++){
-          s += "<a class='branch' href='#' onclick='jsGameViewer."+this.id+".goToBranch("+i+");return false;'>"+BRANCHES[i]+"</a>&nbsp; ";
+          var branchName = BRANCHES[i] + ':' + BRANCHES_NAME[i];
+          s += "<a class='branch' href='#' onclick='jsGameViewer."+this.id+".goToBranch("+i+");return false;'>"+branchName+"</a>&nbsp;&nbsp;&nbsp; ";
           //var title = "";
           //if (i == 0){
           //  title = jsgvTranslations['branch']+" A = "+jsgvTranslations['trunk']+" [Alt Shift &#8594;][Alt Shift A]";
@@ -332,9 +459,19 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
           //var s = "<div class='gvtb-branch gvbutton'><a href='#' title='" + title + "' onclick='jsGameViewer."+this.id+".goToBranch("+i+");return false;'>"+BRANCHES[i]+"</a></div>";
           //jq4gv(this.jqId+"_branches").append(s);
           //jq4gv(this.jqId+"_branches").css({height:n*23});
-          //var child = node.children[i];
-          //if (child.type == jsGameViewer.model.NODE_MOVE){
-          //  var x = child.x, y = child.y;
+          var child = node.children[i];
+          if (child.type == jsGameViewer.model.NODE_MOVE){
+            var x = child.x, y = child.y;
+            var pos = boardToWorld(x, y);
+            pos.y = BOARD.markY + 0.01;
+
+            var textObj = this.drawText(BRANCHES[i], {
+              color: 0xffffff,
+              x: pos.x - 0.6,
+              y: pos.y,
+              z: pos.z + 0.6
+            });
+            this.branchModels.push(textObj);
           //  if (this.config.gameType == jsGameViewer.DAOQI){
           //    this.mapToPoints(x,y,function(x,y){
           //      var styleClass = "gvbranch";
@@ -349,9 +486,8 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
           //    jq4gv(_this.jqId+"_boardBranches").append("<div class='gvbranch' style='left:"+area[0]+"px;top:"+area[1]
           //      +"px;width:"+area[2]+"px;height:"+area[3]+"px;'>"+BRANCHES[i]+"</div>");
           //  }
-          //}
+          }
         }
-        s += "&nbsp;&nbsp; ";
         branchesContainer.append(s);
       }
       //return this;
@@ -373,12 +509,12 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
           commentContainer.find('.comment').replaceWith(s);
         else
           commentContainer.append(s);
-        var left = (this.container.get(0).offsetWidth - commentContainer.get(0).offsetWidth)/2;
-        commentContainer.css('left', left);
       } else {
         commentContainer.find('.comment').replaceWith('');
-        commentContainer.css('left', '');
       }
+
+      var left = (this.container.get(0).offsetWidth - commentContainer.get(0).offsetWidth)/2;
+      commentContainer.css('left', left);
       //jq4gv(this.jqId+"_comment").empty().append(comment);
       //jq4gv(this.jqId+"_comment").height(this.rightPaneHeight - jq4gv(this.jqId+"_info").height()-12);
       //return this;
@@ -734,7 +870,6 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
     },
 
     addStone: function (row, col, color) {
-      return // TODO
       if (color !== jsGameViewer.model.STONE_BLACK && color !== jsGameViewer.model.STONE_WHITE) {
         return;
       }
@@ -780,7 +915,13 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       this.initEngine();
       this.initLights();
       this.initMaterials();
-      //this.initObjects(); // TODO
+      this.initObjects();
+
+      //// TODO: comment this when uncommenting initObjects()
+      //this.moveMark = new THREE.Mesh(new THREE.CircleGeometry(MOVE_MARK.size, 32, 0, Math.PI * 2), this.materials.moveMarkMaterial);
+      //this.moveMark.rotation.x = -90 * Math.PI / 180;
+      //this.scene.add(this.moveMark);
+
       if (this.config.showCalibrate) this.calibrate();
       this.onAnimationFrame();
     },
@@ -906,9 +1047,6 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       var loader = new THREE.JSONLoader();
       var boardGeometry = loader.parse(BOARD_MODEL).geometry;
       this.boardModel = new THREE.Mesh(boardGeometry, this.materials.boardMaterial);
-      //this.boardModel.position.x = 2;
-      //this.boardModel.position.y = 0;
-      //this.boardModel.position.z = 2;
       this.scene.add(this.boardModel);
 
       // load piece
@@ -973,7 +1111,6 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
             var object = new THREE.Mesh(new THREE.CircleGeometry(starRadius, 32, 0, Math.PI * 2), material);
             object.position.set(p.x, BOARD.markY, p.z);
             object.rotation.x = -90 * Math.PI / 180;
-            //object.material.side = THREE.DoubleSide;
             self.scene.add(object);
           }
         }
@@ -1031,6 +1168,10 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       }
 
       drawLabels();
+
+      this.moveMark = new THREE.Mesh(new THREE.CircleGeometry(MOVE_MARK.size, 32, 0, Math.PI * 2), this.materials.moveMarkMaterial);
+      this.moveMark.rotation.x = -90 * Math.PI / 180;
+      this.scene.add(this.moveMark);
     },
 
     drawText: function(text, options) {
@@ -1056,6 +1197,55 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       mesh.position.set(x, y, z);
       this.scene.add(mesh);
       return mesh;
+    },
+
+    drawMark: function(mark) {
+      // TODO: incomplete
+      var p = boardToWorld(mark[0], mark[1])
+      var object = new THREE.Mesh(new THREE.CircleGeometry(MOVE_MARK.size, 32, 0, Math.PI * 2), this.materials.moveMarkMaterial);
+      object.position.set(p.x, BOARD.markY, p.z);
+      object.rotation.x = -90 * Math.PI / 180;
+      this.scene.add(object);
+      this.markModels.push(object);
+      //  for (var i=0; i<marks.length; i++){
+      //    var color = this.gameState.board[x][y];
+      //    var area = this.xyToArea(x,y);
+      //    var left = area[0], top = area[1], width = area[2], height = area[3];
+      //    var styleClass = "";
+      //    switch(mark[2]){
+      //      case jsGameViewer.model.MARK_CROSS:
+      //        styleClass = "gvsprite-21-markcross";
+      //        break;
+      //      case jsGameViewer.model.MARK_TRIANGLE:
+      //        styleClass = "gvsprite-21-marktriangle";
+      //        break;
+      //      case jsGameViewer.model.MARK_SQUARE:
+      //        styleClass = "gvsprite-21-marksquare";
+      //        break;
+      //      case jsGameViewer.model.MARK_CIRCLE:
+      //        styleClass = "gvsprite-21-markcircle";
+      //        break;
+      //      case jsGameViewer.model.MARK_TERR_BLACK:
+      //        styleClass = "gvsprite-21-markblack";
+      //        break;
+      //      case jsGameViewer.model.MARK_TERR_WHITE:
+      //        styleClass = "gvsprite-21-markwhite";
+      //        break;
+      //      case jsGameViewer.model.MARK_TEXT:
+      //        var s = "<div style='position:absolute;left:"+left+"px;top:"+top+"px;width:"+width+"px;height:"+height+"px;text-align:center;vertical-align:middle;color:red;font-family:Nina;font-weight:bolder;font-size:15px;";
+      //        if (color == jsGameViewer.model.STONE_NONE){
+      //          s += "background-color:"+this.config.boardColor+";";
+      //        }
+      //        s += "'>"+mark[3]+"</div>";
+      //        jq4gv(this.jqId+"_boardMarks").append(s);
+      //        continue;
+      //    }
+      //    var s = "<div class='"+styleClass+"' style='position:absolute;left:"+left+"px;top:"+top+"px;";
+      //    if (color == jsGameViewer.model.STONE_NONE){
+      //      s += "background-color:"+this.config.boardColor+";";
+      //    }
+      //    s += "'></div>";
+      //    jq4gv(this.jqId+"_boardMarks").append(s);
     },
 
     /**
