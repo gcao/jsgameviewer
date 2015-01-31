@@ -320,8 +320,11 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       }
       if (!marks)
         return;
+
       for (var i=0; i<marks.length; i++){
-        this.drawMark(marks[i]);
+        var model = this.drawMark(marks[i]);
+        if (model)
+          this.markModels.push(model);
       }
       //var _this = this;
       //jq4gv(this.jqId+"_boardMarks").empty();
@@ -1170,6 +1173,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       drawLabels();
 
       this.moveMark = new THREE.Mesh(new THREE.CircleGeometry(MOVE_MARK.size, 32, 0, Math.PI * 2), this.materials.moveMarkMaterial);
+      this.moveMark.position.set(0, -1, 0); // Hide it at the beginning
       this.moveMark.rotation.x = -90 * Math.PI / 180;
       this.scene.add(this.moveMark);
     },
@@ -1201,13 +1205,23 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
 
     drawMark: function(mark) {
       // TODO: incomplete
-      var p = boardToWorld(mark[0], mark[1])
-      var object = new THREE.Mesh(new THREE.CircleGeometry(MOVE_MARK.size, 32, 0, Math.PI * 2), this.materials.moveMarkMaterial);
-      object.position.set(p.x, BOARD.markY, p.z);
-      object.rotation.x = -90 * Math.PI / 180;
-      this.scene.add(object);
-      this.markModels.push(object);
+      var x = mark[0], y = mark[1];
+      var pos = boardToWorld(mark[0], mark[1])
+      var model;
+      pos.y = this.stonesCache[x][y] ? MOVE_MARK.y : BOARD.markY + 0.01;
+      switch(mark[2]){
+        case jsGameViewer.model.MARK_TEXT:
+          model = this.drawText(mark[3], {
+            color: MOVE_MARK.color,
+            x: pos.x - 0.6,
+            y: pos.y,
+            z: pos.z + 0.5
+          });
+      }
+      return model;
       //  for (var i=0; i<marks.length; i++){
+      //    var mark = marks[i];
+      //    var x = mark[0], y = mark[1];
       //    var color = this.gameState.board[x][y];
       //    var area = this.xyToArea(x,y);
       //    var left = area[0], top = area[1], width = area[2], height = area[3];
@@ -1246,6 +1260,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       //    }
       //    s += "'></div>";
       //    jq4gv(this.jqId+"_boardMarks").append(s);
+      //  }
     },
 
     /**
