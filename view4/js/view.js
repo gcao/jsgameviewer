@@ -797,9 +797,9 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       var ratio = ratio1 > ratio2 ? ratio1 : ratio2;
 
       var defaultY = 120;
-      var defaultZ = 90;
+      var defaultZ = 120;
       var offsetY = 20;
-      var offsetZ = 40;
+      var offsetZ = 0;
 
       var pos = {
         x: BOARD.centerX,
@@ -828,7 +828,6 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
     },
 
     setCameraPos: function(pos) {
-      pos = pos || CAMERA;
       this.camera.position.set(pos.x, pos.y, pos.z);
     },
 
@@ -877,32 +876,30 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
         return;
       }
 
-      var pieceMesh = new THREE.Mesh(this.pieceGeometry);
-      var pieceObjGroup = new THREE.Object3D();
+      var material = color === jsGameViewer.model.STONE_BLACK ? this.materials.blackPieceMaterial : this.materials.whitePieceMaterial;
+      var stone = new THREE.Mesh(this.pieceGeometry, material);
+      stone.castShadow = true;
+      stone.position = boardToWorld(row, col);
+      stone.position.y = STONE.y;
+      this.scene.add(stone);
+      this.stonesCache[row][col] = stone;
 
-      if (color === jsGameViewer.model.STONE_BLACK) {
-        pieceObjGroup.color = jsGameViewer.model.STONE_BLACK;
-        pieceMesh.material = this.materials.blackPieceMaterial;
-      } else {
-        pieceObjGroup.color = jsGameViewer.model.STONE_WHITE;
-        pieceMesh.material = this.materials.whitePieceMaterial;
-      }
+      //var pieceObjGroup = new THREE.Object3D();
+      //pieceObjGroup.add(pieceMesh);
 
-      pieceObjGroup.add(pieceMesh);
+      //if (this.config.showStoneShadow) {
+      //  // create shadow plane
+      //  var shadowPlane = new THREE.Mesh(new THREE.PlaneGeometry(STONE.shadowSize, STONE.shadowSize, 1, 1), this.materials.pieceShadowPlane);
+      //  shadowPlane.rotation.x = -90 * Math.PI / 180;
+      //  pieceObjGroup.add(shadowPlane);
+      //}
 
-      if (this.config.showStoneShadow) {
-        // create shadow plane
-        var shadowPlane = new THREE.Mesh(new THREE.PlaneGeometry(STONE.shadowSize, STONE.shadowSize, 1, 1), this.materials.pieceShadowPlane);
-        shadowPlane.rotation.x = -90 * Math.PI / 180;
-        pieceObjGroup.add(shadowPlane);
-      }
+      //pieceObjGroup.position = boardToWorld(row, col);
+      //pieceObjGroup.position.y = STONE.y;
 
-      pieceObjGroup.position = boardToWorld(row, col);
-      pieceObjGroup.position.y = STONE.y;
+      //this.stonesCache[row][col] = pieceObjGroup;
 
-      this.stonesCache[row][col] = pieceObjGroup;
-
-      this.scene.add(pieceObjGroup);
+      //this.scene.add(pieceObjGroup);
     },
 
     removeStone: function(row, col) {
@@ -941,6 +938,8 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
         antialias: true
       });
       this.renderer.setSize(viewWidth, viewHeight);
+      this.renderer.shadowMapEnabled = true;
+      this.renderer.shadowMapType = THREE.PCFSoftShadowMap;
 
       // create the scene
       this.scene = new THREE.Scene();
@@ -962,10 +961,26 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
      * Initialize the lights.
      */
     initLights: function() {
-      // top light
-      this.lights.topLight = new THREE.PointLight();
-      this.lights.topLight.position.set(BOARD.centerX, 150, BOARD.centerZ);
-      this.lights.topLight.intensity = 0.4;
+      //// top light
+      //this.lights.topLight = new THREE.PointLight();
+      //this.lights.topLight.position.set(BOARD.centerX, 150, BOARD.centerZ);
+      //this.lights.topLight.intensity = 0.4;
+      //this.scene.add(this.lights.topLight);
+
+      this.lights.shadowLight = new THREE.DirectionalLight();
+      this.lights.shadowLight.shadowCameraNear	= 0.01;
+      this.lights.shadowLight.castShadow = true;
+      //this.lights.shadowLight.onlyShadow = true;
+      this.lights.shadowLight.shadowDarkness = 0.4;
+      this.lights.shadowLight.shadowCameraLeft = -40;
+      this.lights.shadowLight.shadowCameraRight = 40;
+      this.lights.shadowLight.shadowCameraTop = -40;
+      this.lights.shadowLight.shadowCameraBottom = 40;
+      //this.lights.shadowLight.shadowCameraVisible = true;
+      this.lights.shadowLight.position.set(40, 100, 40);
+      this.lights.shadowLight.target.position.set(40, 0, 40);
+      this.lights.shadowLight.intensity = 0.4;
+      this.scene.add(this.lights.shadowLight);
 
       // white's side light
       this.lights.whiteSideLight = new THREE.SpotLight();
@@ -973,6 +988,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       this.lights.whiteSideLight.position.set(BOARD.centerX, 100, BOARD.centerZ + 200);
       this.lights.whiteSideLight.intensity = 0.8;
       this.lights.whiteSideLight.shadowCameraFov = 55;
+      this.scene.add(this.lights.whiteSideLight);
 
       // black's side light
       this.lights.blackSideLight = new THREE.SpotLight();
@@ -980,17 +996,13 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       this.lights.blackSideLight.position.set(BOARD.centerX, 100, BOARD.centerZ - 200);
       this.lights.blackSideLight.intensity = 0.8;
       this.lights.blackSideLight.shadowCameraFov = 55;
+      this.scene.add(this.lights.blackSideLight);
 
       // light that will follow the camera position
       this.lights.movingLight = new THREE.PointLight(0xf9edc9);
       this.lights.movingLight.position.set(0, 10, 0);
       this.lights.movingLight.intensity = 0.3;
       this.lights.movingLight.distance = 500;
-
-      // add the lights in the scene
-      this.scene.add(this.lights.topLight);
-      this.scene.add(this.lights.whiteSideLight);
-      this.scene.add(this.lights.blackSideLight);
       //this.scene.add(this.lights.movingLight);
     },
 
@@ -1051,6 +1063,8 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       var boardGeometry = loader.parse(BOARD_MODEL).geometry;
       this.boardModel = new THREE.Mesh(boardGeometry, this.materials.boardMaterial);
       this.scene.add(this.boardModel);
+      this.boardModel.castShadow = false;
+      this.boardModel.receiveShadow = true;
 
       // load piece
       var stoneGeometry = loader.parse(STONE_MODEL).geometry;
