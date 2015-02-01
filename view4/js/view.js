@@ -70,7 +70,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
   };
 
   var STONE = {
-    scale: 6.1,
+    scale: 6.25,
     shadowSize: 4.55,
     y: 0.5
   };
@@ -78,7 +78,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
   var MOVE_MARK = {
     color: 0xcc0000,
     size: 0.6,
-    y: 1.08
+    y: 1.09
   }
 
   // http://learningthreejs.com/data/THREEx/docs/THREEx.GeometryUtils.html
