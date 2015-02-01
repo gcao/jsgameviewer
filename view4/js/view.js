@@ -979,30 +979,30 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       //this.lights.shadowLight.shadowCameraVisible = true;
       this.lights.shadowLight.position.set(40, 100, 40);
       this.lights.shadowLight.target.position.set(40, 0, 40);
-      this.lights.shadowLight.intensity = 0.4;
+      this.lights.shadowLight.intensity = 1;
       this.scene.add(this.lights.shadowLight);
 
-      // white's side light
-      this.lights.whiteSideLight = new THREE.SpotLight();
-      this.lights.whiteSideLight.target.position.set(BOARD.centerZ, BOARD.centerY, BOARD.centerZ);
-      this.lights.whiteSideLight.position.set(BOARD.centerX, 100, BOARD.centerZ + 200);
-      this.lights.whiteSideLight.intensity = 0.8;
-      this.lights.whiteSideLight.shadowCameraFov = 55;
-      this.scene.add(this.lights.whiteSideLight);
+      //// white's side light
+      //this.lights.whiteSideLight = new THREE.SpotLight();
+      //this.lights.whiteSideLight.target.position.set(BOARD.centerZ, BOARD.centerY, BOARD.centerZ);
+      //this.lights.whiteSideLight.position.set(BOARD.centerX, 100, BOARD.centerZ + 200);
+      //this.lights.whiteSideLight.intensity = 0.8;
+      //this.lights.whiteSideLight.shadowCameraFov = 55;
+      //this.scene.add(this.lights.whiteSideLight);
 
-      // black's side light
-      this.lights.blackSideLight = new THREE.SpotLight();
-      this.lights.blackSideLight.target.position.set(BOARD.centerZ, BOARD.centerY, BOARD.centerZ);
-      this.lights.blackSideLight.position.set(BOARD.centerX, 100, BOARD.centerZ - 200);
-      this.lights.blackSideLight.intensity = 0.8;
-      this.lights.blackSideLight.shadowCameraFov = 55;
-      this.scene.add(this.lights.blackSideLight);
+      //// black's side light
+      //this.lights.blackSideLight = new THREE.SpotLight();
+      //this.lights.blackSideLight.target.position.set(BOARD.centerZ, BOARD.centerY, BOARD.centerZ);
+      //this.lights.blackSideLight.position.set(BOARD.centerX, 100, BOARD.centerZ - 200);
+      //this.lights.blackSideLight.intensity = 0.8;
+      //this.lights.blackSideLight.shadowCameraFov = 55;
+      //this.scene.add(this.lights.blackSideLight);
 
-      // light that will follow the camera position
-      this.lights.movingLight = new THREE.PointLight(0xf9edc9);
-      this.lights.movingLight.position.set(0, 10, 0);
-      this.lights.movingLight.intensity = 0.3;
-      this.lights.movingLight.distance = 500;
+      //// light that will follow the camera position
+      //this.lights.movingLight = new THREE.PointLight(0xf9edc9);
+      //this.lights.movingLight.position.set(0, 15, 0);
+      //this.lights.movingLight.intensity = 0.2;
+      //this.lights.movingLight.distance = 500;
       //this.scene.add(this.lights.movingLight);
     },
 
@@ -1038,7 +1038,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       // black piece material
       this.materials.blackPieceMaterial = new THREE.MeshPhongMaterial({
         color: 0x444455,
-        shininess: 80
+        shininess: 90
       });
 
       // pieces shadow plane material
@@ -1285,9 +1285,9 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
 
       this.cameraController.update();
 
-      // update moving light position
-      this.lights.movingLight.position.x = this.camera.position.x;
-      this.lights.movingLight.position.z = this.camera.position.z;
+      //// update moving light position
+      //this.lights.movingLight.position.x = this.camera.position.x;
+      //this.lights.movingLight.position.z = this.camera.position.z;
 
       this.renderer.render(this.scene, this.camera);
     },
@@ -1337,10 +1337,6 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       drawPoint(boardX + boardSize, boardY, boardZ);
       drawPoint(boardX, boardY, boardZ + boardSize);
       drawPoint(boardX + boardSize, boardY, boardZ + boardSize);
-
-      drawLine(this.lights.topLight.position);
-      drawLine(this.lights.blackSideLight.position);
-      drawLine(this.lights.whiteSideLight.position);
     }
 
   };
