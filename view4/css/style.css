@@ -58,7 +58,7 @@ body {
       font-weight: bold; }
       .gameviewer .comment-container .branches a {
         text-decoration: none; }
-    .gameviewer .comment-container .comment {
+    .gameviewer .comment-container .sub-container {
       display: inline-block;
       text-align: left; }
 

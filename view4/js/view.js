@@ -41,8 +41,10 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
         <div class='result'></div>\
       </div>\
       <div class='comment-container' align='center'>\
-        <span class='branches'></span>\
-        <div class='comment'></div>\
+        <div class='sub-container'>\
+          <span class='branches'></span>\
+          <span class='comment'></span>\
+        </div>\
       </div>\
       <div class='board'></div>\
     </div>\
@@ -448,8 +450,6 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
         var n = node.children.length;
         var s = "";
         for(var i=0; i<node.children.length; i++){
-          var branchName = BRANCHES[i] + ':' + BRANCHES_NAME[i];
-          s += "<a class='branch' href='#' onclick='jsGameViewer."+this.id+".goToBranch("+i+");return false;'>"+branchName+"</a>&nbsp;&nbsp;&nbsp; ";
           //var title = "";
           //if (i == 0){
           //  title = jsgvTranslations['branch']+" A = "+jsgvTranslations['trunk']+" [Alt Shift &#8594;][Alt Shift A]";
@@ -465,10 +465,20 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
           var child = node.children[i];
           if (child.type == jsGameViewer.model.NODE_MOVE){
             var x = child.x, y = child.y;
+            var branchLabel = BRANCHES[i];
+            for (var j=0; j<i; j++) {
+              var c1 = node.children[j];
+              if (x == c1.x && y == c1.y) {
+                branchLabel = BRANCHES[j];
+                break;
+              }
+            }
+            var branchName = branchLabel + ':' + BRANCHES_NAME[i];
+            s += "<a class='branch' href='#' onclick='jsGameViewer."+this.id+".goToBranch("+i+");return false;'>"+branchName+"</a>&nbsp;&nbsp;&nbsp; ";
             var pos = boardToWorld(x, y);
             pos.y = BOARD.markY + 0.01;
 
-            var textObj = this.drawText(BRANCHES[i], {
+            var textObj = this.drawText(branchLabel, {
               color: 0xffffff,
               x: pos.x - 0.6,
               y: pos.y,
@@ -506,12 +516,13 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
         comment += node.comment.replace(/\n/g, "<br/>\n");
       }
       var commentContainer = this.container.find('.comment-container');
+      commentContainer.css('left', 0);
       if (comment) {
-        var s = "<div class='comment'>" + comment + "</div>";
+        var s = "<span class='comment'>" + comment + "</span>";
         if (commentContainer.find('.comment').length > 0)
           commentContainer.find('.comment').replaceWith(s);
         else
-          commentContainer.append(s);
+          commentContainer.find('.sub-container').append(s);
       } else {
         commentContainer.find('.comment').replaceWith('');
       }
