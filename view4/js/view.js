@@ -135,6 +135,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       jq4gv('.toolbar .forwardN').click(this.forwardN.bind(this));
       jq4gv('.toolbar .forwardToComment').click(this.forwardToComment.bind(this));
       jq4gv('.toolbar .forwardAll').click(this.forwardAll.bind(this));
+      this.registerKeyListener();
 
       /** @type THREE.WebGLRenderer */
       this.renderer = null;
@@ -185,6 +186,79 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       }
 
       this.drawBoard();
+    },
+
+    registerKeyListener: function(){
+      var _this = this;
+      //for(var i=1; i<=jsGameViewer.length; i++){
+      //  jsGameViewer[jsGameViewer.getGameId(i)].removeKeyListener();
+      //}
+      //jq4gv(this.jqId+"_bannerbg").css("background-color",this.config.activeBackground);
+      document.onkeydown = function(e){
+        var keyCode;
+        if (window.event)
+          keyCode = window.event.keyCode;
+        else if (e)
+          keyCode = e.which;
+        else
+          return;
+
+        e = e || window.event;
+        switch(keyCode){
+          case 37: // left
+            if (e.ctrlKey){
+              if (e.altKey)
+                _this.backAll();
+              else
+                _this.backN(_this.config.fastMode)
+            } else {
+              if (e.altKey && e.shiftKey)
+                _this.backToComment();
+              else
+                _this.back();
+            }
+            return;
+          case 39: // right
+            if (e.ctrlKey){
+              if (e.altKey)
+                _this.forwardAll();
+              else
+                _this.forwardN(_this.config.fastMode);
+            } else {
+              if (e.altKey && e.shiftKey)
+                _this.forwardToComment();
+              else
+                _this.forward();
+            }
+            return;
+          case 71: // g
+            _this.goTo();
+            return;
+          case 46: // delete
+            _this.remove();
+            return;
+        }
+
+        //if (e.altKey && e.shiftKey){
+        //  switch (keyCode) {
+        //    case 71: // g
+        //      _this.goTo();
+        //      setTimeout("jsGameViewer."+_this.id+".goToPopup()",100);
+        //      break;
+        //    case 77: // m
+        //      _this.toggleNumber();
+        //      break;
+        //    case 82: // r
+        //      _this.refresh();
+        //      break;
+        //    default: // a: 65, z: 90
+        //      if (keyCode >= 65 && keyCode <= 90){
+        //        _this.goToBranch(keyCode - 65);
+        //      }
+        //  }
+        //}
+      };
+      return this;
     },
 
     /* reset view to beginning of a game
@@ -473,7 +547,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
                 break;
               }
             }
-            var branchName = branchLabel + ':' + BRANCHES_NAME[i];
+            var branchName = BRANCHES_NAME[i] + ':' + branchLabel;
             s += "<a class='branch' href='#' onclick='jsGameViewer."+this.id+".goToBranch("+i+");return false;'>"+branchName+"</a>&nbsp;&nbsp;&nbsp; ";
             var pos = boardToWorld(x, y);
             pos.y = BOARD.markY + 0.01;
