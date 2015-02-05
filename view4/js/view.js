@@ -206,29 +206,31 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
         e = e || window.event;
         switch(keyCode){
           case 37: // left
-            if (e.ctrlKey){
-              if (e.altKey)
-                _this.backAll();
-              else
-                _this.backN(_this.config.fastMode)
-            } else {
-              if (e.altKey && e.shiftKey)
-                _this.backToComment();
-              else
-                _this.back();
-            }
+          case 38: // up
+            _this.back();
             return;
           case 39: // right
-            if (e.ctrlKey){
-              if (e.altKey)
-                _this.forwardAll();
-              else
-                _this.forwardN(_this.config.fastMode);
-            } else {
-              if (e.altKey && e.shiftKey)
-                _this.forwardToComment();
-              else
-                _this.forward();
+          case 40: // down
+            _this.forward();
+            return;
+          case 36: // home
+            _this.backAll();
+            return;
+          case 35: // end
+            _this.forwardAll();
+            return;
+          case 219:
+            if (e.shiftKey) { // {
+              _this.backToComment();
+            } else { // [
+              _this.backN();
+            }
+            return;
+          case 221:
+            if (e.shiftKey) { // }
+              _this.forwardToComment();
+            } else { // ]
+              _this.forwardN();
             }
             return;
           case 71: // g
@@ -237,6 +239,10 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
           case 46: // delete
             _this.remove();
             return;
+          default: // 0: 48, 9: 57
+            if (keyCode >= 48 && keyCode <= 57){
+              _this.goToBranch(keyCode - 48);
+            }
         }
 
         //if (e.altKey && e.shiftKey){
