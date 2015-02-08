@@ -1,10 +1,13 @@
+require 'image_size'
+require 'rmagick'
+
 module Sprites
   def self.to_sprites(dir)
     dx = 0
     dy = 10
     css_prefix = 'gvsprite-'
     sprite_img = '/jsgameviewer/view/images/sprites.gif'
-    excludes = [/sprite.*/,/loading\.gif/]
+    excludes = [/default\.gif/, /sprite.*/,/loading\.gif/]
 
     Dir.chdir dir
     y = dy / 2

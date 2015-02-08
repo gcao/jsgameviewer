@@ -2,9 +2,9 @@ source 'https://rubygems.org'
 
 #gem 'capistrano'
 
-## Depends on ImageMagick
-#gem "rmagick"
-#gem "imagesize"
+# Depends on ImageMagick
+gem "rmagick"
+gem "imagesize"
 
 group :development do
   gem "sass"

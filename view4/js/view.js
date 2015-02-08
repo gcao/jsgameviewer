@@ -15,26 +15,26 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
   var VIEW = "\
     <div class='gameviewer'>\
       <div class='toolbar'>\
-        <div class='tb-item angledView'><a class='toggle-opacity ' href='javascript: void(0)'><img class='angled-view' src='/jsgameviewer/view/images/default.gif'></a></div>\
-        <div class='tb-item topView'><a class='toggle-opacity ' href='javascript: void(0)'><img class='top-view' src='/jsgameviewer/view/images/default.gif'></a></div>\
-        <div class='tb-item backAll'><a class='toggle-opacity ' href='javascript: void(0)'><img class='sprite-backall' src='/jsgameviewer/view/images/default.gif'></a></div>\
-        <div class='tb-item backToComment'><a class='toggle-opacity ' href='javascript: void(0)'><img class='sprite-backc' src='/jsgameviewer/view/images/default.gif'></a></div>\
-        <div class='tb-item backN'><a class='toggle-opacity ' href='javascript: void(0)'><img class='sprite-backn' src='/jsgameviewer/view/images/default.gif'></a></div>\
-        <div class='tb-item back'><a class='toggle-opacity ' href='javascript: void(0)'><img class='sprite-back' src='/jsgameviewer/view/images/default.gif'></a></div>\
+        <div class='tb-item angledView'><a class='toggle-opacity' href='javascript: void(0)'><img class='angled-view' src='http://gcao.github.io/jsgameviewer/view4/images/default.gif'></a></div>\
+        <div class='tb-item topView'><a class='toggle-opacity' href='javascript: void(0)'><img class='top-view' src='http://gcao.github.io/jsgameviewer/view4/images/default.gif'></a></div>\
+        <div class='tb-item backAll'><a class='toggle-opacity' href='javascript: void(0)'><img class='sprite-backall' src='http://gcao.github.io/jsgameviewer/view4/images/default.gif'></a></div>\
+        <div class='tb-item backToComment'><a class='toggle-opacity' href='javascript: void(0)'><img class='sprite-backc' src='http://gcao.github.io/jsgameviewer/view4/images/default.gif'></a></div>\
+        <div class='tb-item backN'><a class='toggle-opacity' href='javascript: void(0)'><img class='sprite-backn' src='http://gcao.github.io/jsgameviewer/view4/images/default.gif'></a></div>\
+        <div class='tb-item back'><a class='toggle-opacity' href='javascript: void(0)'><img class='sprite-back' src='http://gcao.github.io/jsgameviewer/view4/images/default.gif'></a></div>\
         <div class='tb-item goTo'><div class='move-number'>0</div></div>\
-        <div class='tb-item forward'><a class='toggle-opacity ' href='javascript: void(0)'><img class='sprite-forward' src='/jsgameviewer/view/images/default.gif'></a></div>\
-        <div class='tb-item forwardN'><a class='toggle-opacity ' href='javascript: void(0)'><img class='sprite-forwardn' src='/jsgameviewer/view/images/default.gif'></a></div>\
-        <div class='tb-item forwardToComment'><a class='toggle-opacity ' href='javascript: void(0)'><img class='sprite-forwardc' src='/jsgameviewer/view/images/default.gif'></a></div>\
-        <div class='tb-item forwardAll'><a class='toggle-opacity ' href='javascript: void(0)'><img class='sprite-forwardall' src='/jsgameviewer/view/images/default.gif'></a></div>\
+        <div class='tb-item forward'><a class='toggle-opacity' href='javascript: void(0)'><img class='sprite-forward' src='http://gcao.github.io/jsgameviewer/view4/images/default.gif'></a></div>\
+        <div class='tb-item forwardN'><a class='toggle-opacity' href='javascript: void(0)'><img class='sprite-forwardn' src='http://gcao.github.io/jsgameviewer/view4/images/default.gif'></a></div>\
+        <div class='tb-item forwardToComment'><a class='toggle-opacity' href='javascript: void(0)'><img class='sprite-forwardc' src='http://gcao.github.io/jsgameviewer/view4/images/default.gif'></a></div>\
+        <div class='tb-item forwardAll'><a class='toggle-opacity' href='javascript: void(0)'><img class='sprite-forwardall' src='http://gcao.github.io/jsgameviewer/view4/images/default.gif'></a></div>\
       </div>\
       <div class='info'>\
         <div class='time'></div>\
         <div class='name'></div>\
         <div class='white-player'></div>\
         <div class='player-images'>\
-          <div class='white'><img src='/jsgameviewer/view/images/15/white.gif'/></div>\
+          <div class='white'><img src='http://gcao.github.io/jsgameviewer/view4/images/15/white.gif'/></div>\
           <div class='vs'>-</div>\
-          <div class='black'><img src='/jsgameviewer/view/images/15/black.gif'/></div>\
+          <div class='black'><img src='http://gcao.github.io/jsgameviewer/view4/images/15/black.gif'/></div>\
         </div>\
         <div class='black-player'></div>\
         <div class='moves'></div>\
@@ -1102,10 +1102,10 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
      */
     initMaterials: function() {
       var boardImage;
-      //boardImage = '3d_assets/board_texture1.jpg';
-      //boardImage = '3d_assets/board_texture2.jpg';
-      boardImage = '3d_assets/board_texture3.jpg';
-      //boardImage = '3d_assets/square_light_texture.jpg';
+      //boardImage = 'http://gcao.github.io/jsgameviewer/view4/3d_assets/board_texture1.jpg';
+      //boardImage = 'http://gcao.github.io/jsgameviewer/view4/3d_assets/board_texture2.jpg';
+      boardImage = 'http://gcao.github.io/jsgameviewer/view4/3d_assets/board_texture3.jpg';
+      //boardImage = 'http://gcao.github.io/jsgameviewer/view4/3d_assets/square_light_texture.jpg';
       var boardTexture = THREE.ImageUtils.loadTexture(boardImage);
       boardTexture.wrapS = boardTexture.wrapT = THREE.RepeatWrapping;
       boardTexture.repeat.set(3, 3);
@@ -1117,7 +1117,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       // ground material
       this.materials.groundMaterial = new THREE.MeshBasicMaterial({
         transparent: true,
-        map: THREE.ImageUtils.loadTexture('3d_assets/ground.png')
+        map: THREE.ImageUtils.loadTexture('http://gcao.github.io/jsgameviewer/view4/3d_assets/ground.png')
       });
 
       // white piece material
@@ -1135,7 +1135,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       // pieces shadow plane material
       this.materials.pieceShadowPlane = new THREE.MeshBasicMaterial({
         transparent: true,
-        map: THREE.ImageUtils.loadTexture('3d_assets/piece_shadow.png')
+        map: THREE.ImageUtils.loadTexture('http://gcao.github.io/jsgameviewer/view4/3d_assets/piece_shadow.png')
       });
 
       this.materials.moveMarkMaterial = new THREE.MeshBasicMaterial({

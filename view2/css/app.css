@@ -159,25 +159,25 @@
     top: 28px;
     width: 35px;
     height: 414px; }
-  .gameviewer .tb-item {
-    position: relative;
-    text-align: center;
-    background-repeat: no-repeat;
-    background-position: center center;
-    z-index: 1; }
-  .gameviewer .tb-branches {
-    position: relative;
-    width: 100%;
-    height: 0px;
-    overflow: hidden;
-    margin: 0px; }
-  .gameviewer .tb-branch {
-    position: relative;
-    left: 20%;
-    width: 80%;
-    height: 20px;
-    margin: 1px;
-    font-weight: bolder; }
+    .gameviewer .toolbar .tb-item {
+      position: relative;
+      text-align: center;
+      background-repeat: no-repeat;
+      background-position: center center;
+      z-index: 1; }
+    .gameviewer .toolbar .branches {
+      position: relative;
+      width: 100%;
+      height: 0px;
+      overflow: hidden;
+      margin: 0px; }
+      .gameviewer .toolbar .branches .tb-branch {
+        position: relative;
+        left: 20%;
+        width: 80%;
+        height: 20px;
+        margin: 1px;
+        font-weight: bolder; }
   .gameviewer .point-label {
     position: absolute;
     left: 425px;
