@@ -1101,10 +1101,17 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
      * Initialize the materials.
      */
     initMaterials: function() {
+      // http://stackoverflow.com/a/24103129/120151
+      // http://stackoverflow.com/a/18972267/120151
+      // For some reason 'crossOrigin' does not have to be set when
+      // images are hosted on a website that suports CORS (e.g. imgur.com)
+      //THREE.ImageUtils.crossOrigin = '';
+
       var boardImage;
       //boardImage = 'http://gcao.github.io/jsgameviewer/view4/3d_assets/board_texture1.jpg';
       //boardImage = 'http://gcao.github.io/jsgameviewer/view4/3d_assets/board_texture2.jpg';
-      boardImage = 'http://gcao.github.io/jsgameviewer/view4/3d_assets/board_texture3.jpg';
+      //boardImage = 'http://gcao.github.io/jsgameviewer/view4/3d_assets/board_texture3.jpg';
+      boardImage = 'http://i.imgur.com/SyQd2RT.jpg';
       //boardImage = 'http://gcao.github.io/jsgameviewer/view4/3d_assets/square_light_texture.jpg';
       var boardTexture = THREE.ImageUtils.loadTexture(boardImage);
       boardTexture.wrapS = boardTexture.wrapT = THREE.RepeatWrapping;
@@ -1117,7 +1124,8 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       // ground material
       this.materials.groundMaterial = new THREE.MeshBasicMaterial({
         transparent: true,
-        map: THREE.ImageUtils.loadTexture('http://gcao.github.io/jsgameviewer/view4/3d_assets/ground.png')
+        //map: THREE.ImageUtils.loadTexture('http://gcao.github.io/jsgameviewer/view4/3d_assets/ground.png')
+        map: THREE.ImageUtils.loadTexture('http://i.imgur.com/hqYtii8.png')
       });
 
       // white piece material
@@ -1135,7 +1143,8 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       // pieces shadow plane material
       this.materials.pieceShadowPlane = new THREE.MeshBasicMaterial({
         transparent: true,
-        map: THREE.ImageUtils.loadTexture('http://gcao.github.io/jsgameviewer/view4/3d_assets/piece_shadow.png')
+        //map: THREE.ImageUtils.loadTexture('http://gcao.github.io/jsgameviewer/view4/3d_assets/piece_shadow.png')
+        map: THREE.ImageUtils.loadTexture('http://i.imgur.com/uMLfEQU.png')
       });
 
       this.materials.moveMarkMaterial = new THREE.MeshBasicMaterial({
