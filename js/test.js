@@ -5,17 +5,27 @@ if (location.toString().match(/dragongoserver.net\/show_games/)) {
   for (var i=0; i<gameElems.length; i++) {
     var elem = gameElems[i];
     var sgf = "http://www.dragongoserver.net/sgf.php?gid=" + elem.text;
-    elem.onclick = function(e) {
-      var win = window.open();
-      if (win) {
-        win.document.write(getWindowContent(sgf));
-        win.focus();
-        return false;
-      } else {
-        alert("Please disable popup blocker for this website to allow opening game in a new window.");
-        return true;
+
+    (function(elem, sgf){
+      elem.style.display = "inline";
+      var newLink = document.createElement('span');
+      newLink.style.marginLeft = "5px";
+      newLink.style.marginRight = "3px";
+      newLink.style.color = "#ff3355";
+      newLink.appendChild(document.createTextNode("View"));
+      newLink.onclick = function(e) {
+        var win = window.open();
+        if (win) {
+          win.document.write(getWindowContent(sgf));
+          win.focus();
+          return false;
+        } else {
+          alert("Please disable popup blocker for this website to allow opening game in a new window.");
+          return true;
+        }
       }
-    }
+      elem.parentElement.appendChild(newLink);
+    })(elem, sgf);
   }
 }
 
@@ -36,6 +46,6 @@ function getWindowContent(game) {
     "<script type='text/javascript' src='http://localhost:8000/jsgameviewer/view4/js/view.js' charset='utf-8'></script>" +
     "<script type='text/javascript'>" +
     "var controller = new jsGameViewer.GameController();" +
-    "controller.load('" + sgf + "')" +
+    "controller.load('" + game + "')" +
     "</script>";
 }
