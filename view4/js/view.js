@@ -15,8 +15,8 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
   var VIEW = "\
     <div class='gameviewer'>\
       <div class='toolbar'>\
-        <div class='tb-item angledView'><a class='toggle-opacity' href='javascript: void(0)'><img class='angled-view' src='http://gcao.github.io/jsgameviewer/view4/images/default.gif'></a></div>\
-        <div class='tb-item topView'><a class='toggle-opacity' href='javascript: void(0)'><img class='top-view' src='http://gcao.github.io/jsgameviewer/view4/images/default.gif'></a></div>\
+        <div class='tb-item angledView'><a class='toggle-opacity' href='javascript: void(0)'><img class='sprite-angledView' src='http://gcao.github.io/jsgameviewer/view4/images/default.gif'></a></div>\
+        <div class='tb-item topView'><a class='toggle-opacity' href='javascript: void(0)'><img class='sprite-topView' src='http://gcao.github.io/jsgameviewer/view4/images/default.gif'></a></div>\
         <div class='tb-item backAll'><a class='toggle-opacity' href='javascript: void(0)'><img class='sprite-backall' src='http://gcao.github.io/jsgameviewer/view4/images/default.gif'></a></div>\
         <div class='tb-item backToComment'><a class='toggle-opacity' href='javascript: void(0)'><img class='sprite-backc' src='http://gcao.github.io/jsgameviewer/view4/images/default.gif'></a></div>\
         <div class='tb-item backN'><a class='toggle-opacity' href='javascript: void(0)'><img class='sprite-backn' src='http://gcao.github.io/jsgameviewer/view4/images/default.gif'></a></div>\
