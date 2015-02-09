@@ -1,6 +1,12 @@
 console.log('test.js')
 
 if (location.toString().match(/dragongoserver.net\/show_games/)) {
+  dgs();
+} else if (location.toString().match(/www\.mitbbs\.com\/article_t\/Go/)) {
+  mitbbs();
+}
+
+function dgs() {
   var gameElems = document.querySelectorAll("a.Button");
   for (var i=0; i<gameElems.length; i++) {
     var elem = gameElems[i];
@@ -26,6 +32,17 @@ if (location.toString().match(/dragongoserver.net\/show_games/)) {
       }
       elem.parentElement.appendChild(newLink);
     })(elem, sgf);
+  }
+}
+function mitbbs() {
+  var dependencyLoaded = false;
+  var postElems = document.querySelectorAll("td.jiawenxhang-type");
+  for (var i=0; i<postElems.length; i++) {
+    var elem = postElems[i];
+    var html = elem.innerHTML;
+    if (html.indexOf('<<<') >= 0 && html.indexOf('>>>') >= 0) {
+
+    }
   }
 }
 
