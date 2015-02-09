@@ -33,7 +33,8 @@ function getWindowContent(game) {
   return "<!DOCTYPE html>" +
     "<link rel='stylesheet' type='text/css' href='http://localhost:8000/jsgameviewer/view4/css/style.css' />" +
     "<script type='text/javascript' src='http://localhost:8000/jsgameviewer/js/jquery-1.3.2.min.js'></script>" +
-    "<script type='text/javascript' src='http://localhost:8000/jsgameviewer/js/zh_cn.js' charset='utf-8'></script>" +
+    "<script type='text/javascript' src='http://localhost:8000/jsgameviewer/js/en_us.js'></script>" +
+    //"<script type='text/javascript' src='http://localhost:8000/jsgameviewer/js/zh_cn.js' charset='utf-8'></script>" +
     "<script type='text/javascript' src='http://localhost:8000/jsgameviewer/js/base.js'></script>" +
     "<script type='text/javascript' src='http://localhost:8000/jsgameviewer/js/model.js'></script>" +
     "<script type='text/javascript' src='http://localhost:8000/jsgameviewer/js/parser.js'></script>" +

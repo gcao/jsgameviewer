@@ -1,5 +1,3 @@
-'use strict';
-
 // Default view configuration
 jq4gv.extend(jsGameViewer.CONFIG, {
   //showCalibrate: true,
@@ -8,9 +6,15 @@ jq4gv.extend(jsGameViewer.CONFIG, {
 });
 
 jq4gv.extend(jsGameViewer.GameController.prototype, function(){
+  'use strict';
+
   var LABELS = ['A','B','C','D','E','F','G','H','J','K','L','M','N','O','P','Q','R','S','T'];
   var BRANCHES = ['A','B','C','D','E','F','G','H','I','J'];
-  var BRANCHES_NAME = ['实战','变化一','变化二','变化三','变化四','变化五','变化六','变化七','变化八','变化九'];
+  var BRANCHES_NAME = [jsgvTranslations['trunk'],
+    jsgvTranslations['branch_1'], jsgvTranslations['branch_2'], jsgvTranslations['branch_3'],
+    jsgvTranslations['branch_4'], jsgvTranslations['branch_5'], jsgvTranslations['branch_6'],
+    jsgvTranslations['branch_7'], jsgvTranslations['branch_8'], jsgvTranslations['branch_9']
+  ];
 
   var VIEW = "\
     <div class='gameviewer'>\
@@ -351,7 +355,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       //infoNode.append("<div>"+jsgvTranslations['moves']+": "+game.getMoves()+"</div>");
       //infoNode.append("<div>"+jsgvTranslations['result']+": "+jq4gv.trim(game.result)+"</div>");
       this.container.find('.result').empty().append(jq4gv.trim(game.result));
-      this.container.find('.moves').empty().append('共' + game.getMoves() + '手');
+      this.container.find('.moves').empty().append(game.getMoves());
       return this;
     },
 

@@ -35,6 +35,15 @@ result                  : Result
 comment                 : Comment
 comment_for             : Comment for MOVE
 branch                  : Variation
+branch_1                : Variation 1
+branch_2                : Variation 2
+branch_3                : Variation 3
+branch_4                : Variation 4
+branch_5                : Variation 5
+branch_6                : Variation 6
+branch_7                : Variation 7
+branch_8                : Variation 8
+branch_9                : Variation 9
 trunk                   : Game move
 branch_tag              : <Variation>
 error_thrown            : Error

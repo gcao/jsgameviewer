@@ -17,7 +17,6 @@ sudo gem install imagesize
 end
 require 'rubygems'
 require 'rake'
-require 'ftools'
 require 'fileutils'
 require 'open-uri'
 

@@ -35,6 +35,15 @@ result                  : 结果
 comment                 : 评论
 comment_for             : 第 MOVE 手评论
 branch                  : 变化
+branch_1                : 变化一
+branch_2                : 变化二
+branch_3                : 变化三
+branch_4                : 变化四
+branch_5                : 变化五
+branch_6                : 变化六
+branch_7                : 变化七
+branch_8                : 变化八
+branch_9                : 变化九
 trunk                   : 实战
 branch_tag              : <变化>
 error_thrown            : 操作错误
