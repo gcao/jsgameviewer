@@ -761,8 +761,8 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       var node = this.gameState.currentNode;
       if (!comment){
         comment = "<strong>";
-        if (node.depth > 1)
-          comment += jsgvTranslations['branch_tag'];
+        //if (node.depth > 1)
+        //  comment += jsgvTranslations['branch_tag'];
         comment += jsgvTranslations['comment_for'].replace(/MOVE/,node.moveNumber)+":</strong>";
         if (node.comment != undefined && node.comment != null)
           comment += "<br/>"+node.comment.replace(/\n/g, "<br/>\n");
