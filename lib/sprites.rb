@@ -6,15 +6,15 @@ module Sprites
     dx = 0
     dy = 10
     css_prefix = 'gvsprite-'
-    sprite_img = '/jsgameviewer/view/images/sprites.gif'
-    excludes = [/default\.gif/, /sprite.*/,/loading\.gif/]
+    sprite_img = '/jsgameviewer/view/images/sprites.png'
+    excludes = [/gif$/, /default\.png/, /sprite.*/,/loading\.png/]
 
     Dir.chdir dir
     y = dy / 2
     # depends on ImageMagick
     cmd = "convert "
     sprites = ""
-    Dir["**/*.gif"].each do |file|
+    Dir["**/*.png"].each do |file|
       next if excludes.detect{|exclude| file =~ exclude}
       #puts file
       size = ImageSize.new(File.open(file))
@@ -31,7 +31,7 @@ module Sprites
       cmd += "-page +0+#{y} #{file} "
       y += h + dy
     end
-    cmd += "-background none -mosaic -bordercolor none sprites.gif"
+    cmd += "-background none -mosaic -bordercolor none sprites.png"
     system(cmd)
 
     File.open("../sass/sprites.sass", "w") do |f|

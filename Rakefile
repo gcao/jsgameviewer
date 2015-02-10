@@ -69,7 +69,7 @@ task :dist => :template2js
 
 desc "Convert SASS to stylesheet"
 task :sass2css => :sprites do
-  gem "haml"
+  #gem "haml"
   `sass view/sass/main.sass > view/default.css`
 end
 task :dist => :sass2css

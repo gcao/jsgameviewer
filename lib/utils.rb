@@ -1,7 +1,16 @@
+BLACK = 0
+WHITE = 1
+
+MARK_MOVE = 0
+MARK_CROSS = 1
+MARK_TRIANGLE = 2
+MARK_SQUARE = 3
+MARK_CIRCLE = 4
+MARK_BLACK_TERRITORY = 5
+MARK_WHITE_TERRITORY = 6
+
 module Utils
   HLABELS = ['A','B','C','D','E','F','G','H','J','K','L','M','N','O','P','Q','R','S','T']
-  BLACK = 0
-  WHITE = 1
 
   class << self
     def draw_board (grid, size, label_color, label_font, label_font_size)
@@ -29,7 +38,7 @@ module Utils
         gc.line(x+offset, y, x+offset, y+h)
         gc.line(x, y+offset, x+w, y+offset)
       end
-    
+
       # star marks
       gc.fill 'black'
       3.times do |i|
@@ -40,9 +49,10 @@ module Utils
           gc.circle(x1, y1, x1+r, y1)
         end
       end
-    
+
       # vetical labels
       gc.stroke 'transparent'
+      #gc.text_antialias true
       gc.fill label_color
       gc.font_family label_font
       gc.pointsize label_font_size
@@ -54,7 +64,7 @@ module Utils
         label = (size-i).to_s
         gc.text(x,y,label)
       end
-    
+
       # horizontal labels
 
       gc.text_align(Magick::CenterAlign)
@@ -63,8 +73,8 @@ module Utils
         x = vlabelwidth + margin + i*grid + grid/2 + 1
         gc.text(x,y,HLABELS[i])
       end
-      
-      save_to_file gc, width, height, "./view/images/#{grid.to_s}/board.gif"
+
+      save_to_file gc, width, height, "./view/images/#{grid.to_s}/board.png"
     end
 
     def draw_daoqiboard(grid, size, vbw)
@@ -88,7 +98,7 @@ module Utils
         gc.line(x+offset, y, x+offset, y+h)
         gc.line(x, y+offset, x+w, y+offset)
       end
-    
+
       # star marks
       gc.fill 'black'
       3.times do |i|
@@ -99,8 +109,8 @@ module Utils
           gc.circle(x1, y1, x1+r, y1)
         end
       end
-    
-      save_to_file gc, width, height, "./view/images/#{grid.to_s}/boarddq.gif"
+
+      save_to_file gc, width, height, "./view/images/#{grid.to_s}/boarddq.png"
     end
 
     def draw_vlabel(grid, size, vbw, label_color, label_font, label_font_size)
@@ -109,6 +119,7 @@ module Utils
       vlabelheight = 2*size*grid
       gc = Magick::Draw.new
       gc.stroke 'transparent'
+      #gc.text_antialias true
       gc.fill label_color
       gc.font_family label_font
       gc.pointsize label_font_size
@@ -120,8 +131,8 @@ module Utils
         label = (daoqisize-i%size-8).to_s
         gc.text(x,y,label)
       end
-      
-      save_to_file gc, vlabelwidth, vlabelheight, "./view/images/#{grid.to_s}/vlabel.gif"
+
+      save_to_file gc, vlabelwidth, vlabelheight, "./view/images/#{grid.to_s}/vlabel.png"
     end
 
     def draw_hlabel(grid, size, vbw, label_color, label_font, label_font_size)
@@ -130,6 +141,7 @@ module Utils
       hlabelheight = 17
       gc = Magick::Draw.new
       gc.stroke 'transparent'
+      #gc.text_antialias true
       gc.fill label_color
       gc.font_family label_font
       gc.pointsize label_font_size
@@ -141,8 +153,8 @@ module Utils
         x = i*grid + grid/2 + 1
         gc.text(x,y,HLABELS[i%size])
       end
-      
-      save_to_file gc, hlabelwidth, hlabelheight, "./view/images/#{grid.to_s}/hlabel.gif"
+
+      save_to_file gc, hlabelwidth, hlabelheight, "./view/images/#{grid.to_s}/hlabel.png"
     end
 
     def init_draw_stone(color, size)
@@ -151,6 +163,7 @@ module Utils
       gc.fill_opacity 0
       gc.rectangle(0,0,size,size)
       gc.stroke_width 1
+      gc.stroke_antialias true
       if (color == BLACK)
         gc.stroke('black')
         gc.fill('black')
@@ -177,29 +190,21 @@ module Utils
       gc.stroke_width 2
       gc.line 0,0,size,size
       gc.line 0,size,size,0
-      
+
       save_to_file gc, size, size, file
     end
 
     def redraw_stone_and_dead_stone(color,size)
       s = (color==BLACK)? "black":"white"
-    
-      file = "./view/images/#{size.to_s}/#{s}.gif"
+
+      file = "./view/images/#{size.to_s}/#{s}.png"
       File.delete file if File.exist? file
       draw_stone(color,size,file)
-    
-      file = "./view/images/#{size.to_s}/#{s}_dead.gif"
+
+      file = "./view/images/#{size.to_s}/#{s}_dead.png"
       File.delete file if File.exist? file
       draw_dead_stone(color,size,file)
     end
-
-    MARK_MOVE = 0
-    MARK_CROSS = 1
-    MARK_TRIANGLE = 2
-    MARK_SQUARE = 3
-    MARK_CIRCLE = 4
-    MARK_BLACK_TERRITORY = 5
-    MARK_WHITE_TERRITORY = 6
 
     def draw_mark(type,size)
       gc = Magick::Draw.new
@@ -213,25 +218,25 @@ module Utils
       file = "./view/images/#{size.to_s}/"
       case type
       when MARK_MOVE
-        file += "markmove.gif"
+        file += "markmove.png"
         gc.polygon(size/3,size/3,size/3,2*size/3,
           2*size/3,2*size/3,2*size/3,size/3)
       when MARK_CROSS
-        file += "markcross.gif"
+        file += "markcross.png"
         gc.stroke_width 2
         gc.line size/3,size/3,2*size/3,2*size/3
         gc.line size/3,2*size/3,2*size/3,size/3
       when MARK_TRIANGLE
-        file += "marktriangle.gif"
+        file += "marktriangle.png"
         gc.polygon(size/2,size/4,size/3,5*size/8,2*size/3,5*size/8)
       when MARK_SQUARE
-        file += "marksquare.gif"
+        file += "marksquare.png"
         gc.polygon(size/3,size/3,size/3,2*size/3,2*size/3,2*size/3,2*size/3,size/3)
       when MARK_CIRCLE
-        file += "markcircle.gif"
+        file += "markcircle.png"
         gc.circle(size/2,size/2, size/2,(3*size)/4-1)
       when MARK_BLACK_TERRITORY
-        file += "markblack.gif"
+        file += "markblack.png"
         gc.fill_opacity 1
         gc.fill 'black'
         gc.stroke_opacity 0.5
@@ -245,9 +250,9 @@ module Utils
         gc.stroke 'red'
         gc.stroke_width 1
         gc.circle(size/2,size/2, size/2,(3*size)/4)
-        file += "markwhite.gif"
+        file += "markwhite.png"
       end
-      
+
       save_to_file gc, size, size, file
     end
 
