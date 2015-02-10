@@ -173,7 +173,7 @@ module Utils
         gc.fill('white')
         gc.fill_opacity 1
       end
-      gc.circle(size/2,size/2, 0,size/2)
+      gc.circle(size/2,size/2, 0.5,size/2)
       gc
     end
 
