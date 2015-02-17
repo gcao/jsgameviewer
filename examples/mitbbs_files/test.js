@@ -2,8 +2,8 @@ console.log('test.js')
 
 // http://drnicwilliams.com/2006/11/21/diy-widgets/
 jsgvLoader = function(){
-  var GAME_START = "<<<";
-  var GAME_END   = ">>>";
+  var GAME_START = "SGF[[";
+  var GAME_END = "]]SGF";
 
   function splitStrings(input) {
     var result = [];
@@ -53,40 +53,6 @@ jsgvLoader = function(){
     }
   }
 
-  // http://stackoverflow.com/a/14382498/120151
-  function loadJSQueue(array, success) {
-    if (array.length == 0) {
-      success();
-      return;
-    }
-
-    var callbackCalled = false;
-    oHead = document.getElementsByTagName("head")[0] || document.documentElement;
-    var oScript = document.createElement('script');
-    oScript.type = 'text/javascript';
-    oScript.src = array[0];
-    array.shift();
-
-    var done = false;
-
-    // Attach handlers for all browsers
-    oScript.onload = oScript.onreadystatechange = function () {
-      if (!done && (!this.readyState || this.readyState === "loaded" || this.readyState === "complete")) {
-        done = true;
-
-        // Handle memory leak in IE
-        oScript.onload = oScript.onreadystatechange = null;
-        if (oHead && oScript.parentNode) {
-          oHead.removeChild(oScript);
-        }
-
-        loadJSQueue(array, success);
-      }
-    };
-
-    oHead.insertBefore(oScript, oHead.firstChild);
-  }
-
   return {
     addOnloadHandler: function(func) {
       var oldonload = window.onload;
@@ -102,21 +68,12 @@ jsgvLoader = function(){
     },
 
     load: function(callback){
-      var BASE_URL = 'http://localhost:8000/jsgameviewer/';
-      var STYLESHEET = BASE_URL + "view/default.css"
+      var BASE_URL = 'http://localhost/jsgameviewer/';
+      var STYLESHEET = BASE_URL + "build/compressed.css"
+      var JAVASCRIPT = BASE_URL + "build/compressed.js"
       this.loadStylesheet(STYLESHEET);
-      loadJSQueue([
-        BASE_URL + "js/jquery-1.3.2.min.js",
-        BASE_URL + "js/en_us.js",
-        BASE_URL + "js/thickbox.js",
-        BASE_URL + "js/base.js",
-        BASE_URL + "js/model.js",
-        BASE_URL + "js/parser.js",
-        BASE_URL + "js/controller.js",
-        BASE_URL + "view/js/view.js",
-        BASE_URL + "js/updater.js",
-        BASE_URL + "js/player.js"
-      ], callback);
+      this.loadJavascript('http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js');
+      this.loadJavascript(JAVASCRIPT, callback);
     },
 
     loadStylesheet: function(url) {
@@ -125,7 +82,7 @@ jsgvLoader = function(){
       stylesheet.type = "text/css";
       stylesheet.href = url;
       stylesheet.media = "all";
-      document.head.appendChild(stylesheet);
+      document.documentElement.lastChild.appendChild(stylesheet);
     },
 
     loadJavascript: function(url, callback){
@@ -146,7 +103,7 @@ jsgvLoader = function(){
           script.onload = function(){callback();};
         }
       }
-      document.head.appendChild(script);
+      document.documentElement.lastChild.appendChild(script);
     },
 
     loadGames: function(){
@@ -230,10 +187,19 @@ jsgvLoader.addSiteHandler = function(handler){
 /******************************************************************************/
 /* Site handlers */
 
+jsgvLoader.addSiteHandler(function(){ // localhost handler
+  if (location.host != 'localhost') return;
+
+  if (location.pathname == '/jsgameviewer/examples/load_sgf.html') {
+    jsgvLoader.loadSgf();
+    return true;
+  }
+});
+
 jsgvLoader.addSiteHandler(function(){ // dgs handler
   if (!location.host.match(/dragongoserver\.net$/)) return;
 
-  if (location.pathname.match(/^\/show_games/)) {
+  if (location.path.match(/^\/show_games/)) {
 
     var gameElems = document.querySelectorAll("a.Button");
     for (var i=0; i<gameElems.length; i++) {
@@ -265,7 +231,7 @@ jsgvLoader.addSiteHandler(function(){ // dgs handler
   }
 
   return true;
-});
+}
 
 function getWindowContent(game) {
   return "<!DOCTYPE html>" +
@@ -289,48 +255,10 @@ function getWindowContent(game) {
     "</script>";
 }
 
-jsgvLoader.addSiteHandler(function(){ // localhost handler
-  if (!location.host.match(/^(localhost|127.0.0.1)/)) return;
-
-  console.log('localhost handler');
-
-  if (location.pathname.match(/mitbbs/)) {
-    console.log('localhost mitbbs')
-    var games = [];
-
-    var dependencyLoaded = false;
-    var postElems = document.querySelectorAll("td.jiawenzhang-type");
-    for (var i=0; i<postElems.length; i++) {
-      var elem = postElems[i];
-      var html = elem.innerHTML;
-      var i1 = html.indexOf('(;');
-      var i2 = html.lastIndexOf(')') + 1;
-      if (i1 >= 0 && i2 > i1) {
-        var part1 = html.substring(0, i1);
-        var part2 = html.substring(i1, i2);
-        var part3 = html.substring(i2, html.length);
-
-        if (games.indexOf(part2) < 0) {
-          games.push(part2);
-          elem.innerHTML = part1 + "<div class='jsgv jsgv-inline'>" + part2 + "</div>" + part3;
-        }
-      }
-    }
-
-    if (games.length > 0) {
-      jsgvLoader.load(jsgvLoader.loadGames);
-    }
-  } else if (location.pathname == '/jsgameviewer/examples/load_sgf.html') {
-    jsgvLoader.loadSgf();
-  }
-
-  return true;
-});
-
 jsgvLoader.addSiteHandler(function(){ // mitbbs handler
   if (location.host != 'www.mitbbs.com') return;
 
-  if (location.pathname.match(/^\/article_t\/Go/)) {
+  if (location.path.match(/^\/article_t\/Go/)) {
     var games = [];
 
     var dependencyLoaded = false;
@@ -352,7 +280,7 @@ jsgvLoader.addSiteHandler(function(){ // mitbbs handler
     }
 
     if (games.length > 0) {
-      // TODO
+      this.processAndLoad();
     }
   }
 
@@ -366,11 +294,11 @@ jsgvLoader.addSiteHandler(function(){ // mitbbs handler
 //  jsgvLoader.processAndLoad();
 //});
 
-//jsgvLoader.addOnloadHandler(function(){
+jsgvLoader.addOnloadHandler(function(){
   for (var i = 0; i < jsgvLoader.siteHandlers.length; i++){
     if (jsgvLoader.siteHandlers[i]()) {
       break;
     }
   }
-//});
+});
 
