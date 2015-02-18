@@ -177,7 +177,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       var area = this.xyToArea(x,y);
       var left = area[0], top = area[1], width = area[2], height = area[3];
       if (this.config.gameType == jsGameViewer.DAOQI) {
-        var cssClass = color == jsGameViewer.model.STONE_BLACK? "gvsprite-19-markblack" : "gvsprite-19-markwhite";
+        var cssClass = color == jsGameViewer.model.STONE_BLACK? "gvsprite-19-black_dead" : "gvsprite-19-white_dead";
         this.mapToPoints(x,y,function(x1,y1){
           var area = _this.xyToArea(x1,y1);
           var left = area[0], top = area[1], width = area[2], height = area[3];
@@ -193,7 +193,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
           jq4gv(this.jqId+"_prisoners").append(s);
         });
       } else {
-        var cssClass = color == jsGameViewer.model.STONE_BLACK? "gvsprite-21-markblack" : "gvsprite-21-markwhite";
+        var cssClass = color == jsGameViewer.model.STONE_BLACK? "gvsprite-21-black_dead" : "gvsprite-21-white_dead";
         var s = "<div class='"+cssClass+"' style='position:absolute;left:"+left+"px;top:"+top+"px;";
         if (this.gameState.board[x][y] == jsGameViewer.model.STONE_NONE){
           s += "background-color:"+this.config.boardColor+";";

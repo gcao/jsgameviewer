@@ -303,12 +303,12 @@ jsgvLoader.addSiteHandler(function(){ // localhost handler
     for (var i=0; i<postElems.length; i++) {
       var elem = postElems[i];
       var html = elem.innerHTML;
-      var i1 = html.indexOf('(;');
-      var i2 = html.lastIndexOf(')') + 1;
+      var i1 = html.indexOf('&lt;&lt;&lt;');
+      var i2 = html.lastIndexOf('&gt;&gt;&gt;');
       if (i1 >= 0 && i2 > i1) {
         var part1 = html.substring(0, i1);
-        var part2 = html.substring(i1, i2);
-        var part3 = html.substring(i2, html.length);
+        var part2 = html.substring(i1 + 12, i2);
+        var part3 = html.substring(i2 + 12, html.length);
 
         if (games.indexOf(part2) < 0) {
           games.push(part2);
@@ -318,7 +318,11 @@ jsgvLoader.addSiteHandler(function(){ // localhost handler
     }
 
     if (games.length > 0) {
-      jsgvLoader.load(jsgvLoader.loadGames);
+      var callback = function() {
+        jsgvLoader.loadGames();
+        jq4gv('.jsgv').css('margin-left', '-128px');
+      }
+      jsgvLoader.load(callback);
     }
   } else if (location.pathname == '/jsgameviewer/examples/load_sgf.html') {
     jsgvLoader.loadSgf();
