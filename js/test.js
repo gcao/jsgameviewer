@@ -320,7 +320,7 @@ jsgvLoader.addSiteHandler(function(){ // localhost handler
     if (games.length > 0) {
       var callback = function() {
         jsgvLoader.loadGames();
-        jq4gv('.jsgv').css('margin-left', '-128px');
+        jq4gv('.jsgv').css('margin-left', '-126px');
       }
       jsgvLoader.load(callback);
     }
