@@ -19,26 +19,26 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
   var VIEW = "\
     <div class='gameviewer'>\
       <div class='toolbar'>\
-        <div class='tb-item angledView'><a class='toggle-opacity' href='javascript: void(0)'><img class='sprite-angledView' src='http://gcao.github.io/jsgameviewer/view4/images/default.gif'></a></div>\
-        <div class='tb-item topView'><a class='toggle-opacity' href='javascript: void(0)'><img class='sprite-topView' src='http://gcao.github.io/jsgameviewer/view4/images/default.gif'></a></div>\
-        <div class='tb-item backAll'><a class='toggle-opacity' href='javascript: void(0)'><img class='sprite-backall' src='http://gcao.github.io/jsgameviewer/view4/images/default.gif'></a></div>\
-        <div class='tb-item backToComment'><a class='toggle-opacity' href='javascript: void(0)'><img class='sprite-backc' src='http://gcao.github.io/jsgameviewer/view4/images/default.gif'></a></div>\
-        <div class='tb-item backN'><a class='toggle-opacity' href='javascript: void(0)'><img class='sprite-backn' src='http://gcao.github.io/jsgameviewer/view4/images/default.gif'></a></div>\
-        <div class='tb-item back'><a class='toggle-opacity' href='javascript: void(0)'><img class='sprite-back' src='http://gcao.github.io/jsgameviewer/view4/images/default.gif'></a></div>\
+        <div class='tb-item angledView'><a class='toggle-opacity' href='javascript: void(0)'><img class='sprite-angledview' src='http://gcao.github.io/jsgameviewer/view4/images/default.png'></a></div>\
+        <div class='tb-item topView'><a class='toggle-opacity' href='javascript: void(0)'><img class='sprite-topview' src='http://gcao.github.io/jsgameviewer/view4/images/default.png'></a></div>\
+        <div class='tb-item backAll'><a class='toggle-opacity' href='javascript: void(0)'><img class='sprite-backall' src='http://gcao.github.io/jsgameviewer/view4/images/default.png'></a></div>\
+        <div class='tb-item backToComment'><a class='toggle-opacity' href='javascript: void(0)'><img class='sprite-backc' src='http://gcao.github.io/jsgameviewer/view4/images/default.png'></a></div>\
+        <div class='tb-item backN'><a class='toggle-opacity' href='javascript: void(0)'><img class='sprite-backn' src='http://gcao.github.io/jsgameviewer/view4/images/default.png'></a></div>\
+        <div class='tb-item back'><a class='toggle-opacity' href='javascript: void(0)'><img class='sprite-back' src='http://gcao.github.io/jsgameviewer/view4/images/default.png'></a></div>\
         <div class='tb-item goTo'><div class='move-number'>0</div></div>\
-        <div class='tb-item forward'><a class='toggle-opacity' href='javascript: void(0)'><img class='sprite-forward' src='http://gcao.github.io/jsgameviewer/view4/images/default.gif'></a></div>\
-        <div class='tb-item forwardN'><a class='toggle-opacity' href='javascript: void(0)'><img class='sprite-forwardn' src='http://gcao.github.io/jsgameviewer/view4/images/default.gif'></a></div>\
-        <div class='tb-item forwardToComment'><a class='toggle-opacity' href='javascript: void(0)'><img class='sprite-forwardc' src='http://gcao.github.io/jsgameviewer/view4/images/default.gif'></a></div>\
-        <div class='tb-item forwardAll'><a class='toggle-opacity' href='javascript: void(0)'><img class='sprite-forwardall' src='http://gcao.github.io/jsgameviewer/view4/images/default.gif'></a></div>\
+        <div class='tb-item forward'><a class='toggle-opacity' href='javascript: void(0)'><img class='sprite-forward' src='http://gcao.github.io/jsgameviewer/view4/images/default.png'></a></div>\
+        <div class='tb-item forwardN'><a class='toggle-opacity' href='javascript: void(0)'><img class='sprite-forwardn' src='http://gcao.github.io/jsgameviewer/view4/images/default.png'></a></div>\
+        <div class='tb-item forwardToComment'><a class='toggle-opacity' href='javascript: void(0)'><img class='sprite-forwardc' src='http://gcao.github.io/jsgameviewer/view4/images/default.png'></a></div>\
+        <div class='tb-item forwardAll'><a class='toggle-opacity' href='javascript: void(0)'><img class='sprite-forwardall' src='http://gcao.github.io/jsgameviewer/view4/images/default.png'></a></div>\
       </div>\
       <div class='info'>\
         <div class='time'></div>\
         <div class='name'></div>\
         <div class='white-player'></div>\
         <div class='player-images'>\
-          <div class='white'><img src='http://gcao.github.io/jsgameviewer/view4/images/15/white.gif'/></div>\
+          <div class='white'><img src='http://gcao.github.io/jsgameviewer/view4/images/15/white.png'/></div>\
           <div class='vs'>-</div>\
-          <div class='black'><img src='http://gcao.github.io/jsgameviewer/view4/images/15/black.gif'/></div>\
+          <div class='black'><img src='http://gcao.github.io/jsgameviewer/view4/images/15/black.png'/></div>\
         </div>\
         <div class='black-player'></div>\
         <div class='moves'></div>\
