@@ -123,14 +123,8 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       jq4gv(this.jqId+"_boardFascade").mousemove(mouseMove).mouseout(mouseOut).mousedown(mouseDown);
 
       this.setToggleNumberImg();
-      jq4gv(this.jqId+"_goToInput").keydown(function(){
-        if(e.keyCode==13){
-          gvGoTo(id);
-        }
-      });
       this.addPrisonerHandlers();
       this.registerKeyListener();
-      jq4gv(document).ready(function(){tb_init("a.thickbox")});
       return this;
     },
 
@@ -258,7 +252,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
         if (e.altKey && e.shiftKey){
           switch (keyCode) {
             case 71: // g
-              setTimeout("jsGameViewer."+_this.id+".goToPopup()",100);
+              _this.goTo();
               break;
             case 77: // m
               _this.toggleNumber();
@@ -1123,6 +1117,14 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
     goTo: function(n){
       if (this.gameState == null)
         return this;
+
+      var s = prompt("Please enter the move number: ");
+      var n = parseInt(s);
+      if (isNaN(n) || n < 0) {
+        alert("Not a valid move number.");
+        return;
+      }
+
       var _this = this;
       while (this.gameState.isOnBranch()){
         this.back();
@@ -1245,46 +1247,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
       var s = LABELS[x];
       s += this.config.boardSize - parseInt(y);
       return s;
-    },
-
-    postThickBoxFix: function(){
-      this.registerKeyListener();
-    },
-
-    goToPopup: function(){
-      var url = "#TB_inline?test=0&width=250&height=56&inlineId="+this.id+"_goTo&focus="+this.id+"_goToInput&modal=true&test1=0";
-      tb_show("",url,null);
-    },
-
-    goToOkHandler: function(){
-      try {
-        var input = document.getElementsByName(this.id+"_goToForm")[1].goToInput.value;
-        tb_remove();
-        var moveNumber = parseInt(input);
-        this.goTo(moveNumber);
-      }
-      catch(e){
-        throw "GameController().goToOkHandler(): " + e;
-      }
-      this.postThickBoxFix();
-    },
-
-    goToKeyDown:function(input, e){
-      var keyCode;
-      if (window.event)
-        keyCode = window.event.keyCode;
-      else if (e)
-        keyCode = e.which;
-      else
-        return;
-
-      if (keyCode == 13){
-        gvGoToInput = input.value;
-        this.goToOkHandler();
-      } else if (keyCode == 27){
-        tb_remove();
-        this.postThickBoxFix();
-      }
     }
+
   };
 }());

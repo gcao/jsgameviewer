@@ -860,7 +860,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
     goTo: function() {
       var s = prompt("Please enter the move number: ");
       var n = parseInt(s);
-      if (n === NaN || n < 0) {
+      if (isNaN(n) || n < 0) {
         alert("Not a valid move number.");
         return;
       }

@@ -10,7 +10,7 @@
       \&nbsp;
       %img#GV1_nextPlayer.gvreset.nextPlayerImg{ :src => "/jsgameviewer/view/images/default.gif", :border => "0px" }
     #GV1_moveOuter.gvreset.gvmove-outer.gvbutton
-      %a.gvreset.thickbox{ :href => "#TB_inline?test=0&width=250&height=56&inlineId=GV1_goTo&focus=GV1_goToInput&modal=true&test1=0", :title => t('jump_to_xx') + " [Alt Shift G]" }
+      %a.gvreset{ :href => "#", :onclick => "jsGameViewer.GV1.goTo();return false;", :title => t('jump_to_xx') + " [Alt Shift G]" }
         =t('move_number_before')
         \&nbsp;
         %span#GV1_curMove.gvreset.gvcontrol-text
@@ -83,12 +83,3 @@
   #GV1_rightPanel.gvreset.gvright-pane
     #GV1_info.gvreset.gvinfo
     #GV1_comment.gvreset.gvcomment
-  #GV1_goTo{ :style => "display:none;" }
-    %form{ :name => "GV1_goToForm", :onsubmit => "return false;", :action => "#" }
-      =t('jump_to')
-      %input#GV1_goToInput{ :name => "goToInput", :size => "5", :type => "text", :onKeyDown => "jsGameViewer.GV1.goToKeyDown(this,event);", :style => "text-align:center" }
-      =t('move_number_after')
-      \&nbsp;&nbsp;&nbsp;&nbsp;
-      %input{ :type => "submit", :value => t('submit'), :onclick => "jsGameViewer.GV1.goToOkHandler();" }
-      \&nbsp;&nbsp;
-      %input{ :type => "submit", :value => t('cancel'), :onclick => "tb_remove();jsGameViewer.GV1.postThickBoxFix();" }

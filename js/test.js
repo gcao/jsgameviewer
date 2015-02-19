@@ -108,7 +108,6 @@ jsgvLoader = function(){
       loadJSQueue([
         BASE_URL + "js/jquery-1.3.2.min.js",
         BASE_URL + "js/en_us.js",
-        BASE_URL + "js/thickbox.js",
         BASE_URL + "js/base.js",
         BASE_URL + "js/model.js",
         BASE_URL + "js/parser.js",

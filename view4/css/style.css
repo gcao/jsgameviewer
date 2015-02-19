@@ -73,7 +73,7 @@ body {
   height: 15px;
   background: url(http://gcao.github.io/jsgameviewer/view4/images/sprites.png) 0 -30px; }
 
-.sprite-angledView {
+.sprite-angledview {
   width: 31px;
   height: 31px;
   background: url(http://gcao.github.io/jsgameviewer/view4/images/sprites.png) 0 -55px; }
@@ -118,7 +118,7 @@ body {
   height: 31px;
   background: url(http://gcao.github.io/jsgameviewer/view4/images/sprites.png) 0 -383px; }
 
-.sprite-topView {
+.sprite-topview {
   width: 31px;
   height: 31px;
   background: url(http://gcao.github.io/jsgameviewer/view4/images/sprites.png) 0 -424px; }
