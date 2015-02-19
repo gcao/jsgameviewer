@@ -17,7 +17,6 @@ sudo gem install imagesize
 end
 require 'rubygems'
 require 'rake'
-require 'fileutils'
 require 'open-uri'
 
 require 'translate'
@@ -33,16 +32,24 @@ end
 desc "Create distribution"
 task :dist
 
-FileList['.htaccess', 'index.html', 'build/*', 'examples/*', 'js/*', 'php/*.php', 'view/**/*'
-  ].exclude('**/_notes', '**/*.rb', '**/*.haml', '**/sass','**/*.sass').each do |source|
+FileList[
+  '.htaccess',
+  'index.html',
+  'build/*',
+  'examples/*',
+  'js/*',
+  'php/*.php',
+  'view/**/*',
+  'view4/**/*'
+].exclude('**/_notes', '**/*.rb', '**/*.haml', '**/sass','**/*.sass').each do |source|
   target = File.join(DIST_DIR + source)
   # puts target
   file target => source do
     if File.directory? source
-      File.makedirs target
+      `mkdir -p #{target}`
     else
-      File.makedirs File.dirname(target)
-      File.copy source, target
+      `mkdir -p #{File.dirname(target)}`
+      `cp #{source} #{target}`
     end
   end
   task :dist => target
@@ -51,10 +58,10 @@ end
 desc "Convert HAML templates to localized HTML files"
 task :haml2html do
   gem "haml"
-  `haml -r lib/en_us.rb view/templates/weiqi.haml > view/templates/weiqi_en_us.html`
-  `haml -r lib/zh_cn.rb view/templates/weiqi.haml > view/templates/weiqi_zh_cn.html`
-  `haml -r lib/en_us.rb view/templates/daoqi.haml > view/templates/daoqi_en_us.html`
-  `haml -r lib/zh_cn.rb view/templates/daoqi.haml > view/templates/daoqi_zh_cn.html`
+  `haml -r #{File.dirname(__FILE__)}/lib/en_us.rb view/templates/weiqi.haml > view/templates/weiqi_en_us.html`
+  `haml -r #{File.dirname(__FILE__)}/lib/zh_cn.rb view/templates/weiqi.haml > view/templates/weiqi_zh_cn.html`
+  `haml -r #{File.dirname(__FILE__)}/lib/en_us.rb view/templates/daoqi.haml > view/templates/daoqi_en_us.html`
+  `haml -r #{File.dirname(__FILE__)}/lib/zh_cn.rb view/templates/daoqi.haml > view/templates/daoqi_zh_cn.html`
 end
 
 desc "Convert localized templates to javascript for cross site support"
@@ -86,7 +93,6 @@ task :compress_js do
   my_files = %w(js/zh_cn.js
                 js/en_us.js
                 js/jquery-1.3.2.min.js
-                js/thickbox.js
                 js/base.js
                 js/model.js
                 js/parser.js

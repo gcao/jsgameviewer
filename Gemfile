@@ -7,6 +7,7 @@ gem "rmagick"
 gem "imagesize"
 
 group :development do
+  gem "haml"
   gem "sass"
   gem "nokogiri"
   gem "guard", "~> 0.8.4"

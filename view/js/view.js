@@ -543,9 +543,9 @@ jq4gv.extend(jsGameViewer.GameController.prototype, function(){
     setNextPlayer: function(color){
       var imgSrc = "";
       if (color == jsGameViewer.model.STONE_WHITE)
-        imgSrc = this.config.viewDir+"/images/15/white.gif";
+        imgSrc = this.config.viewDir+"/images/15/white.png";
       else
-        imgSrc = this.config.viewDir+"/images/15/black.gif";
+        imgSrc = this.config.viewDir+"/images/15/black.png";
       jq4gv(this.jqId+"_nextPlayer").attr('src', imgSrc);
       return this;
     },

@@ -29,6 +29,8 @@ GEM
       sass (>= 3.1)
     guard-shell (0.4.0)
       guard (>= 0.2.0)
+    haml (4.0.6)
+      tilt
     hike (1.2.3)
     http_parser.rb (0.5.3)
     imagesize (0.1.1)
@@ -87,6 +89,7 @@ DEPENDENCIES
   guard-livereload
   guard-sass
   guard-shell
+  haml
   imagesize
   jasmine-headless-webkit
   nokogiri
