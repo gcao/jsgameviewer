@@ -1,7 +1,5 @@
 source 'https://rubygems.org'
 
-#gem 'capistrano'
-
 # Depends on ImageMagick
 gem "rmagick"
 gem "imagesize"
@@ -20,8 +18,5 @@ group :development do
   gem 'thin'
   gem 'rack-livereload'
   gem 'guard-livereload'
-
-  gem 'jasmine-headless-webkit'
-  gem 'guard-jasmine-headless-webkit'
 end
 

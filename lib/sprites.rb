@@ -6,7 +6,7 @@ module Sprites
     dx = 0
     dy = 10
     css_prefix = 'gvsprite-'
-    sprite_img = '/jsgameviewer/view/images/sprites.png'
+    sprite_img = '../images/sprites.png'
     excludes = [/gif$/, /default\.png/, /sprite.*/,/loading\.png/]
 
     Dir.chdir dir
