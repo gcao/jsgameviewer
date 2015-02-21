@@ -76,7 +76,7 @@ task :dist => :template2js
 
 desc "Convert SASS to stylesheet"
 task :sass2css => :sprites do
-  `sass view/sass/main.sass > view/default.css`
+  `sass view/sass/main.sass > view/css/default.css`
   `sass view4/css/style.sass > view4/css/style.css`
 end
 task :dist => :sass2css
@@ -106,8 +106,7 @@ task :compress_js do
 end
 
 task :compress_css do
-  #`#{YUI_COMMAND} view/default.css > build/compressed.css`
-  #`sed -i '' s,/jsgameviewer,http://localhost/jsgameviewer,g build/compressed.css`
+  #`#{YUI_COMMAND} view/css/default.css > build/css/compressed.css`
 end
 task :compress => %w(compress_js compress_css)
 task :dist => :compress

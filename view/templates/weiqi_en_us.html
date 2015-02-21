@@ -11,7 +11,7 @@
       <img border='0px' class='gvreset nextPlayerImg' id='GV1_nextPlayer' src='/jsgameviewer/view/images/default.png'>
     </div>
     <div class='gvreset gvmove-outer gvbutton' id='GV1_moveOuter'>
-      <a class='gvreset' href='#' onclick='jsGameViewer.GV1.goTo();return false;' title='Jump to XX [Alt Shift G]'>
+      <a class='gvreset' href='#' onclick='jsGameViewer.GV1.view.goTo();return false;' title='Jump to XX [Alt Shift G]'>
         
         &nbsp;
         <span class='gvreset gvcontrol-text' id='GV1_curMove'>
@@ -20,13 +20,6 @@
         &nbsp;
         
       </a>
-    </div>
-    <div class='gvreset gvresign' id='GV1_resign'>
-      <span class='gvreset gvbutton'>
-        <a href='#' onclick='jsGameViewer.GV1.resign();return false;'>
-          Resign
-        </a>
-      </span>
     </div>
     <div class='gvreset gvbanner-overlay'>
       <div class='gvreset gvprisoners-outer'>
@@ -69,52 +62,52 @@
   </div>
   <div class='gvreset gvtoolbar' id='GV1_toolbar'>
     <div class='gvreset gvtb-item' id='GV1_refresh'>
-      <a class='gvreset toggleopacity' href='#' onclick='jsGameViewer.GV1.refresh(true);return false;' title='Refresh game/board [Alt Shift R]'>
+      <a class='gvreset toggleopacity' href='#' onclick='jsGameViewer.GV1.view.refresh(true);return false;' title='Refresh game/board [Alt Shift R]'>
         <img border='0px' class='gvreset gvsprite-refresh' id='GV1_refreshImg' src='/jsgameviewer/view/images/default.png'>
       </a>
     </div>
     <div class='gvreset gvtb-item' id='GV1_toggleNumber'>
-      <a class='gvreset toggleopacity' href='#' onclick='jsGameViewer.GV1.toggleNumber();return false;' title='Show/hide move number [Alt Shift M]'>
+      <a class='gvreset toggleopacity' href='#' onclick='jsGameViewer.GV1.view.toggleNumber();return false;' title='Show/hide move number [Alt Shift M]'>
         <img border='0px' class='gvreset gvsprite-shownumber' id='GV1_toggleNumberImg' src='/jsgameviewer/view/images/default.png'>
       </a>
     </div>
     <div class='gvreset gvtb-item' id='GV1_backAll'>
-      <a class='gvreset toggleopacity' href='#' onclick='jsGameViewer.GV1.backAll();return false;' title='Back to beginning [Ctrl Alt &amp;#8592;]'>
+      <a class='gvreset toggleopacity' href='#' onclick='jsGameViewer.GV1.view.backAll();return false;' title='Back to beginning [Ctrl Alt &amp;#8592;]'>
         <img border='0px' class='gvreset gvsprite-backall' src='/jsgameviewer/view/images/default.png'>
       </a>
     </div>
     <div class='gvreset gvtb-item' id='GV1_backC'>
-      <a class='gvreset toggleopacity' href='#' onclick='jsGameViewer.GV1.backToComment();return false;' title='Previous comment or variation [Alt Shift &amp;#8592;]'>
+      <a class='gvreset toggleopacity' href='#' onclick='jsGameViewer.GV1.view.backToComment();return false;' title='Previous comment or variation [Alt Shift &amp;#8592;]'>
         <img border='0px' class='gvreset gvsprite-backc' src='/jsgameviewer/view/images/default.png'>
       </a>
     </div>
     <div class='gvreset gvtb-item' id='GV1_backN'>
-      <a class='gvreset toggleopacity' href='#' onclick='jsGameViewer.GV1.backN();return false;' title='Fast back [Ctrl &amp;#8592;]'>
+      <a class='gvreset toggleopacity' href='#' onclick='jsGameViewer.GV1.view.backN();return false;' title='Fast back [Ctrl &amp;#8592;]'>
         <img border='0px' class='gvreset gvsprite-backn' src='/jsgameviewer/view/images/default.png'>
       </a>
     </div>
     <div class='gvreset gvtb-item' id='GV1_back'>
-      <a class='gvreset toggleopacity' href='#' onclick='jsGameViewer.GV1.back();return false;' title='Back [&amp;#8592;]'>
+      <a class='gvreset toggleopacity' href='#' onclick='jsGameViewer.GV1.view.back();return false;' title='Back [&amp;#8592;]'>
         <img border='0px' class='gvreset gvsprite-back' src='/jsgameviewer/view/images/default.png'>
       </a>
     </div>
     <div class='gvreset gvtb-item' id='GV1_forward'>
-      <a class='gvreset toggleopacity' href='#' onclick='jsGameViewer.GV1.forward();return false;' title='Forward [&amp;#8594;]'>
+      <a class='gvreset toggleopacity' href='#' onclick='jsGameViewer.GV1.view.forward();return false;' title='Forward [&amp;#8594;]'>
         <img border='0px' class='gvreset gvsprite-forward' src='/jsgameviewer/view/images/default.png'>
       </a>
     </div>
     <div class='gvreset gvtb-item' id='GV1_forwardN'>
-      <a class='gvreset toggleopacity' href='#' onclick='jsGameViewer.GV1.forwardN();return false;' title='Fast forward [Ctrl &amp;#8594;]'>
+      <a class='gvreset toggleopacity' href='#' onclick='jsGameViewer.GV1.view.forwardN();return false;' title='Fast forward [Ctrl &amp;#8594;]'>
         <img border='0px' class='gvreset gvsprite-forwardn' src='/jsgameviewer/view/images/default.png'>
       </a>
     </div>
     <div class='gvreset gvtb-item' id='GV1_forwardC'>
-      <a class='gvreset toggleopacity' href='#' onclick='jsGameViewer.GV1.forwardToComment();return false;' title='Next comment or variation [Alt Shift &amp;#8594;]'>
+      <a class='gvreset toggleopacity' href='#' onclick='jsGameViewer.GV1.view.forwardToComment();return false;' title='Next comment or variation [Alt Shift &amp;#8594;]'>
         <img border='0px' class='gvreset gvsprite-forwardc' src='/jsgameviewer/view/images/default.png'>
       </a>
     </div>
     <div class='gvreset gvtb-item' id='GV1_forwardAll'>
-      <a class='gvreset toggleopacity' href='#' onclick='jsGameViewer.GV1.forwardAll();return false;' title='Forward to end [Ctrl Alt &amp;#8594;]'>
+      <a class='gvreset toggleopacity' href='#' onclick='jsGameViewer.GV1.view.forwardAll();return false;' title='Forward to end [Ctrl Alt &amp;#8594;]'>
         <img border='0px' class='gvreset gvsprite-forwardall' src='/jsgameviewer/view/images/default.png'>
       </a>
     </div>

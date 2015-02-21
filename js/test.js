@@ -103,7 +103,7 @@ jsgvLoader = function(){
 
     load: function(callback){
       var BASE_URL = 'http://localhost:8000/jsgameviewer/';
-      var STYLESHEET = BASE_URL + "view/default.css"
+      var STYLESHEET = BASE_URL + "view/css/default.css"
       this.loadStylesheet(STYLESHEET);
       loadJSQueue([
         BASE_URL + "js/jquery-1.3.2.min.js",

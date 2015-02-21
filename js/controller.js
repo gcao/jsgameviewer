@@ -9,11 +9,12 @@ jq4gv.extend(jsGameViewer.GameController.prototype, {
     if (config != null)
       jq4gv.extend(this.config, config);
 
+    this.view = new jsGameViewer.GameView(this, this.config);
     this.reset();
   },
 
   init: function(){
-    this.initView();
+    this.view.initView();
     this._initialized = true;
     return this;
   },
@@ -22,15 +23,15 @@ jq4gv.extend(jsGameViewer.GameController.prototype, {
     return this._inialized == true;
   },
 
-  changeLocale: function(new_locale){
-    if (this.config.locale == new_locale)
+  changeLocale: function(newLocale){
+    if (this.config.locale == newLocale)
       return this;
-    if (!jsGameViewer.LOCALES.indexOf(new_locale) < 0){
-      alert("jsGameViewer WARNING: Invalid locale '" + new_locale + "'");
+    if (!jsGameViewer.LOCALES.indexOf(newLocale) < 0){
+      alert("jsGameViewer WARNING: Invalid locale '" + newLocale + "'");
       return this;
     }
-    this.config.locale = new_locale;
-    window.jsgvTranslations = window["jsgv_" + new_locale];
+    this.config.locale = newLocale;
+    window.jsgvTranslations = window["jsgv_" + newLocale];
     jsGameViewer.WEIQI_TEMPLATE = null;
     jsGameViewer.DAOQI_TEMPLATE = null;
     this.reset();
@@ -43,7 +44,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, {
   },
 
   destroy: function(){
-    this.destroyView();
+    this.vew.destroyView();
     delete jsGameViewer[this.id];
     jsGameViewer.length--;
   },
@@ -107,7 +108,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, {
       this.setGameTypeIf(this.game.type).show();
       this.gameState = h;
       this.gameState.backAll();
-      this.initGame();
+      this.view.initGame();
       if (n == undefined)
         this.forwardAll();
       else
@@ -129,11 +130,11 @@ jq4gv.extend(jsGameViewer.GameController.prototype, {
           _this.game.url = url;
           _this.gameState = new jsGameViewer.model.GameState(_this.game);
           jsGameViewer.model.GameHistory.save(_this.gameState);
-          _this.initGame();
+          _this.view.initGame();
           if (n == undefined)
-            _this.forwardAll();
+            _this.view.forwardAll();
           else
-            _this.forwardN(n);
+            _this.view.forwardN(n);
         //} catch(e) {
         //  throw "GameController.load('" + url + "')->success: " + e;
         //}
@@ -153,11 +154,11 @@ jq4gv.extend(jsGameViewer.GameController.prototype, {
       this.game.dataSize = sgf.length;
       this.setGameTypeIf(this.game.type);
       this.gameState = new jsGameViewer.model.GameState(this.game);
-      this.initGame();
+      this.view.initGame();
       if (n == undefined)
-        this.forwardAll();
+        this.view.forwardAll();
       else
-        this.forwardN(n);
+        this.view.forwardN(n);
       return this;
     } catch(e) {
       throw "GameController.loadSgf('" + sgf + "'): " + e;
@@ -169,7 +170,7 @@ jq4gv.extend(jsGameViewer.GameController.prototype, {
       if (jq4gv("#"+divId).length == 0){
         return this;
       }
-      loadSgf(jq4gv("#"+divId).text(), n);
+      this.loadSgf(jq4gv("#"+divId).text(), n);
       return this;
     } catch(e) {
       throw "GameController.loadInline('" + divId + "'): " + e;
@@ -197,8 +198,8 @@ jq4gv.extend(jsGameViewer.GameController.prototype, {
           _this.game.url = url;
           _this.gameState = new jsGameViewer.model.GameState(_this.game);
           jsGameViewer.model.GameHistory.save(_this.gameState);
-          _this.initGame();
-          _this.forwardAll();
+          _this.view.initGame();
+          _this.view.forwardAll();
         } catch(e) {
           throw "GameController.refresh('" + url + "')->success: " + e;
         }
