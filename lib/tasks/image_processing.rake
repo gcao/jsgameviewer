@@ -58,7 +58,11 @@ task :images => [:board, :daoqiboard, :stones, :marks]
 
 desc "Create CSS Sprite classes and image"
 task :sprites do
-  Sprites.to_sprites 'view/images'
+  Sprites.to_sprites 'view/images', 'gvsprite-'
   # Current directory is probably changed in above code
   Dir.chdir File.join(File.dirname(__FILE__), "..", "..")
+
+  Sprites.to_sprites 'view4/images', 'sprite-'
+  Dir.chdir File.join(File.dirname(__FILE__), "..", "..")
 end
+

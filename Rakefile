@@ -76,8 +76,8 @@ task :dist => :template2js
 
 desc "Convert SASS to stylesheet"
 task :sass2css => :sprites do
-  #gem "haml"
   `sass view/sass/main.sass > view/default.css`
+  `sass view4/css/style.sass > view4/css/style.css`
 end
 task :dist => :sass2css
 
@@ -100,7 +100,7 @@ task :compress_js do
                 js/updater.js
                 view/js/view.js
                 js/player.js
-                js/gocool.js)
+               )
 
   `cat #{my_files.join(' ')} > /tmp/test.js && #{YUI_COMMAND} /tmp/test.js > js/all.js`
 end

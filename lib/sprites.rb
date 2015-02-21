@@ -2,10 +2,10 @@ require 'image_size'
 require 'rmagick'
 
 module Sprites
-  def self.to_sprites(dir)
+  def self.to_sprites(dir, css_prefix)
     dx = 0
     dy = 10
-    css_prefix = 'gvsprite-'
+    css_prefix ||= 'sprite-'
     sprite_img = '../images/sprites.png'
     excludes = [/gif$/, /default\.png/, /sprite.*/,/loading\.png/]
 
