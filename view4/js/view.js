@@ -305,13 +305,13 @@ jq4gv.extend(jsGameViewer.GameView.prototype, function(){
 
     setGameInfo: function(){
       //// show/hide resign button
-      //if (this.isMyTurn() && !this.game.isFinished()){
+      //if (this.isMyTurn() && !this.ctrl.game.isFinished()){
       //  jq4gv(this.jqId + "_resign").show();
       //} else {
       //  jq4gv(this.jqId + "_resign").hide();
       //}
       //var infoNode = jq4gv(this.jqId + "_info").empty();
-      var game = this.game;
+      var game = this.ctrl.game;
       if (game == undefined || game == null)
         return this;
       if (jsGameViewer.notNull(game.name)){
