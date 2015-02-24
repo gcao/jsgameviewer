@@ -6,6 +6,7 @@ end
 
 guard 'shell' do
   #watch(%r{^view2/js/(.+\.coffee)$}) { `coffee -c public/javascripts/$1` }
+  watch(%r{^view/js/(.+\.jsx)$}) { `jsx --extension=jsx view/js view/js` }
 end
 
 guard 'livereload' do

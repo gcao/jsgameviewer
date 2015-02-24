@@ -4,6 +4,8 @@ $ guard
 Run Rack on port 8000
 $ rack up -p 8000
 
+$ npm install -g react-tools
+
 Bookmarklet:
 
 javascript:(function(){var s=document.createElement('script');s.setAttribute('src','//gcao.github.io/jsgameviewer/js/loader.js?'+Date.now());document.getElementsByTagName('body')[0].appendChild(s);alert('Thank you for using Weiqi game loader!');})()

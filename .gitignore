@@ -1,6 +1,7 @@
 dist
 php/cache/*
 .sass-cache
+.module-cache
 .bundle
 checkers/
 Chess3D/
