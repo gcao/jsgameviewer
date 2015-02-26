@@ -295,46 +295,47 @@ jq4gv.extend(jsGameViewer.GameView.prototype, function(){
       //} else {
       //  jq4gv(this.jqId + "_resign").hide();
       //}
-      var infoNode = jq4gv(this.jqId + "_info").empty();
-      var game = this.ctrl.game;
-      if (game == undefined || game == null)
-        return this;
-      if (jsGameViewer.notNull(game.name)){
-        infoNode.append("<div align='center' style='font-weight:bold'>"+jq4gv.trim(game.name)+"</div>");
-      }
-      if (jsGameViewer.notNull(game.date)){
-        infoNode.append("<div>"+jsgvTranslations['time']+": "+jq4gv.trim(game.date)+"</div>");
-      }
-      if (jsGameViewer.notNull(game.place)){
-        infoNode.append("<div>"+jsgvTranslations['place']+": "+jq4gv.trim(game.place)+"</div>");
-      }
-      var playFirst = "&nbsp;&#8592; "+jsgvTranslations['play_first'];
-      // black player name + rank
-      var blackRank = "";
-      if (jsGameViewer.notNull(game.blackRank))
-        blackRank = "&nbsp;("+game.blackRank+")";
-      var blackPlayer = "<div>"+jsgvTranslations['black']+": <strong>"+jq4gv.trim(game.blackName)+"</strong>"+blackRank;
-      if (game.getFirstPlayer() == jsGameViewer.model.STONE_BLACK)
-        blackPlayer += playFirst;
-      blackPlayer += "</div>";
-      infoNode.append(blackPlayer);
-      // white player name + rank
-      var whiteRank = "";
-      if (jsGameViewer.notNull(game.whiteRank))
-        whiteRank = "&nbsp;("+game.whiteRank+")";
-      var whitePlayer = "<div>"+jsgvTranslations['white']+": <strong>"+jq4gv.trim(game.whiteName)+"</strong>"+whiteRank;
-      if (game.getFirstPlayer() == jsGameViewer.model.STONE_WHITE)
-        whitePlayer += playFirst;
-      whitePlayer += "</div>";
-      infoNode.append(whitePlayer);
-      if (game.handicap > 0){
-        infoNode.append("<div>"+jsgvTranslations['handicap']+": "+game.handicap+"</div>");
-      } else {
-        infoNode.append("<div>"+jsgvTranslations['rule']+": "+jq4gv.trim(game.rule)+"</div>");
-        infoNode.append("<div>"+jsgvTranslations['komi']+": "+game.komi+"</div>");
-      }
-      infoNode.append("<div>"+jsgvTranslations['moves']+": "+game.getMoves()+"</div>");
-      infoNode.append("<div>"+jsgvTranslations['result']+": "+jq4gv.trim(game.result)+"</div>");
+      //var infoNode = jq4gv(this.jqId + "_info").empty();
+      //var game = this.ctrl.game;
+      //if (game == undefined || game == null)
+      //  return this;
+      //if (jsGameViewer.notNull(game.name)){
+      //  infoNode.append("<div align='center' style='font-weight:bold'>"+jq4gv.trim(game.name)+"</div>");
+      //}
+      //if (jsGameViewer.notNull(game.date)){
+      //  infoNode.append("<div>"+jsgvTranslations['time']+": "+jq4gv.trim(game.date)+"</div>");
+      //}
+      //if (jsGameViewer.notNull(game.place)){
+      //  infoNode.append("<div>"+jsgvTranslations['place']+": "+jq4gv.trim(game.place)+"</div>");
+      //}
+      //var playFirst = "&nbsp;&#8592; "+jsgvTranslations['play_first'];
+      //// black player name + rank
+      //var blackRank = "";
+      //if (jsGameViewer.notNull(game.blackRank))
+      //  blackRank = "&nbsp;("+game.blackRank+")";
+      //var blackPlayer = "<div>"+jsgvTranslations['black']+": <strong>"+jq4gv.trim(game.blackName)+"</strong>"+blackRank;
+      //if (game.getFirstPlayer() == jsGameViewer.model.STONE_BLACK)
+      //  blackPlayer += playFirst;
+      //blackPlayer += "</div>";
+      //infoNode.append(blackPlayer);
+      //// white player name + rank
+      //var whiteRank = "";
+      //if (jsGameViewer.notNull(game.whiteRank))
+      //  whiteRank = "&nbsp;("+game.whiteRank+")";
+      //var whitePlayer = "<div>"+jsgvTranslations['white']+": <strong>"+jq4gv.trim(game.whiteName)+"</strong>"+whiteRank;
+      //if (game.getFirstPlayer() == jsGameViewer.model.STONE_WHITE)
+      //  whitePlayer += playFirst;
+      //whitePlayer += "</div>";
+      //infoNode.append(whitePlayer);
+      //if (game.handicap > 0){
+      //  infoNode.append("<div>"+jsgvTranslations['handicap']+": "+game.handicap+"</div>");
+      //} else {
+      //  infoNode.append("<div>"+jsgvTranslations['rule']+": "+jq4gv.trim(game.rule)+"</div>");
+      //  infoNode.append("<div>"+jsgvTranslations['komi']+": "+game.komi+"</div>");
+      //}
+      //infoNode.append("<div>"+jsgvTranslations['moves']+": "+game.getMoves()+"</div>");
+      //infoNode.append("<div>"+jsgvTranslations['result']+": "+jq4gv.trim(game.result)+"</div>");
+      React.render(React.createElement(jsGameViewer.GameInfo, {game: this.ctrl.game}), document.getElementById(this.id + "_info"));
       return this;
     },
 
