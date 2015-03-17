@@ -44,95 +44,96 @@ jq4gv.extend(jsGameViewer.GameView.prototype, function(){
         return this;
       this.config.x0 = this.config.vbw;
       this.config.y0 = this.config.vbw;
-      var s = "";
-      if (this.config.gameType == jsGameViewer.DAOQI){
-        this.config.gridSize = this.config.gridSizeDQ;
-        if (jsGameViewer.DAOQI_TEMPLATE == null){
-          jq4gv.ajax({
-            async: false,
-            dataType: "application/xml",
-            url: this.getTemplateLocation(),
-            success: function(response){
-              jsGameViewer.DAOQI_TEMPLATE = response;
-            }
-          });
-        }
-        s = jsGameViewer.DAOQI_TEMPLATE;
-        this.rightPaneHeight = this.config.rightPaneHeightDQ;
-      } else {
-        this.config.gridSize = this.config.gridSizeWQ;
-        if (jsGameViewer.WEIQI_TEMPLATE == null){
-          jq4gv.ajax({
-            async: false,
-            dataType: "application/xml",
-            url: this.getTemplateLocation(),
-            success: function(response){
-              jsGameViewer.WEIQI_TEMPLATE = response;
-            }
-          });
-        }
-        s = jsGameViewer.WEIQI_TEMPLATE;
-        this.rightPaneHeight = this.config.rightPaneHeight;
-      }
-      if (this.id != 'GV1')
-        s = s.replace(/GV1/g, this.id);
-      jq4gv(this.jqId).replaceWith(s);
+      React.render(React.createElement(jsGameViewer.Viewer, {ctrl: this}), document.getElementById(this.id));
+      //var s = "";
+      //if (this.config.gameType == jsGameViewer.DAOQI){
+      //  this.config.gridSize = this.config.gridSizeDQ;
+      //  if (jsGameViewer.DAOQI_TEMPLATE == null){
+      //    jq4gv.ajax({
+      //      async: false,
+      //      dataType: "application/xml",
+      //      url: this.getTemplateLocation(),
+      //      success: function(response){
+      //        jsGameViewer.DAOQI_TEMPLATE = response;
+      //      }
+      //    });
+      //  }
+      //  s = jsGameViewer.DAOQI_TEMPLATE;
+      //  this.rightPaneHeight = this.config.rightPaneHeightDQ;
+      //} else {
+      //  this.config.gridSize = this.config.gridSizeWQ;
+      //  if (jsGameViewer.WEIQI_TEMPLATE == null){
+      //    jq4gv.ajax({
+      //      async: false,
+      //      dataType: "application/xml",
+      //      url: this.getTemplateLocation(),
+      //      success: function(response){
+      //        jsGameViewer.WEIQI_TEMPLATE = response;
+      //      }
+      //    });
+      //  }
+      //  s = jsGameViewer.WEIQI_TEMPLATE;
+      //  this.rightPaneHeight = this.config.rightPaneHeight;
+      //}
+      //if (this.id != 'GV1')
+      //  s = s.replace(/GV1/g, this.id);
+      //jq4gv(this.jqId).replaceWith(s);
       // if (this.config.container == null) {
       //   jq4gv(this.jqId).replaceWith(s);
       // } else {
       //   jq4gv("#"+this.config.container).empty().append(s);
       // }
-      var _this = this;
+      //var _this = this;
 
-      var mouseMove = function(e){
-        _this.registerKeyListener();
-        var arr = _this.eventToXY(e);
-        _this.toX = arr[0];
-        _this.toY = arr[1];
-        jq4gv(_this.jqId+"_pointLabel").empty().append(_this.xyToLabel(arr[0],arr[1]));
-        return false;
-      };
-      var mouseOut = function(e){
-        jq4gv(_this.jqId+"_pointLabel").empty();
-        return false;
-      };
-      var mouseDown = function(e){
-        var arr = _this.eventToXY(e);
-        if (_this.config.gameType == jsGameViewer.DAOQI){
-          _this.fromX = _this.toX = arr[0];
-          _this.fromY = _this.toY = arr[1];
-          jq4gv(this).css('cursor', 'move');
-          jsgv.debug("fromX: " + _this.fromX + ", fromY: " + _this.fromY);
-        } else {
-          _this.play(arr[0],arr[1]);
-        }
-        jq4gv(this).one('mouseup', mouseUp);
-        return false;
-      };
-      var mouseUp = function(e){
-        // See http://stackoverflow.com/questions/1909760/how-to-get-mouseup-to-fire-once-mousemove-complete-javascript-jquery
-        // Then see http://jsbin.com/ajidi source code on how IE can be supported
-        jq4gv(this).unbind('mouseup');
+      //var mouseMove = function(e){
+      //  _this.registerKeyListener();
+      //  var arr = _this.eventToXY(e);
+      //  _this.toX = arr[0];
+      //  _this.toY = arr[1];
+      //  jq4gv(_this.jqId+"_pointLabel").empty().append(_this.xyToLabel(arr[0],arr[1]));
+      //  return false;
+      //};
+      //var mouseOut = function(e){
+      //  jq4gv(_this.jqId+"_pointLabel").empty();
+      //  return false;
+      //};
+      //var mouseDown = function(e){
+      //  var arr = _this.eventToXY(e);
+      //  if (_this.config.gameType == jsGameViewer.DAOQI){
+      //    _this.fromX = _this.toX = arr[0];
+      //    _this.fromY = _this.toY = arr[1];
+      //    jq4gv(this).css('cursor', 'move');
+      //    jsgv.debug("fromX: " + _this.fromX + ", fromY: " + _this.fromY);
+      //  } else {
+      //    _this.play(arr[0],arr[1]);
+      //  }
+      //  jq4gv(this).one('mouseup', mouseUp);
+      //  return false;
+      //};
+      //var mouseUp = function(e){
+      //  // See http://stackoverflow.com/questions/1909760/how-to-get-mouseup-to-fire-once-mousemove-complete-javascript-jquery
+      //  // Then see http://jsbin.com/ajidi source code on how IE can be supported
+      //  jq4gv(this).unbind('mouseup');
 
-        if (!(_this.config.gameType == jsGameViewer.DAOQI))
-          return false;
+      //  if (!(_this.config.gameType == jsGameViewer.DAOQI))
+      //    return false;
 
-        jq4gv(this).css('cursor', 'auto');
-        if (_this.fromX == undefined || _this.fromX == NaN || _this.fromY == undefined || _this.fromY == NaN)
-          return;
-        if (_this.fromX != _this.toX || _this.fromY != _this.toY) {
-          _this.moveBoard(_this.toX - _this.fromX, _this.toY - _this.fromY);
-        } else {
-          _this.play(_this.toX, _this.toY);
-        }
-        return false;
-      };
+      //  jq4gv(this).css('cursor', 'auto');
+      //  if (_this.fromX == undefined || _this.fromX == NaN || _this.fromY == undefined || _this.fromY == NaN)
+      //    return;
+      //  if (_this.fromX != _this.toX || _this.fromY != _this.toY) {
+      //    _this.moveBoard(_this.toX - _this.fromX, _this.toY - _this.fromY);
+      //  } else {
+      //    _this.play(_this.toX, _this.toY);
+      //  }
+      //  return false;
+      //};
 
-      jq4gv(this.jqId+"_boardFascade").mousemove(mouseMove).mouseout(mouseOut).mousedown(mouseDown);
+      //jq4gv(this.jqId+"_boardFascade").mousemove(mouseMove).mouseout(mouseOut).mousedown(mouseDown);
 
-      this.setToggleNumberImg();
-      this.addPrisonerHandlers();
-      this.registerKeyListener();
+      //this.setToggleNumberImg();
+      //this.addPrisonerHandlers();
+      //this.registerKeyListener();
       return this;
     },
 
@@ -281,10 +282,10 @@ jq4gv.extend(jsGameViewer.GameView.prototype, function(){
     /* reset view to beginning of a game
      */
     initGame: function(){
-      return this.removeAllStones()
-        .setGameInfo()
-        .setGameState()
-        .addRemoveStones(this.ctrl.gameState.currentNode.points);
+      //return this.removeAllStones()
+      //  .setGameInfo()
+      //  .setGameState()
+      //  .addRemoveStones(this.ctrl.gameState.currentNode.points);
     },
 
     setGameInfo: function(){
