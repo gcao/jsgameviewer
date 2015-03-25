@@ -18,35 +18,66 @@
     rightPaneHeightDQ:560
   });
 
-  jsGameViewer.GameView = jsGameViewer.createClass();
-  jq4gv.extend(jsGameViewer.GameView.prototype, {
-    initialize: function(ctrl, config){
-      this.ctrl = ctrl;
-      this.config = config;
-      this.id = this.ctrl.id;
-      this.jqId = this.ctrl.jqId;
-    },
+  jsGameViewer.GameView = function(ctrl, config) {
+    this.ctrl = ctrl;
+    this.config = config;
+    this.id = this.ctrl.id;
+    this.jqId = this.ctrl.jqId;
 
-    destroyView: function(){
+    this.destroyView = function(){
       jq4gv(this.jqId).remove();
-    },
+    }
 
-    getTemplateLocation: function(){
-      var templateName = this.config.gameType == jsGameViewer.DAOQI ? "daoqi" : "weiqi";
-      return this.config.viewDir+"templates/"+templateName+"_"+this.config.locale+".html";
-    },
-
-    /* initialize view
-     */
-    initView: function(){
+    this.initView = function(){
       if (this.ctrl.initialized())
         return this;
-      React.render(React.createElement(Viewer, {ctrl: this}), document.getElementById(this.id));
-    },
-
-    initGame: function(){
+      this.render();
     }
-  });
+
+    this.initGame = function(){
+    }
+
+    this.changeLocaleToEnglish = function() {
+      this.ctrl.changeLocale('en_us');
+    }.bind(this);
+
+    this.changeLocaleToChinese = function() {
+      this.ctrl.changeLocale('zh_cn');
+    }.bind(this);
+
+    this.forward = function(){
+    }.bind(this);
+
+    this.forwardN = function(n){
+    }.bind(this);
+
+    this.forwardToComment = function(){
+    }.bind(this);
+
+    this.forwardAll = function(){
+      this.ctrl.gameState.forwardAll();
+      this.render();
+    }.bind(this);
+
+    this.back = function(){
+    }.bind(this);
+
+    this.backN = function(n){
+    }.bind(this);
+
+    this.backToComment = function(){
+    }.bind(this);
+
+    this.backAll = function(){
+    }.bind(this);
+
+    this.goTo = function(n){
+    }.bind(this);
+
+    this.render = function(){
+      React.render(React.createElement(Viewer, {ctrl: this}), document.getElementById(this.id));
+    }
+  }
 
   function xyToArea(x,y) {
     return [x*this.config.gridSize, y*this.config.gridSize, this.config.gridSize, this.config.gridSize];
@@ -63,37 +94,35 @@
           React.createElement(Board, null), 
           React.createElement(Toolbar, {ctrl: this.props.ctrl}), 
           React.createElement("div", {align: "center", className: "gvreset gvpoint-label"}), 
-          React.createElement("div", {className: "gvreset gvright-pane"}, 
-            React.createElement(Info, {game: this.props.ctrl.gameState && this.props.ctrl.gameState.game}), 
-            React.createElement(Comment, null)
-          )
+           this.props.ctrl.gameState ?
+            React.createElement("div", {className: "gvreset gvright-pane"}, 
+              React.createElement(Info, {game: this.props.ctrl.gameState && this.props.ctrl.gameState.game}), 
+              React.createElement(Comment, null)
+            )
+            :
+            React.createElement("div", {className: "gvreset gvright-pane"})
+          
         )
       );
     }
   });
 
   var Banner = React.createClass({displayName: "Banner",
-    changeLocaleToEnglish: function() {
-      this.props.ctrl.ctrl.changeLocale('en_us');
-    },
-    changeLocaleToChinese: function() {
-      this.props.ctrl.ctrl.changeLocale('zh_cn');
-    },
     render: function() {
       return (
         React.createElement("div", {className: "gvreset gvbanner"}, 
           React.createElement("div", {className: "gvreset gvbanner-overlay"}), 
           React.createElement("div", {className: "gvreset gvbanner-left"}, 
-            React.createElement("a", {className: "gvreset localization", href: "#", onclick: this.changeLocaleToChinese}, "中文"), 
+            React.createElement("a", {className: "gvreset localization", href: "#", onclick: this.props.ctrl.changeLocaleToChinese}, "中文"), 
             "|", 
-            React.createElement("a", {className: "gvreset localization", href: "#", onclick: this.changeLocaleToEnglish}, "EN"), 
+            React.createElement("a", {className: "gvreset localization", href: "#", onclick: this.props.ctrl.changeLocaleToEnglish}, "EN"), 
             "  " + ' ' +
             "Next" + ' ' +
             " ", 
             React.createElement("img", {border: "0px", className: "gvreset nextPlayerImg", src: "/jsgameviewer/view/images/default.png"})
-          ), 
+            ), 
           React.createElement("div", {className: "gvreset gvmove-outer gvbutton"}, 
-            React.createElement("a", {className: "gvreset", href: "#", onclick: "this.props.ctrl.goTo()", title: "Jump to XX [Alt Shift G]"}, 
+            React.createElement("a", {className: "gvreset", href: "#", onclick: this.props.ctrl.goTo, title: "Jump to XX [Alt Shift G]"}, 
               " ", 
               React.createElement("span", {className: "gvreset gvcontrol-text"}, "0"), 
               " "
@@ -131,8 +160,7 @@
       return (
         React.createElement("div", {className: "gvreset gvboard-outer gvsprite-21-board"}, 
           React.createElement("div", {className: "gvreset gvboard"}, 
-            React.createElement("div", {className: "gvreset gvboard-overlay"}
-            ), 
+            React.createElement("div", {className: "gvreset gvboard-overlay"}), 
             React.createElement("div", {className: "gvreset gvboard-overlay"}), 
             React.createElement("div", {className: "gvreset gvboard-overlay"}), 
             React.createElement("div", {className: "gvreset gvsprite-21-markmove"}), 
@@ -151,52 +179,52 @@
       return (
         React.createElement("div", {className: "gvreset gvtoolbar"}, 
           React.createElement("div", {className: "gvreset gvtb-item"}, 
-            React.createElement("a", {className: "gvreset toggleopacity", href: "#", onclick: "this.props.ctrl.refresh(true)", title: "Refresh game/board [Alt Shift R]"}, 
+            React.createElement("a", {className: "gvreset toggleopacity", href: "#", onclick: this.props.ctrl.refresh, title: "Refresh game/board [Alt Shift R]"}, 
               React.createElement("img", {border: "0px", className: "gvreset gvsprite-refresh", id: "GV1_refreshImg", src: "/jsgameviewer/view/images/default.png"})
             )
           ), 
           React.createElement("div", {className: "gvreset gvtb-item"}, 
-            React.createElement("a", {className: "gvreset toggleopacity", href: "#", onclick: "this.props.ctrl.toggleNumber()", title: "Show/hide move number [Alt Shift M]"}, 
+            React.createElement("a", {className: "gvreset toggleopacity", href: "#", onclick: this.props.ctrl.toggleNumber, title: "Show/hide move number [Alt Shift M]"}, 
               React.createElement("img", {border: "0px", className: "gvreset gvsprite-shownumber", id: "GV1_toggleNumberImg", src: "/jsgameviewer/view/images/default.png"})
             )
           ), 
           React.createElement("div", {className: "gvreset gvtb-item"}, 
-            React.createElement("a", {className: "gvreset toggleopacity", href: "#", onclick: "this.props.ctrl.backAll()", title: "Back to beginning [Ctrl Alt &#8592;]"}, 
+            React.createElement("a", {className: "gvreset toggleopacity", href: "#", onclick: this.props.ctrl.backAll, title: "Back to beginning [Ctrl Alt &#8592;]"}, 
               React.createElement("img", {border: "0px", className: "gvreset gvsprite-backall", src: "/jsgameviewer/view/images/default.png"})
             )
           ), 
           React.createElement("div", {className: "gvreset gvtb-item"}, 
-            React.createElement("a", {className: "gvreset toggleopacity", href: "#", onclick: "this.props.ctrl.backToComment()", title: "Previous comment or variation [Alt Shift &#8592;]"}, 
+            React.createElement("a", {className: "gvreset toggleopacity", href: "#", onclick: this.props.ctrl.backToComment, title: "Previous comment or variation [Alt Shift &#8592;]"}, 
               React.createElement("img", {border: "0px", className: "gvreset gvsprite-backc", src: "/jsgameviewer/view/images/default.png"})
             )
           ), 
           React.createElement("div", {className: "gvreset gvtb-item"}, 
-            React.createElement("a", {className: "gvreset toggleopacity", href: "#", onclick: "this.props.ctrl.backN()", title: "Fast back [Ctrl &#8592;]"}, 
+            React.createElement("a", {className: "gvreset toggleopacity", href: "#", onclick: this.props.ctrl.backN, title: "Fast back [Ctrl &#8592;]"}, 
               React.createElement("img", {border: "0px", className: "gvreset gvsprite-backn", src: "/jsgameviewer/view/images/default.png"})
             )
           ), 
           React.createElement("div", {className: "gvreset gvtb-item"}, 
-            React.createElement("a", {className: "gvreset toggleopacity", href: "#", onclick: "this.props.ctrl.back()", title: "Back [&#8592;]"}, 
+            React.createElement("a", {className: "gvreset toggleopacity", href: "#", onclick: this.props.ctrl.back, title: "Back [&#8592;]"}, 
               React.createElement("img", {border: "0px", className: "gvreset gvsprite-back", src: "/jsgameviewer/view/images/default.png"})
             )
           ), 
           React.createElement("div", {className: "gvreset gvtb-item"}, 
-            React.createElement("a", {className: "gvreset toggleopacity", href: "#", onclick: "this.props.ctrl.forward()", title: "Forward [&#8594;]"}, 
+            React.createElement("a", {className: "gvreset toggleopacity", href: "#", onclick: this.props.ctrl.forward, title: "Forward [&#8594;]"}, 
               React.createElement("img", {border: "0px", className: "gvreset gvsprite-forward", src: "/jsgameviewer/view/images/default.png"})
             )
           ), 
           React.createElement("div", {className: "gvreset gvtb-item"}, 
-            React.createElement("a", {className: "gvreset toggleopacity", href: "#", onclick: "this.props.ctrl.forwardN()", title: "Fast forward [Ctrl &#8594;]"}, 
+            React.createElement("a", {className: "gvreset toggleopacity", href: "#", onclick: this.props.ctrl.forwardN, title: "Fast forward [Ctrl &#8594;]"}, 
               React.createElement("img", {border: "0px", className: "gvreset gvsprite-forwardn", src: "/jsgameviewer/view/images/default.png"})
             )
           ), 
           React.createElement("div", {className: "gvreset gvtb-item"}, 
-            React.createElement("a", {className: "gvreset toggleopacity", href: "#", onclick: "this.props.ctrl.forwardToComment()", title: "Next comment or variation [Alt Shift &#8594;]"}, 
+            React.createElement("a", {className: "gvreset toggleopacity", href: "#", onclick: this.props.ctrl.forwardToComment, title: "Next comment or variation [Alt Shift &#8594;]"}, 
               React.createElement("img", {border: "0px", className: "gvreset gvsprite-forwardc", src: "/jsgameviewer/view/images/default.png"})
             )
           ), 
           React.createElement("div", {className: "gvreset gvtb-item"}, 
-            React.createElement("a", {className: "gvreset toggleopacity", href: "#", onclick: "this.props.ctrl.forwardAll()", title: "Forward to end [Ctrl Alt &#8594;]"}, 
+            React.createElement("a", {className: "gvreset toggleopacity", href: "#", onclick: this.props.ctrl.forwardAll, title: "Forward to end [Ctrl Alt &#8594;]"}, 
               React.createElement("img", {border: "0px", className: "gvreset gvsprite-forwardall", src: "/jsgameviewer/view/images/default.png"})
             )
           ), 
