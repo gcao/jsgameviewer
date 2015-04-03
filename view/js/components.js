@@ -26,16 +26,19 @@
     this.id = this.ctrl.id;
     this.jqId = this.ctrl.jqId;
 
+    // public api from original view.js
     this.destroyView = function(){
       jq4gv(this.jqId).remove();
     }
 
+    // public api from original view.js
     this.initView = function(){
       if (this.ctrl.initialized())
         return this;
       this.render();
     }
 
+    // public api from original view.js
     this.initGame = function(){
     }
 
@@ -66,22 +69,19 @@
       this.render();
     }.bind(this);
 
-    this.forward_ = function(){
-      if (this.ctrl.gameState.isLast())
-        return false;
-      this.ctrl.gameState.forward();
-      return true;
-    };
-
     this.forward = function(){
-      this.ctrl.gameState.forward();
-      this.render();
+      if (!this.ctrl.gameState) return;
+
+      if (this.ctrl.gameState.forward())
+        this.render();
     }.bind(this);
 
     this.forwardN = function(){
+      if (!this.ctrl.gameState) return;
+
       var changed = false;
       for(var i=0; i<this.config.fastMode; i++){
-        if (!this.forward_())
+        if (!this.ctrl.gameState.forward())
           break;
         changed = true;
       }
@@ -90,9 +90,11 @@
     }.bind(this);
 
     this.forwardToComment = function(){
+      if (!this.ctrl.gameState) return;
+
       var changed = false;
       for(;;){
-        if (!this.forward_())
+        if (!this.ctrl.gameState.forward())
           break;
         changed = true;
         // stop at move that has comments or branches
@@ -105,26 +107,27 @@
     }.bind(this);
 
     this.forwardAll = function(){
-      this.ctrl.gameState.forwardAll();
-      this.render();
+      if (!this.ctrl.gameState) return;
+
+      if (!this.ctrl.gameSate.isLast()) {
+        this.ctrl.gameState.forwardAll();
+        this.render();
+      }
     }.bind(this);
 
-    this.back_ = function(){
-      if (this.ctrl.gameState.isFirst())
-        return false;
-      this.ctrl.gameState.back();
-      return true;
-    };
-
     this.back = function(){
-      this.ctrl.gameState.back();
-      this.render();
+      if (!this.ctrl.gameState) return;
+
+      if (this.ctrl.gameState.back())
+        this.render();
     }.bind(this);
 
     this.backN = function(){
+      if (!this.ctrl.gameState) return;
+
       var changed = false;
       for(var i=0; i<this.config.fastMode; i++){
-        if (!this.back_())
+        if (!this.ctrl.gameState.back())
           break;
         changed = true;
       }
@@ -133,9 +136,11 @@
     }.bind(this);
 
     this.backToComment = function(){
+      if (!this.ctrl.gameState) return;
+
       var changed = false;
       for(;;){
-        if (!this.back_())
+        if (!this.ctrl.gameState.back())
           break;
         changed = true;
         // stop at move that has comments or branches
@@ -148,13 +153,16 @@
     }.bind(this);
 
     this.backAll = function(){
-      this.ctrl.gameState.backAll();
-      this.render();
+      if (!this.ctrl.gameState) return;
+
+      if (!this.ctrl.gameSate.isFirst()) {
+        this.ctrl.gameState.backAll();
+        this.render();
+      }
     }.bind(this);
 
     this.goTo = function(n){
-      if (this.ctrl.gameState == null)
-        return;
+      if (!this.ctrl.gameState) return;
 
       var s = prompt("Please enter the move number: ");
       var n = parseInt(s);
@@ -215,7 +223,7 @@
            this.props.ctx.ctrl.gameState ?
             React.createElement("div", {className: "gvreset gvright-pane"}, 
               React.createElement(Info, {game: this.props.ctx.ctrl.gameState.game}), 
-              React.createElement(Comment, null)
+              React.createElement(Comment, {ctx: this.props.ctx})
             )
             :
             React.createElement("div", {className: "gvreset gvright-pane"})
@@ -438,12 +446,20 @@
 
   var Comment = React.createClass({displayName: "Comment",
     render: function() {
-      return (
-        React.createElement("div", {className: "gvreset gvcomment"}, 
-          React.createElement("strong", null, "第 ", this.props.move, " 手评论:"), React.createElement("br", null), 
-          this.props.comment
-        )
-      );
+      var gameState = this.props.ctx.ctrl.gameState;
+      if (!gameState) return EMPTY_DIV;
+
+      var node = gameState.currentNode;
+      if (node.comment) {
+        return (
+          React.createElement("div", {className: "gvreset gvcomment"}, 
+            React.createElement("strong", null, jsgvTranslations['comment_for'].replace(/MOVE/,node.moveNumber)), React.createElement("br", null), 
+            node.comment
+          )
+        );
+      } else {
+        return EMPTY_DIV;
+      }
     }
   });
 
