@@ -288,6 +288,13 @@ function getWindowContent(game) {
     "</script>";
 }
 
+jsgvLoader.addSiteHandler(function(){ // dgs handler
+  if (!location.host.match(/qipu\.weiqi123\.com$/)) return;
+
+  if (location.pathname.match(/^\/show_games/)) {
+  }
+});
+
 jsgvLoader.addSiteHandler(function(){ // localhost handler
   if (!location.host.match(/^(localhost|127.0.0.1)/)) return;
 
