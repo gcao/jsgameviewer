@@ -39,32 +39,69 @@
     this.initGame = function(){
     }
 
+    this.changeLocale = function(newLocale) {
+      if (this.config.locale == newLocale)
+        return;
+
+      if (!jsGameViewer.LOCALES.indexOf(newLocale) < 0){
+        alert("jsGameViewer WARNING: Invalid locale '" + newLocale + "'");
+        return;
+      }
+
+      this.config.locale = newLocale;
+      window.jsgvTranslations = window["jsgv_" + newLocale];
+      this.render();
+    };
+
     this.changeLocaleToEnglish = function() {
-      this.ctrl.changeLocale('en_us');
+      this.changeLocale('en_us');
     }.bind(this);
 
     this.changeLocaleToChinese = function() {
-      this.ctrl.changeLocale('zh_cn');
+      this.changeLocale('zh_cn');
     }.bind(this);
 
     this.toggleNumber = function(){
-      this.config.showNumber = !this.config.showNumber;
+      this.config.showMoveNumber = !this.config.showMoveNumber;
       this.render();
     }.bind(this);
+
+    this.forward_ = function(){
+      if (this.ctrl.gameState.isLast())
+        return false;
+      this.ctrl.gameState.forward();
+      return true;
+    };
 
     this.forward = function(){
       this.ctrl.gameState.forward();
       this.render();
     }.bind(this);
 
-    this.forwardN = function(n){
-      this.ctrl.gameState.forwardN(n);
-      this.render();
+    this.forwardN = function(){
+      var changed = false;
+      for(var i=0; i<this.config.fastMode; i++){
+        if (!this.forward_())
+          break;
+        changed = true;
+      }
+      if (changed)
+        this.render();
     }.bind(this);
 
     this.forwardToComment = function(){
-      this.ctrl.gameState.forwardToComment();
-      this.render();
+      var changed = false;
+      for(;;){
+        if (!this.forward_())
+          break;
+        changed = true;
+        // stop at move that has comments or branches
+        var node = this.ctrl.gameState.currentNode;
+        if (node.hasComment() || node.hasBranches())
+          break;
+      }
+      if (changed)
+        this.render();
     }.bind(this);
 
     this.forwardAll = function(){
@@ -72,19 +109,42 @@
       this.render();
     }.bind(this);
 
+    this.back_ = function(){
+      if (this.ctrl.gameState.isFirst())
+        return false;
+      this.ctrl.gameState.back();
+      return true;
+    };
+
     this.back = function(){
       this.ctrl.gameState.back();
       this.render();
     }.bind(this);
 
-    this.backN = function(n){
-      this.ctrl.gameState.backN(n);
-      this.render();
+    this.backN = function(){
+      var changed = false;
+      for(var i=0; i<this.config.fastMode; i++){
+        if (!this.back_())
+          break;
+        changed = true;
+      }
+      if (changed)
+        this.render();
     }.bind(this);
 
     this.backToComment = function(){
-      this.ctrl.gameState.backToComment();
-      this.render();
+      var changed = false;
+      for(;;){
+        if (!this.back_())
+          break;
+        changed = true;
+        // stop at move that has comments or branches
+        var node = this.ctrl.gameState.currentNode;
+        if (node.hasComment() || node.hasBranches())
+          break;
+      }
+      if (changed)
+        this.render();
     }.bind(this);
 
     this.backAll = function(){
@@ -93,8 +153,43 @@
     }.bind(this);
 
     this.goTo = function(n){
-      this.ctrl.gameState.goTo(n);
-      this.render();
+      if (this.ctrl.gameState == null)
+        return;
+
+      var s = prompt("Please enter the move number: ");
+      var n = parseInt(s);
+      if (isNaN(n) || n < 0) {
+        alert("Not a valid move number.");
+        return;
+      }
+
+      var _this = this;
+      while (this.ctrl.gameState.isOnBranch()){
+        this.back();
+      }
+      if (n >= this.ctrl.gameState.game.getMoves()){
+        this.forwardAll();
+      } else if (n <= 0) {
+        this.backAll();
+      } else if (n > this.ctrl.gameState.currentNode.moveNumber) {
+        var changed = false;
+        while(n > this.ctrl.gameState.currentNode.moveNumber){
+          if (!this.forward_())
+            break;
+          changed = true;
+        }
+        if (changed)
+          this.render();
+      } else if (n < this.ctrl.gameState.currentNode.moveNumber) {
+        var changed = false;
+        while(n < this.ctrl.gameState.currentNode.moveNumber){
+          if (!this.back_())
+            break;
+          changed = true;
+        }
+        if (changed)
+          this.render();
+      }
     }.bind(this);
 
     this.render = function(){
@@ -132,22 +227,36 @@
 
   var Banner = React.createClass({
     render: function() {
+      var moveNumber = 0;
+      var totalMoves = 0;
+      var nextPlayerClass = "gvreset nextPlayerImg";
+
+      var gameState = this.props.ctx.ctrl.gameState;
+      if (gameState) {
+        moveNumber = gameState.currentNode.moveNumber;
+        totalMoves = gameState.game.getMoves();
+        if (gameState.getNextPlayer() === jsGameViewer.model.STONE_WHITE)
+          nextPlayerClass += " gvsprite-15-white";
+        else
+          nextPlayerClass += " gvsprite-15-black";
+      }
+
       return (
         <div className='gvreset gvbanner'>
           <div className='gvreset gvbanner-overlay'></div>
           <div className='gvreset gvbanner-left'>
-            <a className='gvreset localization' href='#' onclick={this.props.ctx.changeLocaleToChinese}>中文</a>
+            <a className='gvreset localization' href='#' onClick={this.props.ctx.changeLocaleToChinese}>中文</a>
             &nbsp;|&nbsp;
-            <a className='gvreset localization' href='#' onclick={this.props.ctx.changeLocaleToEnglish}>EN</a>
+            <a className='gvreset localization' href='#' onClick={this.props.ctx.changeLocaleToEnglish}>EN</a>
             &nbsp;&nbsp;
-            Next
+            {jsgvTranslations['whose_turn']}
             &nbsp;
-            <div className='gvreset nextPlayerImg'/>
+            <div className={nextPlayerClass} style={{display: 'inline-block'}}/>
           </div>
           <div className='gvreset gvmove-outer gvbutton'>
-            <a className='gvreset' href='#' onclick={this.props.ctx.goTo} title='Jump to XX [Alt Shift G]'>
+            <a className='gvreset' href='#' onClick={this.props.ctx.goTo} title='Jump to XX [Alt Shift G]'>
               &nbsp;
-              <span className='gvreset gvcontrol-text'>0</span>
+              <span className='gvreset gvcontrol-text'>{totalMoves > 0 ? moveNumber + '/' + totalMoves : '0' }</span>
               &nbsp;
             </a>
           </div>
@@ -155,7 +264,7 @@
             <div className='gvreset gvprisoners-outer'>
               <div className='gvreset gvblack-prisoners-outer'>
                 <span className='gvreset gvbutton'>
-                  <a href='#' onclick='return false;'>
+                  <a href='javascript:void(0)'>
                     <div className='gvreset gvsprite-15-black_dead' style={{display: 'inline-block', margin: -2, marginRight: 2}}/>
                     &nbsp;
                     <span className='gvreset gvcontrol-text'>0</span>
@@ -164,7 +273,7 @@
               </div>
               <div className='gvreset gvwhite-prisoners-outer'>
                 <span className='gvreset gvbutton'>
-                  <a href='#' onclick='return false;'>
+                  <a href='javascript:void(0)'>
                     <div className='gvreset gvsprite-15-white_dead' style={{display: 'inline-block', margin: -2, marginRight: 2}}/>
                     &nbsp;
                     <span className='gvreset gvcontrol-text'>0</span>
@@ -224,55 +333,61 @@
 
   var Toolbar = React.createClass({
     render: function() {
+      var toggleNumberClass = 'gvreset';
+      if (this.props.ctx.config.showMoveNumber)
+        toggleNumberClass += " gvsprite-hidenumber";
+      else
+        toggleNumberClass += " gvsprite-shownumber";
+
       return (
         <div className='gvreset gvtoolbar'>
           <div className='gvreset gvtb-item'>
-            <a className='gvreset toggleopacity' href='#' onclick={this.props.ctx.refresh} title='Refresh game/board [Alt Shift R]'>
+            <a className='gvreset toggleopacity' href='#' onClick={this.props.ctx.refresh} title='Refresh game/board [Alt Shift R]'>
               <div className='gvreset gvsprite-refresh'/>
             </a>
           </div>
           <div className='gvreset gvtb-item'>
-            <a className='gvreset toggleopacity' href='#' onclick={this.props.ctx.toggleNumber} title='Show/hide move number [Alt Shift M]'>
-              <div className='gvreset gvsprite-shownumber'/>
+            <a className='gvreset toggleopacity' href='#' onClick={this.props.ctx.toggleNumber} title='Show/hide move number [Alt Shift M]'>
+              <div className={toggleNumberClass}/>
             </a>
           </div>
           <div className='gvreset gvtb-item'>
-            <a className='gvreset toggleopacity' href='#' onclick={this.props.ctx.backAll} title='Back to beginning [ctx Alt &amp;#8592;]'>
+            <a className='gvreset toggleopacity' href='#' onClick={this.props.ctx.backAll} title='Back to beginning [ctx Alt &#8592;]'>
               <div className='gvreset gvsprite-backall'/>
             </a>
           </div>
           <div className='gvreset gvtb-item'>
-            <a className='gvreset toggleopacity' href='#' onclick={this.props.ctx.backToComment} title='Previous comment or variation [Alt Shift &amp;#8592;]'>
+            <a className='gvreset toggleopacity' href='#' onClick={this.props.ctx.backToComment} title='Previous comment or variation [Alt Shift &#8592;]'>
               <div className='gvreset gvsprite-backc'/>
             </a>
           </div>
           <div className='gvreset gvtb-item'>
-            <a className='gvreset toggleopacity' href='#' onclick={this.props.ctx.backN} title='Fast back [ctx &amp;#8592;]'>
+            <a className='gvreset toggleopacity' href='#' onClick={this.props.ctx.backN} title='Fast back [ctx &#8592;]'>
               <div className='gvreset gvsprite-backn'/>
             </a>
           </div>
           <div className='gvreset gvtb-item'>
-            <a className='gvreset toggleopacity' href='#' onclick={this.props.ctx.back} title='Back [&amp;#8592;]'>
+            <a className='gvreset toggleopacity' href='#' onClick={this.props.ctx.back} title='Back [&#8592;]'>
               <div className='gvreset gvsprite-back'/>
             </a>
           </div>
           <div className='gvreset gvtb-item'>
-            <a className='gvreset toggleopacity' href='#' onclick={this.props.ctx.forward} title='Forward [&amp;#8594;]'>
+            <a className='gvreset toggleopacity' href='#' onClick={this.props.ctx.forward} title='Forward [&#8594;]'>
               <div className='gvreset gvsprite-forward'/>
             </a>
           </div>
           <div className='gvreset gvtb-item'>
-            <a className='gvreset toggleopacity' href='#' onclick={this.props.ctx.forwardN} title='Fast forward [ctx &amp;#8594;]'>
+            <a className='gvreset toggleopacity' href='#' onClick={this.props.ctx.forwardN} title='Fast forward [ctx &#8594;]'>
               <div className='gvreset gvsprite-forwardn'/>
             </a>
           </div>
           <div className='gvreset gvtb-item'>
-            <a className='gvreset toggleopacity' href='#' onclick={this.props.ctx.forwardToComment} title='Next comment or variation [Alt Shift &amp;#8594;]'>
+            <a className='gvreset toggleopacity' href='#' onClick={this.props.ctx.forwardToComment} title='Next comment or variation [Alt Shift &#8594;]'>
               <div className='gvreset gvsprite-forwardc'/>
             </a>
           </div>
           <div className='gvreset gvtb-item'>
-            <a className='gvreset toggleopacity' href='#' onclick={this.props.ctx.forwardAll} title='Forward to end [ctx Alt &amp;#8594;]'>
+            <a className='gvreset toggleopacity' href='#' onClick={this.props.ctx.forwardAll} title='Forward to end [ctx Alt &#8594;]'>
               <div className='gvreset gvsprite-forwardall'/>
             </a>
           </div>
