@@ -408,16 +408,14 @@
   var Prisoner = React.createClass({
     render: function() {
       var x = this.props.x, y = this.props.y, color = this.props.color;
-      var cssClass = color == jsGameViewer.model.STONE_BLACK? "gvsprite-21-black_dead" : "gvsprite-21-white_dead";
-      var area = xyToArea(x,y,this.props.ctx.config.gridSize);
+      var gridSize = this.props.ctx.config.gridSize;
+      var cssClass = color == jsGameViewer.model.STONE_BLACK? "gvsprite-15-black_dead" : "gvsprite-15-white_dead";
+      var area = xyToArea(x,y,gridSize);
       var left = area[0], top = area[1];
       return (
-        <div className={cssClass} style={{
-          position: 'absolute',
-          left: left,
-          top: top,
-          backgroundColor: this.props.ctx.config.boardColor
-        }}/>
+        <div style={{position: 'absolute', left: left, top: top, width: gridSize, height: gridSize, backgroundColor: this.props.ctx.config.boardColor}}>
+          <div className={cssClass} style={{marginLeft: 3, marginTop: 3}}/>
+        </div>
       );
     }
   });
