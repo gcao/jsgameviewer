@@ -64,6 +64,24 @@
       this.changeLocale('zh_cn');
     }.bind(this);
 
+    this.setShowBlackPrisoners = function(flag) {
+      if (this.showBlackPrisoners !== flag) {
+        this.showBlackPrisoners = flag;
+        this.render();
+      }
+    }.bind(this);
+
+    this.setShowWhitePrisoners = function(flag) {
+      if (this.showWhitePrisoners !== flag) {
+        this.showWhitePrisoners = flag;
+        this.render();
+      }
+    }.bind(this);
+
+    this.refresh = function(){
+      this.ctrl.refresh();
+    }.bind(this);
+
     this.toggleNumber = function(){
       this.config.showMoveNumber = !this.config.showMoveNumber;
       this.render();
@@ -109,7 +127,7 @@
     this.forwardAll = function(){
       if (!this.ctrl.gameState) return;
 
-      if (!this.ctrl.gameSate.isLast()) {
+      if (!this.ctrl.gameState.isLast()) {
         this.ctrl.gameState.forwardAll();
         this.render();
       }
@@ -155,7 +173,7 @@
     this.backAll = function(){
       if (!this.ctrl.gameState) return;
 
-      if (!this.ctrl.gameSate.isFirst()) {
+      if (!this.ctrl.gameState.isFirst()) {
         this.ctrl.gameState.backAll();
         this.render();
       }
@@ -182,7 +200,7 @@
       } else if (n > this.ctrl.gameState.currentNode.moveNumber) {
         var changed = false;
         while(n > this.ctrl.gameState.currentNode.moveNumber){
-          if (!this.forward_())
+          if (!this.ctrl.gameState.forward())
             break;
           changed = true;
         }
@@ -191,7 +209,7 @@
       } else if (n < this.ctrl.gameState.currentNode.moveNumber) {
         var changed = false;
         while(n < this.ctrl.gameState.currentNode.moveNumber){
-          if (!this.back_())
+          if (!this.ctrl.gameState.back())
             break;
           changed = true;
         }
@@ -234,10 +252,27 @@
   });
 
   var Banner = React.createClass({displayName: "Banner",
+    showBlackPrisoners: function() {
+      this.props.ctx.setShowBlackPrisoners(true);
+    },
+
+    hideBlackPrisoners: function() {
+      this.props.ctx.setShowBlackPrisoners(false);
+    },
+
+    showWhitePrisoners: function() {
+      this.props.ctx.setShowWhitePrisoners(true);
+    },
+
+    hideWhitePrisoners: function() {
+      this.props.ctx.setShowWhitePrisoners(false);
+    },
+
     render: function() {
       var moveNumber = 0;
       var totalMoves = 0;
       var nextPlayerClass = "gvreset nextPlayerImg";
+      var blackPrisoners = 0, whitePrisoners = 0;
 
       var gameState = this.props.ctx.ctrl.gameState;
       if (gameState) {
@@ -247,6 +282,9 @@
           nextPlayerClass += " gvsprite-15-white";
         else
           nextPlayerClass += " gvsprite-15-black";
+
+        blackPrisoners = gameState.blackPrisoners;
+        whitePrisoners = gameState.whitePrisoners;
       }
 
       return (
@@ -272,19 +310,19 @@
             React.createElement("div", {className: "gvreset gvprisoners-outer"}, 
               React.createElement("div", {className: "gvreset gvblack-prisoners-outer"}, 
                 React.createElement("span", {className: "gvreset gvbutton"}, 
-                  React.createElement("a", {href: "javascript:void(0)"}, 
-                    React.createElement("div", {className: "gvreset gvsprite-15-black_dead", style: {display: 'inline-block', margin: -2, marginRight: 2}}), 
+                  React.createElement("a", {href: "javascript:void(0)", onMouseOver: this.showBlackPrisoners, onMouseOut: this.hideBlackPrisoners}, 
+                    React.createElement("div", {className: "gvreset gvsprite-15-black_dead", style: {display: 'inline-block', margin: -2, marginRight: 2}, onMouseEnter: this.showBlackPrisoners}), 
                     " ", 
-                    React.createElement("span", {className: "gvreset gvcontrol-text"}, "0")
+                    React.createElement("span", {className: "gvreset gvcontrol-text"}, blackPrisoners)
                   )
                 )
               ), 
               React.createElement("div", {className: "gvreset gvwhite-prisoners-outer"}, 
                 React.createElement("span", {className: "gvreset gvbutton"}, 
-                  React.createElement("a", {href: "javascript:void(0)"}, 
+                  React.createElement("a", {href: "javascript:void(0)", onMouseOver: this.showWhitePrisoners, onMouseOut: this.hideWhitePrisoners}, 
                     React.createElement("div", {className: "gvreset gvsprite-15-white_dead", style: {display: 'inline-block', margin: -2, marginRight: 2}}), 
                     " ", 
-                    React.createElement("span", {className: "gvreset gvcontrol-text"}, "0")
+                    React.createElement("span", {className: "gvreset gvcontrol-text"}, whitePrisoners)
                   )
                 )
               )
@@ -304,7 +342,7 @@
             React.createElement("div", {className: "gvreset gvboard-overlay"}), 
             React.createElement("div", {className: "gvreset gvboard-overlay"}), 
             React.createElement(MoveMark, {ctx: this.props.ctx}), 
-            React.createElement("div", {className: "gvreset gvboard-overlay"}), 
+            React.createElement(Prisoners, {ctx: this.props.ctx}), 
             React.createElement("div", {className: "gvreset gvboard-overlay gvboard-fascade"}, 
               React.createElement("div", {className: "gvreset gvsprite-21-blankboard"})
             )
@@ -336,6 +374,51 @@
       }
 
       return EMPTY_DIV;
+    }
+  });
+
+  var Prisoners = React.createClass({displayName: "Prisoners",
+    render: function() {
+      var ctx = this.props.ctx;
+      var prisoners = [];
+      if (ctx.showBlackPrisoners) {
+        var blackPrisoners = ctx.ctrl.gameState.blackPrisonerPoints;
+        for (var i=0; i<blackPrisoners.length; i++) {
+          var prisoner = blackPrisoners[i];
+          prisoners.push(React.createElement(Prisoner, {ctx: ctx, x: prisoner[0], y: prisoner[1], color: prisoner[2]}));
+        }
+      } else if (ctx.showWhitePrisoners) {
+        var whitePrisoners = ctx.ctrl.gameState.whitePrisonerPoints;
+        for (var i=0; i<whitePrisoners.length; i++) {
+          var prisoner = whitePrisoners[i];
+          prisoners.push(React.createElement(Prisoner, {ctx: ctx, x: prisoner[0], y: prisoner[1], color: prisoner[2]}));
+        }
+      } else {
+        return EMPTY_DIV;
+      }
+
+      return (
+        React.createElement("div", {className: "gvreset gvboard-overlay"}, 
+          prisoners
+        )
+      );
+    }
+  });
+
+  var Prisoner = React.createClass({displayName: "Prisoner",
+    render: function() {
+      var x = this.props.x, y = this.props.y, color = this.props.color;
+      var cssClass = color == jsGameViewer.model.STONE_BLACK? "gvsprite-21-black_dead" : "gvsprite-21-white_dead";
+      var area = xyToArea(x,y,this.props.ctx.config.gridSize);
+      var left = area[0], top = area[1];
+      return (
+        React.createElement("div", {className: cssClass, style: {
+          position: 'absolute',
+          left: left,
+          top: top,
+          backgroundColor: this.props.ctx.config.boardColor
+        }})
+      );
     }
   });
 
@@ -411,7 +494,7 @@
 
       if (!game) return EMPTY_DIV;
 
-      var playFirst = "&nbsp;&#8592; " + jsgvTranslations['play_first'];
+      var playFirst = "\u00a0&#8592; " + jsgvTranslations['play_first'];
 
       return (
         React.createElement("div", {className: "gvreset gvinfo"}, 
@@ -422,13 +505,13 @@
           React.createElement("div", null, 
              jsgvTranslations['white'], ":", 
             React.createElement("strong", null, " ", game.whiteName, " "), 
-             jsGameViewer.notNull(game.whiteRank) && "&nbsp;(" + game.whiteRank + ")", 
+             jsGameViewer.notNull(game.whiteRank) && "\u00a0(" + game.whiteRank + ")", 
              game.getFirstPlayer() == jsGameViewer.model.STONE_WHITE && playFirst
           ), 
           React.createElement("div", null, 
              jsgvTranslations['black'], ":", 
             React.createElement("strong", null, " ", game.blackName, " "), 
-             jsGameViewer.notNull(game.blackRank) && "&nbsp;(" + game.blackRank + ")", 
+             jsGameViewer.notNull(game.blackRank) && "\u00a0(" + game.blackRank + ")", 
              game.getFirstPlayer() == jsGameViewer.model.STONE_BLACK && playFirst
           ), 
            game.handicap > 0
