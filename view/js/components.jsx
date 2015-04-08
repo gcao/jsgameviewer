@@ -1,7 +1,17 @@
 (function() {
   "use strict";
 
+  var LABELS = ['A','B','C','D','E','F','G','H','J','K','L','M','N','O','P','Q','R','S','T'];
   var EMPTY_DIV = <div style={{display: "none"}}/>;
+
+  function xyToLabel(x,y){
+    if (typeof x !== 'number' || typeof y !== 'number') return;
+    if (x < 0 || x >= 19 || y < 0 || y >= 19) return;
+
+    var s = LABELS[x];
+    s += 19 - parseInt(y);
+    return s;
+  }
 
   // Default view configuration
   jq4gv.extend(jsGameViewer.CONFIG, {
@@ -76,6 +86,12 @@
         this.showWhitePrisoners = flag;
         this.render();
       }
+    }.bind(this);
+
+    this.setMousePosition = function(x, y) {
+      this.mouseX = x;
+      this.mouseY = y;
+      this.render();
     }.bind(this);
 
     this.refresh = function(){
@@ -183,6 +199,7 @@
       if (!this.ctrl.gameState) return;
 
       var s = prompt("Please enter the move number: ");
+      if (!s) return;
       var n = parseInt(s);
       if (isNaN(n) || n < 0) {
         alert("Not a valid move number.");
@@ -238,14 +255,7 @@
           <Board ctx={this.props.ctx}/>
           <Toolbar ctx={this.props.ctx}/>
           <div align='center' className='gvreset gvpoint-label'></div>
-          { this.props.ctx.ctrl.gameState ?
-            <div className='gvreset gvright-pane'>
-              <Info game={this.props.ctx.ctrl.gameState.game}/>
-              <Comment ctx={this.props.ctx}/>
-            </div>
-            :
-            <div className='gvreset gvright-pane'></div>
-          }
+          <RightPane ctx={this.props.ctx}/>
         </div>
       );
     }
@@ -313,7 +323,7 @@
                   <a href='javascript:void(0)' onMouseOver={this.showBlackPrisoners} onMouseOut={this.hideBlackPrisoners}>
                     <div className='gvreset gvsprite-15-black_dead' style={{display: 'inline-block', margin: -2, marginRight: 2}} onMouseEnter={this.showBlackPrisoners}/>
                     &nbsp;
-                    <span className='gvreset gvcontrol-text'>{blackPrisoners}</span>
+                    <span className='gvreset gvcontrol-text' style={{fontWeight: "normal"}}>{blackPrisoners}</span>
                   </a>
                 </span>
               </div>
@@ -322,11 +332,14 @@
                   <a href='javascript:void(0)' onMouseOver={this.showWhitePrisoners} onMouseOut={this.hideWhitePrisoners}>
                     <div className='gvreset gvsprite-15-white_dead' style={{display: 'inline-block', margin: -2, marginRight: 2}}/>
                     &nbsp;
-                    <span className='gvreset gvcontrol-text'>{whitePrisoners}</span>
+                    <span className='gvreset gvcontrol-text' style={{fontWeight: "normal"}}>{whitePrisoners}</span>
                   </a>
                 </span>
               </div>
             </div>
+          </div>
+          <div className='gvreset gvbanner-overlay'>
+            <div style={{float: 'right', width: 50, marginTop: 3, textAlign: 'center', color: '#555'}}>{xyToLabel(this.props.ctx.mouseX, this.props.ctx.mouseY)}</div>
           </div>
         </div>
       );
@@ -334,16 +347,37 @@
   });
 
   var Board = React.createClass({
+
+    mouseMoveHandler: function(e){
+      var e = e.nativeEvent;
+      var layerX = e.layerX || e.offsetX || e.clientX;
+      var layerY = e.layerY || e.offsetY || e.clientY;
+
+      var gridSize = this.props.ctx.config.gridSize;
+      var x = parseInt(layerX/gridSize);
+      var y = parseInt(layerY/gridSize);
+
+      this.props.ctx.setMousePosition(x, y);
+    },
+
+    mouseOutHandler: function(e){
+      this.props.ctx.setMousePosition(-1, -1);
+    },
+
     render: function() {
       return (
         <div className='gvreset gvboard-outer gvsprite-21-board'>
-          <div className='gvreset gvboard'>
+          <div className='gvreset gvboard'
+          >
             <Stones ctx={this.props.ctx}/>
             <div className='gvreset gvboard-overlay'></div>
             <div className='gvreset gvboard-overlay'></div>
             <MoveMark ctx={this.props.ctx}/>
             <Prisoners ctx={this.props.ctx}/>
-            <div className='gvreset gvboard-overlay gvboard-fascade'>
+            <div className='gvreset gvboard-overlay gvboard-fascade'
+                 onMouseMove={this.mouseMoveHandler}
+                 onMouseOut={this.mouseOutHandler}
+            >
               <div className='gvreset gvsprite-21-blankboard'/>
             </div>
           </div>
@@ -413,8 +447,18 @@
       var area = xyToArea(x,y,gridSize);
       var left = area[0], top = area[1];
       return (
-        <div style={{position: 'absolute', left: left, top: top, width: gridSize, height: gridSize, backgroundColor: this.props.ctx.config.boardColor}}>
-          <div className={cssClass} style={{marginLeft: 3, marginTop: 3}}/>
+        <div style={{
+          position: 'absolute',
+          left: left,
+          top: top,
+          width: gridSize,
+          height: gridSize,
+          backgroundColor: this.props.ctx.config.boardColor
+        }}>
+          <div className={cssClass} style={{
+            marginLeft: 3,
+            marginTop: 3
+          }}/>
         </div>
       );
     }
@@ -427,6 +471,15 @@
         toggleNumberClass += " gvsprite-hidenumber";
       else
         toggleNumberClass += " gvsprite-shownumber";
+
+      var isFirst = true, isLast = true;
+      var gameState = this.props.ctx.ctrl.gameState;
+      if (gameState) {
+        isFirst = gameState.isFirst();
+        isLast = gameState.isLast();
+      }
+      var backClass = isFirst ? ' disabled' : '';
+      var forwardClass = isLast ? ' disabled' : '';
 
       return (
         <div className='gvreset gvtoolbar'>
@@ -442,45 +495,60 @@
           </div>
           <div className='gvreset gvtb-item'>
             <a className='gvreset toggleopacity' href='#' onClick={this.props.ctx.backAll} title='Back to beginning [ctx Alt &#8592;]'>
-              <div className='gvreset gvsprite-backall'/>
+              <div className={'gvreset gvsprite-backall' + backClass}/>
             </a>
           </div>
           <div className='gvreset gvtb-item'>
             <a className='gvreset toggleopacity' href='#' onClick={this.props.ctx.backToComment} title='Previous comment or variation [Alt Shift &#8592;]'>
-              <div className='gvreset gvsprite-backc'/>
+              <div className={'gvreset gvsprite-backc' + backClass}/>
             </a>
           </div>
           <div className='gvreset gvtb-item'>
             <a className='gvreset toggleopacity' href='#' onClick={this.props.ctx.backN} title='Fast back [ctx &#8592;]'>
-              <div className='gvreset gvsprite-backn'/>
+              <div className={'gvreset gvsprite-backn' + backClass}/>
             </a>
           </div>
           <div className='gvreset gvtb-item'>
             <a className='gvreset toggleopacity' href='#' onClick={this.props.ctx.back} title='Back [&#8592;]'>
-              <div className='gvreset gvsprite-back'/>
+              <div className={'gvreset gvsprite-back' + backClass}/>
             </a>
           </div>
           <div className='gvreset gvtb-item'>
             <a className='gvreset toggleopacity' href='#' onClick={this.props.ctx.forward} title='Forward [&#8594;]'>
-              <div className='gvreset gvsprite-forward'/>
+              <div className={'gvreset gvsprite-forward' + forwardClass}/>
             </a>
           </div>
           <div className='gvreset gvtb-item'>
             <a className='gvreset toggleopacity' href='#' onClick={this.props.ctx.forwardN} title='Fast forward [ctx &#8594;]'>
-              <div className='gvreset gvsprite-forwardn'/>
+              <div className={'gvreset gvsprite-forwardn' + forwardClass}/>
             </a>
           </div>
           <div className='gvreset gvtb-item'>
             <a className='gvreset toggleopacity' href='#' onClick={this.props.ctx.forwardToComment} title='Next comment or variation [Alt Shift &#8594;]'>
-              <div className='gvreset gvsprite-forwardc'/>
+              <div className={'gvreset gvsprite-forwardc' + forwardClass}/>
             </a>
           </div>
           <div className='gvreset gvtb-item'>
             <a className='gvreset toggleopacity' href='#' onClick={this.props.ctx.forwardAll} title='Forward to end [ctx Alt &#8594;]'>
-              <div className='gvreset gvsprite-forwardall'/>
+              <div className={'gvreset gvsprite-forwardall' + forwardClass}/>
             </a>
           </div>
           <div className='gvreset gvtb-branches'></div>
+        </div>
+      );
+    }
+  });
+
+  // TODO: scroll to show as much comments as possible except when jumping to first move!
+  var RightPane = React.createClass({
+    render: function() {
+      if (!this.props.ctx.ctrl.gameState)
+        return (<div className='gvreset gvright-pane'></div>);
+
+      return (
+        <div className='gvreset gvright-pane'>
+          <Info game={this.props.ctx.ctrl.gameState.game}/>
+          <Comment ctx={this.props.ctx}/>
         </div>
       );
     }
@@ -495,10 +563,12 @@
       var playFirst = "\u00a0&#8592; " + jsgvTranslations['play_first'];
 
       return (
-        <div className='gvreset gvinfo'>
-          { jsGameViewer.notNull(game.name)  && <div align="center" style={{fontWeight: "bold"}}>{game.name}</div> }
-          { jsGameViewer.notNull(game.date)  && <div align="center" style={{fontWeight: "bold"}}>{game.date}</div> }
-          { jsGameViewer.notNull(game.place) && <div align="center" style={{fontWeight: "bold"}}>{game.place}</div> }
+        <div className='gvreset gvinfo' style={{fontSize: "0.9em"}}>
+          { jsGameViewer.notNull(game.name)  && <div style={{width: '100%', textAlign: 'center', fontWeight: "bold"}}>{game.name}</div> }
+          <div style={{width: '100%', textAlign: 'center'}}>
+            { jsGameViewer.notNull(game.date)  && game.date + '\u00a0 ' }
+            { jsGameViewer.notNull(game.place) && game.place }
+          </div>
 
           <div>
             { jsgvTranslations['white'] }:

@@ -188,8 +188,8 @@ module Utils
       # draw cross in red
       gc.stroke 'red'
       gc.stroke_width 2
-      gc.line 0,0,size,size
-      gc.line 0,size,size,0
+      gc.line 0,0,size-1,size-1
+      gc.line 0,size-1,size-1,0
 
       save_to_file gc, size, size, file
     end

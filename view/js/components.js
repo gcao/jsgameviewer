@@ -1,7 +1,17 @@
 (function() {
   "use strict";
 
+  var LABELS = ['A','B','C','D','E','F','G','H','J','K','L','M','N','O','P','Q','R','S','T'];
   var EMPTY_DIV = React.createElement("div", {style: {display: "none"}});
+
+  function xyToLabel(x,y){
+    if (typeof x !== 'number' || typeof y !== 'number') return;
+    if (x < 0 || x >= 19 || y < 0 || y >= 19) return;
+
+    var s = LABELS[x];
+    s += 19 - parseInt(y);
+    return s;
+  }
 
   // Default view configuration
   jq4gv.extend(jsGameViewer.CONFIG, {
@@ -76,6 +86,12 @@
         this.showWhitePrisoners = flag;
         this.render();
       }
+    }.bind(this);
+
+    this.setMousePosition = function(x, y) {
+      this.mouseX = x;
+      this.mouseY = y;
+      this.render();
     }.bind(this);
 
     this.refresh = function(){
@@ -183,6 +199,7 @@
       if (!this.ctrl.gameState) return;
 
       var s = prompt("Please enter the move number: ");
+      if (!s) return;
       var n = parseInt(s);
       if (isNaN(n) || n < 0) {
         alert("Not a valid move number.");
@@ -238,14 +255,7 @@
           React.createElement(Board, {ctx: this.props.ctx}), 
           React.createElement(Toolbar, {ctx: this.props.ctx}), 
           React.createElement("div", {align: "center", className: "gvreset gvpoint-label"}), 
-           this.props.ctx.ctrl.gameState ?
-            React.createElement("div", {className: "gvreset gvright-pane"}, 
-              React.createElement(Info, {game: this.props.ctx.ctrl.gameState.game}), 
-              React.createElement(Comment, {ctx: this.props.ctx})
-            )
-            :
-            React.createElement("div", {className: "gvreset gvright-pane"})
-          
+          React.createElement(RightPane, {ctx: this.props.ctx})
         )
       );
     }
@@ -313,7 +323,7 @@
                   React.createElement("a", {href: "javascript:void(0)", onMouseOver: this.showBlackPrisoners, onMouseOut: this.hideBlackPrisoners}, 
                     React.createElement("div", {className: "gvreset gvsprite-15-black_dead", style: {display: 'inline-block', margin: -2, marginRight: 2}, onMouseEnter: this.showBlackPrisoners}), 
                     " ", 
-                    React.createElement("span", {className: "gvreset gvcontrol-text"}, blackPrisoners)
+                    React.createElement("span", {className: "gvreset gvcontrol-text", style: {fontWeight: "normal"}}, blackPrisoners)
                   )
                 )
               ), 
@@ -322,11 +332,14 @@
                   React.createElement("a", {href: "javascript:void(0)", onMouseOver: this.showWhitePrisoners, onMouseOut: this.hideWhitePrisoners}, 
                     React.createElement("div", {className: "gvreset gvsprite-15-white_dead", style: {display: 'inline-block', margin: -2, marginRight: 2}}), 
                     " ", 
-                    React.createElement("span", {className: "gvreset gvcontrol-text"}, whitePrisoners)
+                    React.createElement("span", {className: "gvreset gvcontrol-text", style: {fontWeight: "normal"}}, whitePrisoners)
                   )
                 )
               )
             )
+          ), 
+          React.createElement("div", {className: "gvreset gvbanner-overlay"}, 
+            React.createElement("div", {style: {float: 'right', width: 50, marginTop: 3, textAlign: 'center', color: '#555'}}, xyToLabel(this.props.ctx.mouseX, this.props.ctx.mouseY))
           )
         )
       );
@@ -334,16 +347,37 @@
   });
 
   var Board = React.createClass({displayName: "Board",
+
+    mouseMoveHandler: function(e){
+      var e = e.nativeEvent;
+      var layerX = e.layerX || e.offsetX || e.clientX;
+      var layerY = e.layerY || e.offsetY || e.clientY;
+
+      var gridSize = this.props.ctx.config.gridSize;
+      var x = parseInt(layerX/gridSize);
+      var y = parseInt(layerY/gridSize);
+
+      this.props.ctx.setMousePosition(x, y);
+    },
+
+    mouseOutHandler: function(e){
+      this.props.ctx.setMousePosition(-1, -1);
+    },
+
     render: function() {
       return (
         React.createElement("div", {className: "gvreset gvboard-outer gvsprite-21-board"}, 
-          React.createElement("div", {className: "gvreset gvboard"}, 
+          React.createElement("div", {className: "gvreset gvboard"
+          }, 
             React.createElement(Stones, {ctx: this.props.ctx}), 
             React.createElement("div", {className: "gvreset gvboard-overlay"}), 
             React.createElement("div", {className: "gvreset gvboard-overlay"}), 
             React.createElement(MoveMark, {ctx: this.props.ctx}), 
             React.createElement(Prisoners, {ctx: this.props.ctx}), 
-            React.createElement("div", {className: "gvreset gvboard-overlay gvboard-fascade"}, 
+            React.createElement("div", {className: "gvreset gvboard-overlay gvboard-fascade", 
+                 onMouseMove: this.mouseMoveHandler, 
+                 onMouseOut: this.mouseOutHandler
+            }, 
               React.createElement("div", {className: "gvreset gvsprite-21-blankboard"})
             )
           )
@@ -413,8 +447,18 @@
       var area = xyToArea(x,y,gridSize);
       var left = area[0], top = area[1];
       return (
-        React.createElement("div", {style: {position: 'absolute', left: left, top: top, width: gridSize, height: gridSize, backgroundColor: this.props.ctx.config.boardColor}}, 
-          React.createElement("div", {className: cssClass, style: {marginLeft: 3, marginTop: 3}})
+        React.createElement("div", {style: {
+          position: 'absolute',
+          left: left,
+          top: top,
+          width: gridSize,
+          height: gridSize,
+          backgroundColor: this.props.ctx.config.boardColor
+        }}, 
+          React.createElement("div", {className: cssClass, style: {
+            marginLeft: 3,
+            marginTop: 3
+          }})
         )
       );
     }
@@ -427,6 +471,15 @@
         toggleNumberClass += " gvsprite-hidenumber";
       else
         toggleNumberClass += " gvsprite-shownumber";
+
+      var isFirst = true, isLast = true;
+      var gameState = this.props.ctx.ctrl.gameState;
+      if (gameState) {
+        isFirst = gameState.isFirst();
+        isLast = gameState.isLast();
+      }
+      var backClass = isFirst ? ' disabled' : '';
+      var forwardClass = isLast ? ' disabled' : '';
 
       return (
         React.createElement("div", {className: "gvreset gvtoolbar"}, 
@@ -442,45 +495,60 @@
           ), 
           React.createElement("div", {className: "gvreset gvtb-item"}, 
             React.createElement("a", {className: "gvreset toggleopacity", href: "#", onClick: this.props.ctx.backAll, title: "Back to beginning [ctx Alt ←]"}, 
-              React.createElement("div", {className: "gvreset gvsprite-backall"})
+              React.createElement("div", {className: 'gvreset gvsprite-backall' + backClass})
             )
           ), 
           React.createElement("div", {className: "gvreset gvtb-item"}, 
             React.createElement("a", {className: "gvreset toggleopacity", href: "#", onClick: this.props.ctx.backToComment, title: "Previous comment or variation [Alt Shift ←]"}, 
-              React.createElement("div", {className: "gvreset gvsprite-backc"})
+              React.createElement("div", {className: 'gvreset gvsprite-backc' + backClass})
             )
           ), 
           React.createElement("div", {className: "gvreset gvtb-item"}, 
             React.createElement("a", {className: "gvreset toggleopacity", href: "#", onClick: this.props.ctx.backN, title: "Fast back [ctx ←]"}, 
-              React.createElement("div", {className: "gvreset gvsprite-backn"})
+              React.createElement("div", {className: 'gvreset gvsprite-backn' + backClass})
             )
           ), 
           React.createElement("div", {className: "gvreset gvtb-item"}, 
             React.createElement("a", {className: "gvreset toggleopacity", href: "#", onClick: this.props.ctx.back, title: "Back [←]"}, 
-              React.createElement("div", {className: "gvreset gvsprite-back"})
+              React.createElement("div", {className: 'gvreset gvsprite-back' + backClass})
             )
           ), 
           React.createElement("div", {className: "gvreset gvtb-item"}, 
             React.createElement("a", {className: "gvreset toggleopacity", href: "#", onClick: this.props.ctx.forward, title: "Forward [→]"}, 
-              React.createElement("div", {className: "gvreset gvsprite-forward"})
+              React.createElement("div", {className: 'gvreset gvsprite-forward' + forwardClass})
             )
           ), 
           React.createElement("div", {className: "gvreset gvtb-item"}, 
             React.createElement("a", {className: "gvreset toggleopacity", href: "#", onClick: this.props.ctx.forwardN, title: "Fast forward [ctx →]"}, 
-              React.createElement("div", {className: "gvreset gvsprite-forwardn"})
+              React.createElement("div", {className: 'gvreset gvsprite-forwardn' + forwardClass})
             )
           ), 
           React.createElement("div", {className: "gvreset gvtb-item"}, 
             React.createElement("a", {className: "gvreset toggleopacity", href: "#", onClick: this.props.ctx.forwardToComment, title: "Next comment or variation [Alt Shift →]"}, 
-              React.createElement("div", {className: "gvreset gvsprite-forwardc"})
+              React.createElement("div", {className: 'gvreset gvsprite-forwardc' + forwardClass})
             )
           ), 
           React.createElement("div", {className: "gvreset gvtb-item"}, 
             React.createElement("a", {className: "gvreset toggleopacity", href: "#", onClick: this.props.ctx.forwardAll, title: "Forward to end [ctx Alt →]"}, 
-              React.createElement("div", {className: "gvreset gvsprite-forwardall"})
+              React.createElement("div", {className: 'gvreset gvsprite-forwardall' + forwardClass})
             )
           ), 
           React.createElement("div", {className: "gvreset gvtb-branches"})
+        )
+      );
+    }
+  });
+
+  // TODO: scroll to show as much comments as possible except when jumping to first move!
+  var RightPane = React.createClass({displayName: "RightPane",
+    render: function() {
+      if (!this.props.ctx.ctrl.gameState)
+        return (React.createElement("div", {className: "gvreset gvright-pane"}));
+
+      return (
+        React.createElement("div", {className: "gvreset gvright-pane"}, 
+          React.createElement(Info, {game: this.props.ctx.ctrl.gameState.game}), 
+          React.createElement(Comment, {ctx: this.props.ctx})
         )
       );
     }
@@ -495,10 +563,12 @@
       var playFirst = "\u00a0&#8592; " + jsgvTranslations['play_first'];
 
       return (
-        React.createElement("div", {className: "gvreset gvinfo"}, 
-           jsGameViewer.notNull(game.name)  && React.createElement("div", {align: "center", style: {fontWeight: "bold"}}, game.name), 
-           jsGameViewer.notNull(game.date)  && React.createElement("div", {align: "center", style: {fontWeight: "bold"}}, game.date), 
-           jsGameViewer.notNull(game.place) && React.createElement("div", {align: "center", style: {fontWeight: "bold"}}, game.place), 
+        React.createElement("div", {className: "gvreset gvinfo", style: {fontSize: "0.9em"}}, 
+           jsGameViewer.notNull(game.name)  && React.createElement("div", {style: {width: '100%', textAlign: 'center', fontWeight: "bold"}}, game.name), 
+          React.createElement("div", {style: {width: '100%', textAlign: 'center'}}, 
+             jsGameViewer.notNull(game.date)  && game.date + '\u00a0 ', 
+             jsGameViewer.notNull(game.place) && game.place
+          ), 
 
           React.createElement("div", null, 
              jsgvTranslations['white'], ":", 
