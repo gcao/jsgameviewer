@@ -21,6 +21,7 @@
 
   // Default view configuration
   jq4gv.extend(jsGameViewer.CONFIG, {
+    verticalLayout: true,
     gridSize:21,
     fastMode:10,
     showMoveNumber:false,
@@ -260,15 +261,37 @@
    */
   var Viewer = React.createClass({
     render: function() {
-      return (
-        <div className='gvreset gameviewer'>
-          <Banner ctx={this.props.ctx}/>
-          <Board ctx={this.props.ctx}/>
-          <Toolbar ctx={this.props.ctx}/>
-          <div align='center' className='gvreset gvpoint-label'></div>
-          <RightPane ctx={this.props.ctx}/>
-        </div>
-      );
+      var gameState = this.props.ctx.ctrl.gameState;
+      if (this.props.ctx.config.verticalLayout) {
+        return (
+          <div className='gvreset' style={{width: 470}}>
+            { gameState
+              ? <Info game={this.props.ctx.ctrl.gameState.game}/>
+              : ''
+            }
+            <div className='gvreset gameviewer' style={{width: 470}}>
+              <Banner ctx={this.props.ctx}/>
+              <Board ctx={this.props.ctx}/>
+              <Toolbar ctx={this.props.ctx}/>
+              <div align='center' className='gvreset gvpoint-label'></div>
+            </div>
+            { gameState
+              ? <Comment ctx={this.props.ctx}/>
+              : ''
+            }
+          </div>
+        );
+      } else {
+        return (
+          <div className='gvreset gameviewer'>
+            <Banner ctx={this.props.ctx}/>
+            <Board ctx={this.props.ctx}/>
+            <Toolbar ctx={this.props.ctx}/>
+            <div align='center' className='gvreset gvpoint-label'></div>
+            <RightPane ctx={this.props.ctx}/>
+          </div>
+        );
+      }
     }
   });
 

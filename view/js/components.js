@@ -21,6 +21,7 @@
 
   // Default view configuration
   jq4gv.extend(jsGameViewer.CONFIG, {
+    verticalLayout: true,
     gridSize:21,
     fastMode:10,
     showMoveNumber:false,
@@ -260,15 +261,37 @@
    */
   var Viewer = React.createClass({displayName: "Viewer",
     render: function() {
-      return (
-        React.createElement("div", {className: "gvreset gameviewer"}, 
-          React.createElement(Banner, {ctx: this.props.ctx}), 
-          React.createElement(Board, {ctx: this.props.ctx}), 
-          React.createElement(Toolbar, {ctx: this.props.ctx}), 
-          React.createElement("div", {align: "center", className: "gvreset gvpoint-label"}), 
-          React.createElement(RightPane, {ctx: this.props.ctx})
-        )
-      );
+      var gameState = this.props.ctx.ctrl.gameState;
+      if (this.props.ctx.config.verticalLayout) {
+        return (
+          React.createElement("div", {className: "gvreset", style: {width: 470}}, 
+             gameState
+              ? React.createElement(Info, {game: this.props.ctx.ctrl.gameState.game})
+              : '', 
+            
+            React.createElement("div", {className: "gvreset gameviewer", style: {width: 470}}, 
+              React.createElement(Banner, {ctx: this.props.ctx}), 
+              React.createElement(Board, {ctx: this.props.ctx}), 
+              React.createElement(Toolbar, {ctx: this.props.ctx}), 
+              React.createElement("div", {align: "center", className: "gvreset gvpoint-label"})
+            ), 
+             gameState
+              ? React.createElement(Comment, {ctx: this.props.ctx})
+              : ''
+            
+          )
+        );
+      } else {
+        return (
+          React.createElement("div", {className: "gvreset gameviewer"}, 
+            React.createElement(Banner, {ctx: this.props.ctx}), 
+            React.createElement(Board, {ctx: this.props.ctx}), 
+            React.createElement(Toolbar, {ctx: this.props.ctx}), 
+            React.createElement("div", {align: "center", className: "gvreset gvpoint-label"}), 
+            React.createElement(RightPane, {ctx: this.props.ctx})
+          )
+        );
+      }
     }
   });
 
