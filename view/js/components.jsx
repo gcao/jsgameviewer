@@ -60,7 +60,7 @@
     }
 
     this.changeLocale = function(newLocale) {
-      if (this.config.locale == newLocale)
+      if (this.config.locale === newLocale)
         return;
 
       if (!jsGameViewer.LOCALES.indexOf(newLocale) < 0){
@@ -264,19 +264,19 @@
       var gameState = this.props.ctx.ctrl.gameState;
       if (this.props.ctx.config.verticalLayout) {
         return (
-          <div className='gvreset' style={{width: 470}}>
+          <div className='gvreset' style={{width: 470, border: '1px solid black', background: '#EECD7A'}}>
             { gameState
-              ? <Info game={this.props.ctx.ctrl.gameState.game}/>
+              ? <div style={{margin: 1, border: '1px solid gray', background: 'white'}}><Info game={this.props.ctx.ctrl.gameState.game}/></div>
               : ''
             }
-            <div className='gvreset gameviewer' style={{width: 470}}>
+            <div className='gvreset gameviewer' style={{width: 470, border: 0}}>
               <Banner ctx={this.props.ctx}/>
               <Board ctx={this.props.ctx}/>
               <Toolbar ctx={this.props.ctx}/>
               <div align='center' className='gvreset gvpoint-label'></div>
             </div>
             { gameState
-              ? <Comment ctx={this.props.ctx}/>
+              ? <div style={{margin: 1, border: '1px solid gray', background: 'white'}}><Comment ctx={this.props.ctx}/></div>
               : ''
             }
           </div>
@@ -313,6 +313,7 @@
     },
 
     render: function() {
+      var ctx = this.props.ctx;
       var moveNumber = 0;
       var totalMoves = 0;
       var nextPlayerClass = "gvreset nextPlayerImg";
@@ -335,10 +336,18 @@
         <div className='gvreset gvbanner'>
           <div className='gvreset gvbanner-overlay'></div>
           <div className='gvreset gvbanner-left'>
-            <a className='gvreset localization' href='#' onClick={this.props.ctx.changeLocaleToChinese}>中文</a>
+            {
+              ctx.config.locale === 'zh_cn'
+              ? '中文'
+              : <a className='gvreset localization' href='#' onClick={this.props.ctx.changeLocaleToChinese}>中文</a>
+            }
             &nbsp;|&nbsp;
-            <a className='gvreset localization' href='#' onClick={this.props.ctx.changeLocaleToEnglish}>EN</a>
-            &nbsp;&nbsp;
+            {
+              ctx.config.locale === 'en_us'
+              ? 'EN'
+              : <a className='gvreset localization' href='#' onClick={this.props.ctx.changeLocaleToEnglish}>EN</a>
+            }
+            &nbsp;&nbsp;&nbsp;&nbsp;
             {jsgvTranslations['whose_turn']}
             &nbsp;
             <div className={nextPlayerClass} style={{display: 'inline-block'}}/>

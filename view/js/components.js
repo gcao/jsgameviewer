@@ -60,7 +60,7 @@
     }
 
     this.changeLocale = function(newLocale) {
-      if (this.config.locale == newLocale)
+      if (this.config.locale === newLocale)
         return;
 
       if (!jsGameViewer.LOCALES.indexOf(newLocale) < 0){
@@ -264,19 +264,19 @@
       var gameState = this.props.ctx.ctrl.gameState;
       if (this.props.ctx.config.verticalLayout) {
         return (
-          React.createElement("div", {className: "gvreset", style: {width: 470}}, 
+          React.createElement("div", {className: "gvreset", style: {width: 470, border: '1px solid black', background: '#EECD7A'}}, 
              gameState
-              ? React.createElement(Info, {game: this.props.ctx.ctrl.gameState.game})
+              ? React.createElement("div", {style: {margin: 1, border: '1px solid gray', background: 'white'}}, React.createElement(Info, {game: this.props.ctx.ctrl.gameState.game}))
               : '', 
             
-            React.createElement("div", {className: "gvreset gameviewer", style: {width: 470}}, 
+            React.createElement("div", {className: "gvreset gameviewer", style: {width: 470, border: 0}}, 
               React.createElement(Banner, {ctx: this.props.ctx}), 
               React.createElement(Board, {ctx: this.props.ctx}), 
               React.createElement(Toolbar, {ctx: this.props.ctx}), 
               React.createElement("div", {align: "center", className: "gvreset gvpoint-label"})
             ), 
              gameState
-              ? React.createElement(Comment, {ctx: this.props.ctx})
+              ? React.createElement("div", {style: {margin: 1, border: '1px solid gray', background: 'white'}}, React.createElement(Comment, {ctx: this.props.ctx}))
               : ''
             
           )
@@ -313,6 +313,7 @@
     },
 
     render: function() {
+      var ctx = this.props.ctx;
       var moveNumber = 0;
       var totalMoves = 0;
       var nextPlayerClass = "gvreset nextPlayerImg";
@@ -335,10 +336,18 @@
         React.createElement("div", {className: "gvreset gvbanner"}, 
           React.createElement("div", {className: "gvreset gvbanner-overlay"}), 
           React.createElement("div", {className: "gvreset gvbanner-left"}, 
-            React.createElement("a", {className: "gvreset localization", href: "#", onClick: this.props.ctx.changeLocaleToChinese}, "中文"), 
+            
+              ctx.config.locale === 'zh_cn'
+              ? '中文'
+              : React.createElement("a", {className: "gvreset localization", href: "#", onClick: this.props.ctx.changeLocaleToChinese}, "中文"), 
+            
             " | ", 
-            React.createElement("a", {className: "gvreset localization", href: "#", onClick: this.props.ctx.changeLocaleToEnglish}, "EN"), 
-            "  ", 
+            
+              ctx.config.locale === 'en_us'
+              ? 'EN'
+              : React.createElement("a", {className: "gvreset localization", href: "#", onClick: this.props.ctx.changeLocaleToEnglish}, "EN"), 
+            
+            "    ", 
             jsgvTranslations['whose_turn'], 
             " ", 
             React.createElement("div", {className: nextPlayerClass, style: {display: 'inline-block'}})
