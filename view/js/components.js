@@ -2,6 +2,12 @@
   "use strict";
 
   var LABELS = ['A','B','C','D','E','F','G','H','J','K','L','M','N','O','P','Q','R','S','T'];
+  var BRANCHES = ['A','B','C','D','E','F','G','H','I','J'];
+  var BRANCHES_NAME = [jsgvTranslations['trunk'],
+    jsgvTranslations['branch_1'], jsgvTranslations['branch_2'], jsgvTranslations['branch_3'],
+    jsgvTranslations['branch_4'], jsgvTranslations['branch_5'], jsgvTranslations['branch_6'],
+    jsgvTranslations['branch_7'], jsgvTranslations['branch_8'], jsgvTranslations['branch_9']
+  ];
   var EMPTY_DIV = React.createElement("div", {style: {display: "none"}});
 
   function xyToLabel(x,y){
@@ -235,6 +241,11 @@
       }
     }.bind(this);
 
+    this.goToBranch = function(n){
+      if (this.ctrl.gameState && this.ctrl.gameState.goToBranch(n))
+        this.render();
+    },
+
     this.render = function(){
       React.render(React.createElement(Viewer, {ctx: this}), document.getElementById(this.id));
     }
@@ -310,9 +321,14 @@
             React.createElement("div", {className: nextPlayerClass, style: {display: 'inline-block'}})
           ), 
           React.createElement("div", {className: "gvreset gvmove-outer gvbutton"}, 
-            React.createElement("a", {className: "gvreset", href: "#", onClick: this.props.ctx.goTo, title: "Jump to XX [Alt Shift G]"}, 
+            React.createElement("a", {className: "gvreset", 
+               style: {verticalAlign: 'middle'}, 
+               href: "#", 
+               onClick: this.props.ctx.goTo, 
+               title: "Jump to XX [Alt Shift G]"}, 
               " ", 
-              React.createElement("span", {className: "gvreset gvcontrol-text"}, totalMoves > 0 ? moveNumber + '/' + totalMoves : '0'), 
+              React.createElement("span", {className: "gvreset gvcontrol-text"}, moveNumber), 
+              totalMoves > 0 ? React.createElement("span", {className: "gvreset", style: {verticalAlign: 'middle'}}, "/", totalMoves) : '', 
               " "
             )
           ), 
@@ -371,7 +387,7 @@
           }, 
             React.createElement(Stones, {ctx: this.props.ctx}), 
             React.createElement(Marks, {ctx: this.props.ctx}), 
-            React.createElement("div", {className: "gvreset gvboard-overlay todo-branches"}), 
+            React.createElement(BranchMarks, {ctx: this.props.ctx}), 
             React.createElement(MoveMark, {ctx: this.props.ctx}), 
             React.createElement(Prisoners, {ctx: this.props.ctx}), 
             React.createElement("div", {className: "gvreset gvboard-overlay gvboard-fascade", 
@@ -478,6 +494,100 @@
     }
   });
 
+  var BranchLinks = React.createClass({displayName: "BranchLinks",
+    render: function() {
+      var ctx = this.props.ctx;
+      if (!ctx.ctrl.gameState) return EMPTY_DIV;
+
+      var branchNodes = [];
+      var node = ctx.ctrl.gameState.currentNode;
+      if (node.hasChildren() && node.children.length >= 2){
+        var n = node.children.length;
+        var s = "";
+        for(var i=0; i<node.children.length; i++){
+          var child = node.children[i];
+          if (child.type == jsGameViewer.model.NODE_MOVE){
+            var x = child.x, y = child.y;
+            var branchLabel = BRANCHES[i];
+            for (var j=0; j<i; j++) {
+              var c1 = node.children[j];
+              if (x == c1.x && y == c1.y) {
+                branchLabel = BRANCHES[j];
+                break;
+              }
+            }
+            var branchName = BRANCHES_NAME[i] + ': ' + branchLabel;
+
+            var goToBranchHandler = (function(n){
+              return function() {
+                ctx.goToBranch(n);
+              };
+            })(i);
+            branchNodes.push(
+              React.createElement("div", {className: "gvreset gvbutton", style: {position: 'relative', display: 'inline-block', width: 'initial'}}, 
+                React.createElement("span", null, React.createElement("a", {className: "branch", href: "#", onClick: goToBranchHandler}, branchName), "   ")
+              )
+            );
+          }
+        }
+      }
+
+      return (
+        React.createElement("div", null, branchNodes)
+      );
+    }
+  });
+
+  var BranchMarks = React.createClass({displayName: "BranchMarks",
+    render: function() {
+      var ctx = this.props.ctx;
+      if (!ctx.ctrl.gameState) return EMPTY_DIV;
+
+      var branchNodes = [];
+      var node = ctx.ctrl.gameState.currentNode;
+      if (node.hasChildren() && node.children.length >= 2){
+        var n = node.children.length;
+        var s = "";
+        for(var i=0; i<node.children.length; i++){
+          var child = node.children[i];
+          if (child.type == jsGameViewer.model.NODE_MOVE){
+            var x = child.x, y = child.y;
+            var color = ctx.ctrl.gameState.board[x][y];
+            var area = xyToArea(x,y,ctx.config.gridSize);
+            var left = area[0], top = area[1], width = area[2], height = area[3];
+            var branchLabel = BRANCHES[i];
+            for (var j=0; j<i; j++) {
+              var c1 = node.children[j];
+              if (x == c1.x && y == c1.y) {
+                branchLabel = BRANCHES[j];
+                break;
+              }
+            }
+            branchNodes.push(
+              React.createElement("div", {style: {
+                position: 'absolute',
+                left: left,
+                top: top + 1,
+                width: width,
+                height: height,
+                textAlign: 'center',
+                verticalAlign: 'middle',
+                color: 'red',
+                fontWeight: 'bolder',
+                fontSize: 15,
+                backgroundColor: color === jsGameViewer.model.STONE_NONE ? ctx.config.boardColor : ''
+              }}, branchLabel)
+            );
+          }
+        }
+      }
+
+      return (
+        React.createElement("div", null, branchNodes)
+      );
+    }
+  });
+
   var Prisoners = React.createClass({displayName: "Prisoners",
     render: function() {
       var ctx = this.props.ctx;
@@ -561,7 +671,7 @@
             )
           ), 
           React.createElement("div", {className: "gvreset gvtb-item"}, 
-            React.createElement("a", {className: "gvreset toggleopacity", href: "#", onClick: this.props.ctx.backAll, title: "Back to beginning [ctx Alt ←]"}, 
+            React.createElement("a", {className: "gvreset toggleopacity", href: "#", onClick: this.props.ctx.backAll, title: "Back to beginning [Ctrl Alt ←]"}, 
               React.createElement("div", {className: 'gvreset gvsprite-backall' + backClass})
             )
           ), 
@@ -571,7 +681,7 @@
             )
           ), 
           React.createElement("div", {className: "gvreset gvtb-item"}, 
-            React.createElement("a", {className: "gvreset toggleopacity", href: "#", onClick: this.props.ctx.backN, title: "Fast back [ctx ←]"}, 
+            React.createElement("a", {className: "gvreset toggleopacity", href: "#", onClick: this.props.ctx.backN, title: "Fast back [Ctrl ←]"}, 
               React.createElement("div", {className: 'gvreset gvsprite-backn' + backClass})
             )
           ), 
@@ -586,7 +696,7 @@
             )
           ), 
           React.createElement("div", {className: "gvreset gvtb-item"}, 
-            React.createElement("a", {className: "gvreset toggleopacity", href: "#", onClick: this.props.ctx.forwardN, title: "Fast forward [ctx →]"}, 
+            React.createElement("a", {className: "gvreset toggleopacity", href: "#", onClick: this.props.ctx.forwardN, title: "Fast forward [Ctrl →]"}, 
               React.createElement("div", {className: 'gvreset gvsprite-forwardn' + forwardClass})
             )
           ), 
@@ -596,7 +706,7 @@
             )
           ), 
           React.createElement("div", {className: "gvreset gvtb-item"}, 
-            React.createElement("a", {className: "gvreset toggleopacity", href: "#", onClick: this.props.ctx.forwardAll, title: "Forward to end [ctx Alt →]"}, 
+            React.createElement("a", {className: "gvreset toggleopacity", href: "#", onClick: this.props.ctx.forwardAll, title: "Forward to end [Ctrl Alt →]"}, 
               React.createElement("div", {className: 'gvreset gvsprite-forwardall' + forwardClass})
             )
           ), 
@@ -671,6 +781,7 @@
       if (node.comment) {
         return (
           React.createElement("div", {className: "gvreset gvcomment"}, 
+            React.createElement(BranchLinks, {ctx: this.props.ctx}), 
             React.createElement("strong", null, jsgvTranslations['comment_for'].replace(/MOVE/,node.moveNumber)), React.createElement("br", null), 
             node.comment
           )
