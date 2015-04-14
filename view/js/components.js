@@ -716,16 +716,29 @@
     }
   });
 
-  // TODO: scroll to show as much comments as possible except when jumping to first move!
+  // Scroll to show as much comments as possible except when jumping to first move!
   var RightPane = React.createClass({displayName: "RightPane",
+    componentDidUpdate: function() {
+      if (!this.props.ctx.ctrl.gameState) return;
+
+      var node = this.getDOMNode();
+      if (this.props.ctx.ctrl.gameState.isFirst()) {
+        node.scrollTop = 0;
+        return;
+      }
+
+      var infoNode = React.findDOMNode(this.refs.info);
+      node.scrollTop = infoNode.offsetHeight + 5;
+    },
+
     render: function() {
       if (!this.props.ctx.ctrl.gameState)
         return (React.createElement("div", {className: "gvreset gvright-pane"}));
 
       return (
         React.createElement("div", {className: "gvreset gvright-pane"}, 
-          React.createElement(Info, {game: this.props.ctx.ctrl.gameState.game}), 
-          React.createElement(Comment, {ctx: this.props.ctx})
+          React.createElement(Info, {ref: "info", game: this.props.ctx.ctrl.gameState.game}), 
+          React.createElement(Comment, {ref: "comment", ctx: this.props.ctx})
         )
       );
     }
