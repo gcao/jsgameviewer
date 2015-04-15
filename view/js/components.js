@@ -275,7 +275,7 @@
               React.createElement(Toolbar, {ctx: this.props.ctx}), 
               React.createElement("div", {align: "center", className: "gvreset gvpoint-label"})
             ), 
-             gameState
+             gameState && gameState.currentNode.comment
               ? React.createElement("div", {style: {margin: 1, border: '1px solid gray', background: 'white'}}, React.createElement(Comment, {ctx: this.props.ctx}))
               : ''
             

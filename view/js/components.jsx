@@ -248,7 +248,7 @@
     },
 
     this.render = function(){
-      React.render(React.createElement(Viewer, {ctx: this}), document.getElementById(this.id));
+      React.render(<Viewer ctx={this}/>, document.getElementById(this.id));
     }
   }
 
@@ -275,7 +275,7 @@
               <Toolbar ctx={this.props.ctx}/>
               <div align='center' className='gvreset gvpoint-label'></div>
             </div>
-            { gameState
+            { gameState && gameState.currentNode.comment
               ? <div style={{margin: 1, border: '1px solid gray', background: 'white'}}><Comment ctx={this.props.ctx}/></div>
               : ''
             }
