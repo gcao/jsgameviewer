@@ -339,13 +339,13 @@
             
               ctx.config.locale === 'zh_cn'
               ? '中文'
-              : React.createElement("a", {className: "gvreset localization", href: "#", onClick: this.props.ctx.changeLocaleToChinese}, "中文"), 
+              : React.createElement("a", {className: "gvreset localization", onClick: this.props.ctx.changeLocaleToChinese}, "中文"), 
             
             " | ", 
             
               ctx.config.locale === 'en_us'
               ? 'EN'
-              : React.createElement("a", {className: "gvreset localization", href: "#", onClick: this.props.ctx.changeLocaleToEnglish}, "EN"), 
+              : React.createElement("a", {className: "gvreset localization", Click: this.props.ctx.changeLocaleToEnglish}, "EN"), 
             
             "    ", 
             jsgvTranslations['whose_turn'], 
@@ -355,7 +355,6 @@
           React.createElement("div", {className: "gvreset gvmove-outer gvbutton"}, 
             React.createElement("a", {className: "gvreset", 
                style: {verticalAlign: 'middle'}, 
-               href: "#", 
                onClick: this.props.ctx.goTo, 
                title: "Jump to XX [Alt Shift G]"}, 
               " ", 
@@ -693,52 +692,52 @@
       return (
         React.createElement("div", {className: "gvreset gvtoolbar"}, 
           React.createElement("div", {className: "gvreset gvtb-item"}, 
-            React.createElement("a", {className: "gvreset toggleopacity", href: "#", onClick: this.props.ctx.refresh, title: "Refresh game/board [Alt Shift R]"}, 
+            React.createElement("a", {className: "gvreset toggleopacity", onClick: this.props.ctx.refresh, title: "Refresh game/board [Alt Shift R]"}, 
               React.createElement("div", {className: "gvreset gvsprite-refresh"})
             )
           ), 
           React.createElement("div", {className: "gvreset gvtb-item"}, 
-            React.createElement("a", {className: "gvreset toggleopacity", href: "#", onClick: this.props.ctx.toggleNumber, title: "Show/hide move number [Alt Shift M]"}, 
+            React.createElement("a", {className: "gvreset toggleopacity", onClick: this.props.ctx.toggleNumber, title: "Show/hide move number [Alt Shift M]"}, 
               React.createElement("div", {className: toggleNumberClass})
             )
           ), 
           React.createElement("div", {className: "gvreset gvtb-item"}, 
-            React.createElement("a", {className: "gvreset toggleopacity", href: "#", onClick: this.props.ctx.backAll, title: "Back to beginning [Ctrl Alt ←]"}, 
+            React.createElement("a", {className: "gvreset toggleopacity", onClick: this.props.ctx.backAll, title: "Back to beginning [Ctrl Alt ←]"}, 
               React.createElement("div", {className: 'gvreset gvsprite-backall' + backClass})
             )
           ), 
           React.createElement("div", {className: "gvreset gvtb-item"}, 
-            React.createElement("a", {className: "gvreset toggleopacity", href: "#", onClick: this.props.ctx.backToComment, title: "Previous comment or variation [Alt Shift ←]"}, 
+            React.createElement("a", {className: "gvreset toggleopacity", onClick: this.props.ctx.backToComment, title: "Previous comment or variation [Alt Shift ←]"}, 
               React.createElement("div", {className: 'gvreset gvsprite-backc' + backClass})
             )
           ), 
           React.createElement("div", {className: "gvreset gvtb-item"}, 
-            React.createElement("a", {className: "gvreset toggleopacity", href: "#", onClick: this.props.ctx.backN, title: "Fast back [Ctrl ←]"}, 
+            React.createElement("a", {className: "gvreset toggleopacity", onClick: this.props.ctx.backN, title: "Fast back [Ctrl ←]"}, 
               React.createElement("div", {className: 'gvreset gvsprite-backn' + backClass})
             )
           ), 
           React.createElement("div", {className: "gvreset gvtb-item"}, 
-            React.createElement("a", {className: "gvreset toggleopacity", href: "#", onClick: this.props.ctx.back, title: "Back [←]"}, 
+            React.createElement("a", {className: "gvreset toggleopacity", onClick: this.props.ctx.back, title: "Back [←]"}, 
               React.createElement("div", {className: 'gvreset gvsprite-back' + backClass})
             )
           ), 
           React.createElement("div", {className: "gvreset gvtb-item"}, 
-            React.createElement("a", {className: "gvreset toggleopacity", href: "#", onClick: this.props.ctx.forward, title: "Forward [→]"}, 
+            React.createElement("a", {className: "gvreset toggleopacity", onClick: this.props.ctx.forward, title: "Forward [→]"}, 
               React.createElement("div", {className: 'gvreset gvsprite-forward' + forwardClass})
             )
           ), 
           React.createElement("div", {className: "gvreset gvtb-item"}, 
-            React.createElement("a", {className: "gvreset toggleopacity", href: "#", onClick: this.props.ctx.forwardN, title: "Fast forward [Ctrl →]"}, 
+            React.createElement("a", {className: "gvreset toggleopacity", onClick: this.props.ctx.forwardN, title: "Fast forward [Ctrl →]"}, 
               React.createElement("div", {className: 'gvreset gvsprite-forwardn' + forwardClass})
             )
           ), 
           React.createElement("div", {className: "gvreset gvtb-item"}, 
-            React.createElement("a", {className: "gvreset toggleopacity", href: "#", onClick: this.props.ctx.forwardToComment, title: "Next comment or variation [Alt Shift →]"}, 
+            React.createElement("a", {className: "gvreset toggleopacity", onClick: this.props.ctx.forwardToComment, title: "Next comment or variation [Alt Shift →]"}, 
               React.createElement("div", {className: 'gvreset gvsprite-forwardc' + forwardClass})
             )
           ), 
           React.createElement("div", {className: "gvreset gvtb-item"}, 
-            React.createElement("a", {className: "gvreset toggleopacity", href: "#", onClick: this.props.ctx.forwardAll, title: "Forward to end [Ctrl Alt →]"}, 
+            React.createElement("a", {className: "gvreset toggleopacity", onClick: this.props.ctx.forwardAll, title: "Forward to end [Ctrl Alt →]"}, 
               React.createElement("div", {className: 'gvreset gvsprite-forwardall' + forwardClass})
             )
           ), 

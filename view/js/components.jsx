@@ -211,7 +211,7 @@
       if (isNaN(n) || n < 0) {
         alert("Not a valid move number.");
         return;
-      }
+      //}
 
       var _this = this;
       while (this.ctrl.gameState.isOnBranch()){
@@ -339,13 +339,13 @@
             {
               ctx.config.locale === 'zh_cn'
               ? '中文'
-              : <a className='gvreset localization' href='#' onClick={this.props.ctx.changeLocaleToChinese}>中文</a>
+              : <a className='gvreset localization' onClick={this.props.ctx.changeLocaleToChinese}>中文</a>
             }
             &nbsp;|&nbsp;
             {
               ctx.config.locale === 'en_us'
               ? 'EN'
-              : <a className='gvreset localization' href='#' onClick={this.props.ctx.changeLocaleToEnglish}>EN</a>
+              : <a className='gvreset localization' Click={this.props.ctx.changeLocaleToEnglish}>EN</a>
             }
             &nbsp;&nbsp;&nbsp;&nbsp;
             {jsgvTranslations['whose_turn']}
@@ -355,7 +355,6 @@
           <div className='gvreset gvmove-outer gvbutton'>
             <a className='gvreset'
                style={{verticalAlign: 'middle'}}
-               href='#'
                onClick={this.props.ctx.goTo}
                title='Jump to XX [Alt Shift G]'>
               &nbsp;
@@ -693,52 +692,52 @@
       return (
         <div className='gvreset gvtoolbar'>
           <div className='gvreset gvtb-item'>
-            <a className='gvreset toggleopacity' href='#' onClick={this.props.ctx.refresh} title='Refresh game/board [Alt Shift R]'>
+            <a className='gvreset toggleopacity' onClick={this.props.ctx.refresh} title='Refresh game/board [Alt Shift R]'>
               <div className='gvreset gvsprite-refresh'/>
             </a>
           </div>
           <div className='gvreset gvtb-item'>
-            <a className='gvreset toggleopacity' href='#' onClick={this.props.ctx.toggleNumber} title='Show/hide move number [Alt Shift M]'>
+            <a className='gvreset toggleopacity' onClick={this.props.ctx.toggleNumber} title='Show/hide move number [Alt Shift M]'>
               <div className={toggleNumberClass}/>
             </a>
           </div>
           <div className='gvreset gvtb-item'>
-            <a className='gvreset toggleopacity' href='#' onClick={this.props.ctx.backAll} title='Back to beginning [Ctrl Alt &#8592;]'>
+            <a className='gvreset toggleopacity' onClick={this.props.ctx.backAll} title='Back to beginning [Ctrl Alt &#8592;]'>
               <div className={'gvreset gvsprite-backall' + backClass}/>
             </a>
           </div>
           <div className='gvreset gvtb-item'>
-            <a className='gvreset toggleopacity' href='#' onClick={this.props.ctx.backToComment} title='Previous comment or variation [Alt Shift &#8592;]'>
+            <a className='gvreset toggleopacity' onClick={this.props.ctx.backToComment} title='Previous comment or variation [Alt Shift &#8592;]'>
               <div className={'gvreset gvsprite-backc' + backClass}/>
             </a>
           </div>
           <div className='gvreset gvtb-item'>
-            <a className='gvreset toggleopacity' href='#' onClick={this.props.ctx.backN} title='Fast back [Ctrl &#8592;]'>
+            <a className='gvreset toggleopacity' onClick={this.props.ctx.backN} title='Fast back [Ctrl &#8592;]'>
               <div className={'gvreset gvsprite-backn' + backClass}/>
             </a>
           </div>
           <div className='gvreset gvtb-item'>
-            <a className='gvreset toggleopacity' href='#' onClick={this.props.ctx.back} title='Back [&#8592;]'>
+            <a className='gvreset toggleopacity' onClick={this.props.ctx.back} title='Back [&#8592;]'>
               <div className={'gvreset gvsprite-back' + backClass}/>
             </a>
           </div>
           <div className='gvreset gvtb-item'>
-            <a className='gvreset toggleopacity' href='#' onClick={this.props.ctx.forward} title='Forward [&#8594;]'>
+            <a className='gvreset toggleopacity' onClick={this.props.ctx.forward} title='Forward [&#8594;]'>
               <div className={'gvreset gvsprite-forward' + forwardClass}/>
             </a>
           </div>
           <div className='gvreset gvtb-item'>
-            <a className='gvreset toggleopacity' href='#' onClick={this.props.ctx.forwardN} title='Fast forward [Ctrl &#8594;]'>
+            <a className='gvreset toggleopacity' onClick={this.props.ctx.forwardN} title='Fast forward [Ctrl &#8594;]'>
               <div className={'gvreset gvsprite-forwardn' + forwardClass}/>
             </a>
           </div>
           <div className='gvreset gvtb-item'>
-            <a className='gvreset toggleopacity' href='#' onClick={this.props.ctx.forwardToComment} title='Next comment or variation [Alt Shift &#8594;]'>
+            <a className='gvreset toggleopacity' onClick={this.props.ctx.forwardToComment} title='Next comment or variation [Alt Shift &#8594;]'>
               <div className={'gvreset gvsprite-forwardc' + forwardClass}/>
             </a>
           </div>
           <div className='gvreset gvtb-item'>
-            <a className='gvreset toggleopacity' href='#' onClick={this.props.ctx.forwardAll} title='Forward to end [Ctrl Alt &#8594;]'>
+            <a className='gvreset toggleopacity' onClick={this.props.ctx.forwardAll} title='Forward to end [Ctrl Alt &#8594;]'>
               <div className={'gvreset gvsprite-forwardall' + forwardClass}/>
             </a>
           </div>
