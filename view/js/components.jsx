@@ -211,7 +211,7 @@
       if (isNaN(n) || n < 0) {
         alert("Not a valid move number.");
         return;
-      //}
+      }
 
       var _this = this;
       while (this.ctrl.gameState.isOnBranch()){
