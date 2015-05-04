@@ -219,8 +219,9 @@ module Utils
       case type
       when MARK_MOVE
         file += "markmove.png"
-        gc.polygon(size/3,size/3,size/3,2*size/3,
-          2*size/3,2*size/3,2*size/3,size/3)
+        gc.fill_opacity 0
+        gc.stroke_width 2
+        gc.circle(size/2,size/2, size/2,1)
       when MARK_CROSS
         file += "markcross.png"
         gc.stroke_width 2

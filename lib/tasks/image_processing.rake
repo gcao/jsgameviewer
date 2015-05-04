@@ -37,7 +37,7 @@ end
 
 desc "Create marks"
 task :marks do
-  #Utils.draw_mark(MARK_MOVE,grid)
+  Utils.draw_mark(MARK_MOVE,grid)
   #Utils.draw_mark(MARK_MOVE,daoqigrid)
   Utils.draw_mark(MARK_CROSS,grid)
   Utils.draw_mark(MARK_CROSS,daoqigrid)
