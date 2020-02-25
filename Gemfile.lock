@@ -39,10 +39,10 @@ GEM
       multi_json
       rainbow
       sprockets (~> 2)
-    mini_portile (0.5.1)
+    mini_portile2 (2.4.0)
     multi_json (1.0.4)
-    nokogiri (1.6.0)
-      mini_portile (~> 0.5.0)
+    nokogiri (1.10.8)
+      mini_portile2 (~> 2.4.0)
     rack (1.5.2)
     rack-livereload (0.3.15)
       rack
